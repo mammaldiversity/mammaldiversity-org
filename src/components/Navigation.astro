@@ -1,0 +1,92 @@
+---
+import Icons from "./Icons.astro";
+import OpenMenuButton from "./buttons/OpenMenuButton.astro";
+import CloseMenuButton from "./buttons/CloseMenuButton.astro";
+
+const navItems = [
+  { path: "/", label: "About" },
+  { path: "/projects", label: "Projects" },
+  { path: "/pubs", label: "Publications" },
+  { path: "/software", label: "Software" },
+  { path: "/fieldwork", label: "Fieldwork" },
+  { path: "/teaching", label: "Teaching" },
+  { path: "/outreach", label: "Outreach" },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+  <div class="flex lg:flex-1">
+    <a href="/" class="-m-1.5 p-1.5">
+      <span class="sr-only">Heru Handika</span>
+    </a>
+    <Icons />
+  </div>
+  <div class="flex lg:hidden">
+    <OpenMenuButton />
+  </div>
+  <div class="hidden lg:flex lg:gap-x-12">
+    {
+      navItems.map(({ path, label }) => (
+        <a
+          href={path}
+          class={`-m-1.5 p-1.5 font-semibold hover:text-porsche-500 ${currentPath === path || currentPath === `${path}/` ? "text-porsche-600 dark:text-porsche-400" : "text-porsche-950 dark:text-porsche-50"}`}
+        >
+          {label}
+        </a>
+      ))
+    }
+  </div>
+</nav>
+<!-- Mobile menu, show/hide based on menu open state. -->
+<div id="mobile-menu" class="lg:hidden hidden" role="dialog" aria-modal="true">
+  <!-- Background backdrop, show/hide based on slide-over state. -->
+  <div class="fixed inset-0 z-50">
+    <div
+      class="fixed bg-porsche-200 dark:bg-porsche-950 inset-y-0 right-0 z-50 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
+    >
+      <div class="flex items-center justify-between">
+        <a href="#" class="-m-1.5 p-1.5">
+          <span class="sr-only">Heru Handika</span>
+          <Icons />
+        </a>
+        <CloseMenuButton />
+      </div>
+      <div class="mt-6 flow-root">
+        <div class="-my-6 divide-y divide-gray-500/10">
+          <div class="space-y-2 py-6 font-semibold">
+            {
+              navItems.map(({ path, label }) => (
+                <a
+                  href={path}
+                  class={`-mx-3 block rounded-lg px-3 py-2 text-base/7 hover:text-porsche-500 ${currentPath === path || currentPath === `${path}/` ? "text-porsche-600 dark:text-porsche-300" : "text-porsche-950 dark:text-porsche-50"}`}
+                >
+                  {label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const menuButton = document.getElementById("menu-button");
+    const closeButton = document.getElementById("close-button");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    if (menuButton && mobileMenu) {
+      menuButton.addEventListener("click", function () {
+        mobileMenu.classList.toggle("hidden");
+      });
+    }
+
+    if (closeButton && mobileMenu) {
+      closeButton.addEventListener("click", function () {
+        mobileMenu.classList.toggle("hidden");
+      });
+    }
+  </script>
+</div>
