@@ -1,4 +1,5 @@
 ---
+import Title from "../components/Title.astro";
 import Layout from "../layouts/Layout.astro";
 import MainPage from "../layouts/MainPage.astro";
 ---
@@ -6,21 +7,35 @@ import MainPage from "../layouts/MainPage.astro";
 <Layout title="ASM Mammal Diversity Database">
   <MainPage
     ><div class="text-center item-center mt-8 md:mt-16">
-      <h2>Welcome!</h2>
+      <Title>About the Mammal Diversity Database</Title>
       <p>
-        The Mammal Diversity Database of the <a
+        Development for this work is funded primarily by the <a
           href="http://www.mammalsociety.org/"
           >American Society of Mammalogists</a
-        > (ASM) is your home base for tracking the latest taxonomic changes to living
-        and recently extinct (i.e., since ~1500 CE) species and higher taxa of mammals.
-        <br /><br />Here we are curating the taxonomic implications of new
-        research publications in real time — with the goal of promoting rigorous
-        study of mammal biodiversity worldwide.
-        <br /><br /><b>Current version:</b> v1.13, released 13 Jul 2024. <b
-          >Past versions</b
-        > on Zenodo: <a href="https://doi.org/10.5281/zenodo.4139722"
-          >https://doi.org/10.5281/zenodo.4139722</a
-        >.
+        > (ASM; 2017-present), with initial logistical and planning support (2017-2019)
+        provided by the <a href="http://vertlife.org/grant/"
+          >NSF Vertlife Terrestrial grant</a
+        >. Logistical support is now also provided by the <a
+          href="https://biokic.asu.edu/"
+          >Biodiversity Knowledge Integration Center</a
+        > at Arizona State University.
+        <br />
+        <br />
+        The <a href="http://www.mammalsociety.org/committees/biodiversity"
+          >ASM Biodiversity Committee</a
+        > compiles and maintains the Mammal Diversity Database (MDD), an updatable
+        online database of mammal taxonomic and biodiversity information hosted by
+        ASM at <a href="http://mammaldiversity.org/"
+          >http://mammaldiversity.org/</a
+        >. This database aims to provide the latest information on species-level
+        and higher taxonomic changes, thereby promoting more rigorous study of
+        mammalian biodiversity worldwide. The initial objective has been to
+        aggregate, curate, and compile, new citations on species descriptions
+        and taxonomic revisions into regular releases that are downloadable in
+        comma-delimited format. Downstream goals include expanded hosting of
+        ecological, trait, and taxonomic data. Overall, this initiative aims to
+        promote the ASM’s role as a leader in high quality research on mammalian
+        biology.
       </p>
     </div>
   </MainPage>
