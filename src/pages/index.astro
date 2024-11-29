@@ -1,27 +1,63 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import MainPage from "../layouts/MainPage.astro";
+import cntl from "cntl";
+
+const titleClasses = cntl`
+  text-4xl
+  text-spectra-700
+  dark:text-spectra-200
+  mt-2
+`;
+
+const descriptionClasses = cntl`
+  text-base
+  text-spectra-950
+  dark:text-spectra-50
+  mt-2
+`;
 ---
 
 <Layout title="ASM Mammal Diversity Database">
   <MainPage
     ><div class="text-center item-center mt-8 md:mt-16">
-      <h2>Welcome!</h2>
-      <p>
-        The Mammal Diversity Database of the <a
-          href="http://www.mammalsociety.org/"
+      <img
+        src="/mammaldiversity-org/favicon.svg"
+        alt="ASM Mammal Diversity Database"
+        class="w-40 mx-auto"
+      />
+      <h1 class={titleClasses}>The ASM's Mammal Diversity Database</h1>
+      <p class={descriptionClasses}>
+        The Mammal Diversity Database of <a href="http://www.mammalsociety.org/"
           >American Society of Mammalogists</a
-        > (ASM) is your home base for tracking the latest taxonomic changes to living
+        >
+        (ASM) is your home base for tracking the latest taxonomic changes to living
         and recently extinct (i.e., since ~1500 CE) species and higher taxa of mammals.
-        <br /><br />Here we are curating the taxonomic implications of new
-        research publications in real time — with the goal of promoting rigorous
-        study of mammal biodiversity worldwide.
-        <br /><br /><b>Current version:</b> v1.13, released 13 Jul 2024. <b
-          >Past versions</b
-        > on Zenodo: <a href="https://doi.org/10.5281/zenodo.4139722"
-          >https://doi.org/10.5281/zenodo.4139722</a
-        >.
       </p>
+
+      <div class="relative mt-8">
+        <input
+          class="rounded-full px-4 py-2 w-full text-slate-800"
+          type="search"
+          placeholder="Search the database"
+        />
+        <button class="absolute right-0 top-0 mt-2 mr-2" aria-label="Search">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-slate-800"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-5-5m-1 0l-5-5m6 5l-5-5m5 5l-5-5m-5 5l-5-5m10-4a8 8 0 110-16 8 8 0 010 16z"
+            ></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </MainPage>
 </Layout>
