@@ -1,6 +1,6 @@
 # mammaldiversity.org
 
-We are migrating the Mammal Diversity Database to a new platform. It include a redesign interface and support for synonym data from MDD2.
+We are migrating the Mammal Diversity Database to a new platform. It includes a redesigned interface and support for synonym data from MDD2.
 
 ## Technologies
 
@@ -17,7 +17,7 @@ git clone [repo]
 
 ### Install Node.js using a Node Version Manager
 
-Two commonly used node version manager are [NVM](https://github.com/nvm-sh/nvm) and [fnm](https://github.com/Schniz/fnm). We recommend using [FNM](https://github.com/Schniz/fnm) because it is faster and cross-platform by default. You can follow the installation instructions on the [FNM GitHub page](https://github.com/Schniz/fnm).
+Two commonly used node version managers are [NVM](https://github.com/nvm-sh/nvm) and [fnm](https://github.com/Schniz/fnm). We recommend using [FNM](https://github.com/Schniz/fnm) because it is faster and cross-platform by default. You can follow the installation instructions on the [FNM GitHub page](https://github.com/Schniz/fnm).
 
 Briefly, you can install `fnm` and `Node.js` using the following command:
 
@@ -31,10 +31,10 @@ source ~/.bashrc
 # download and install Node.js
 fnm use --install-if-missing 22
 
-# verifies the right Node.js version is in the environment
+# verifies the correct Node.js version is in the environment
 node -v # should print `v22.11.0`
 
-# verifies the right npm version is in the environment
+# verifies the correct npm version is in the environment
 npm -v # should print `10.9.0`
 ```
 
