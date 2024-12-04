@@ -2,6 +2,10 @@
 
 We are migrating the Mammal Diversity Database to a new platform. It includes a redesigned interface and support for synonym data from MDD2.
 
+## Track our progress
+
+Check out the [temporary website](https://hhandika.github.io/mammaldiversity-org/).
+
 ## Technologies
 
 - [Astro](https://astro.build/)
