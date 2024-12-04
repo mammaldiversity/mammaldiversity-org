@@ -1,0 +1,21 @@
+---
+import cntl from "cntl";
+
+const { title } = Astro.props;
+
+const sectionTitleClasses = cntl`
+    text-balance 
+    text-xl
+    sm:text-4xl
+    font-semibold 
+    tracking-tight 
+    text-spectra-950 
+    dark:text-spectra-50
+    mb-8
+`;
+---
+
+<section class="text-pretty text-left">
+  <h2 class={sectionTitleClasses}>{title}</h2>
+  <slot />
+</section>
