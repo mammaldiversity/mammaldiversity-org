@@ -3,6 +3,14 @@ import Layout from "../layouts/Layout.astro";
 import MainPage from "../layouts/MainPage.astro";
 import mammalImg from "../assets/images/mammal_images/1004046.jpg";
 import cntl from "cntl";
+import SearchBar from "../components/SearchBar.astro";
+
+const currentVersion = "v1.13";
+const releaseDate = "13 Jul 2024";
+const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
+
+// Define version description
+const versionDescription = `Current version:${currentVersion}, released ${releaseDate}`;
 
 const titleClasses = cntl`
   text-4xl
@@ -31,25 +39,13 @@ const descriptionClasses = cntl`
         and recently extinct (i.e., since ~1500 CE) species and higher taxa of mammals.
       </p>
 
-      <div id="search-bar" class="relative mt-8 max-w-4xl mx-auto">
-        <input
-          class="rounded-full px-4 py-2 h-12 w-full text-slate-800"
-          type="search"
-          placeholder="Search the database"
-        />
-        <button class="absolute right-0 top-0 py-2 mr-2" aria-label="Search"
-          ><div class="bg-spicy-mix-500 rounded-xl px-4">
-            <span class="text-slate-200">Search</span>
-          </div>
-        </button>
-        <p class="ml-4 mt-2 text-left text-sm">
-          Current version:v1.13, released 13 Jul 2024. Download past versions on
-          <a href="https://doi.org/10.5281/zenodo.4139722">Zenodo</a>.
-        </p>
-      </div>
+      <SearchBar
+        versionDescription={versionDescription}
+        prevVersionsLink={prevVersionsLink}
+      />
     </div>
     <div
-      class="mt-16 bg-spectra-600 text-center items-center rounded-3xl max-w-4xl mx-auto"
+      class="mt-16 bg-spectra-600 text-center items-center rounded-3xl max-w-3xl mx-auto"
     >
       <img
         class="-z-10 h-60 object-cover object-center rounded-3xl w-full"
