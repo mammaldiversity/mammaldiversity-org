@@ -1,0 +1,25 @@
+---
+interface ProfileAvatarProps {
+  imgSrc: string;
+  name: string;
+  role: string;
+  institution: string;
+}
+
+const { imgSrc, name, role, institution } = Astro.props as ProfileAvatarProps;
+---
+
+<div class="flex items-center space-x-4">
+  <img src={imgSrc} alt={name} class="w-24 h-24 rounded-full" />
+  <div>
+    <h3
+      class="text-lg font-semibold text-spectra-950 dark:text-spectra-50 mb-2"
+    >
+      {name}
+    </h3>
+    <p class="text-sm text-spectra-800 dark:text-spectra-30">
+      {role}
+    </p>
+    <p class="text-sm text-spectra-800 dark:text-spectra-300">{institution}</p>
+  </div>
+</div>
