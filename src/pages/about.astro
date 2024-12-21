@@ -1,8 +1,17 @@
 ---
+import ProfileAvatar from "../components/ProfileAvatar.astro";
 import Section from "../components/Section.astro";
 import Title from "../components/Title.astro";
+import CurationTeam from "../layouts/CurationTeam.astro";
 import Layout from "../layouts/Layout.astro";
 import MainPage from "../layouts/MainPage.astro";
+import nate from "../assets/images/team_images/Nate.jpg";
+import connor from "../assets/images/team_images/Connor.jpg";
+import jane from "../assets/images/team_images/Jane.jpg";
+import maddie from "../assets/images/team_images/Madeleine.jpg";
+import heru from "../assets/images/team_images/Heru.jpg";
+import jelle from "../assets/images/team_images/Jelle.jpg";
+import david from "../assets/images/team_images/David.jpg";
 ---
 
 <Layout title="About MDD">
@@ -28,7 +37,50 @@ import MainPage from "../layouts/MainPage.astro";
         </p>
       </Section>
       <Section title="Curation team">
-        <p>Coming soon...</p>
+        <CurationTeam>
+          <ProfileAvatar
+            imgSrc={nate.src}
+            name="Nate Upham"
+            role="Chair, Biodiversity Committee"
+            institution="Arizona State University"
+          />
+          <ProfileAvatar
+            imgSrc={connor.src}
+            name="Connor Burgin"
+            role="Student Taxonomic Curator"
+            institution="University of New Mexico"
+          />
+          <ProfileAvatar
+            imgSrc={jane.src}
+            name="Jane Widness"
+            role="Student Research Assistant"
+            institution="Yale University"
+          />
+          <ProfileAvatar
+            imgSrc={maddie.src}
+            name="Madeleine Becker"
+            role="Student Research Assistant"
+            institution="George Mason University"
+          />
+          <ProfileAvatar
+            imgSrc={heru.src}
+            name="Heru Handika"
+            role="Student Web Developer"
+            institution="Louisiana State University"
+          />
+          <ProfileAvatar
+            imgSrc={jelle.src}
+            name="Jelle Zijlstra"
+            role="Volunteer Research Assistant"
+            institution="Hesperomys Project"
+          />
+          <ProfileAvatar
+            imgSrc={david.src}
+            name="David Huckaby"
+            role="Chair, Mammal Images Library Committee"
+            institution="California State University, Long Beach"
+          />
+        </CurationTeam>
         <h3>Oversight by the ASM Biodiversity Committee</h3>
         <p>
           E. Abreu, J. Alston, T. Androski, M. Becker, C. Burgin, C.
