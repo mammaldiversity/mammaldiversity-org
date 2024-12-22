@@ -1,25 +1,60 @@
 ---
+import LinkIcon from "../components/LinkIcon.astro";
+import cntl from "cntl";
+
 interface ProfileAvatarProps {
   imgSrc: string;
   name: string;
   role: string;
   institution: string;
+  personalWebsite?: string;
+  institutionWebsite?: string;
 }
 
-const { imgSrc, name, role, institution } = Astro.props as ProfileAvatarProps;
+const { imgSrc, name, role, institution, personalWebsite, institutionWebsite } =
+  Astro.props as ProfileAvatarProps;
+
+const iconStyle = cntl`
+  h-8
+  w-8
+  inline
+  stroke-spectra-950
+  dark:stroke-spectra-50
+  opacity-80
+  ml-[-4px]
+`;
 ---
 
 <div class="flex items-center space-x-4">
   <img src={imgSrc} alt={name} class="w-24 h-24 rounded-full" />
   <div>
     <h3
-      class="text-lg font-semibold text-spectra-950 dark:text-spectra-50 mb-2"
+      class="text-lg font-semibold text-spectra-950 dark:text-spectra-50 mb-1"
     >
-      {name}
+      {
+        personalWebsite ? (
+          <a class="underline" href={personalWebsite}>
+            {name}
+            <LinkIcon style={iconStyle} />
+          </a>
+        ) : (
+          name
+        )
+      }
     </h3>
     <p class="text-sm italic text-spectra-800 dark:text-spectra-30">
       {role}
     </p>
-    <p class="text-sm text-spectra-800 dark:text-spectra-300">{institution}</p>
+    <p class="text-sm text-spectra-800 dark:text-spectra-300">
+      {
+        institutionWebsite ? (
+          <a class="underline" href={institutionWebsite}>
+            {institution}
+          </a>
+        ) : (
+          institution
+        )
+      }
+    </p>
   </div>
 </div>
