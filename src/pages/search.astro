@@ -1,11 +1,18 @@
 ---
-import SearchBar from "../components/SearchBar.astro";
+import Title from "../components/Title.astro";
 import Layout from "../layouts/Layout.astro";
 import MainPage from "../layouts/MainPage.astro";
 ---
 
-<Layout title="ASM Mammal Diversity Database">
+<Layout title="Search Database">
   <MainPage>
-    <SearchBar />
+    <div class="text-center item-center mt-8 md:mt-16">
+      <Title>Search Database</Title>
+      <input
+        type="text"
+        placeholder="E.g., Taeromys dominator, Peromyscus maniculatus"
+        class="input input-bordered w-full max-w-xs"
+      />
+    </div>
   </MainPage>
 </Layout>
