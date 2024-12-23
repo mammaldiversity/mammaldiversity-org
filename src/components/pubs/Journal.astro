@@ -1,0 +1,31 @@
+---
+import Link from "../Link.astro";
+import Container from "./Container.astro";
+
+interface JournalProps {
+  authors: string[];
+  year: number;
+  title: string;
+  journal: string;
+  volume: string;
+  pages: string;
+  doi: string;
+}
+
+const { authors, year, title, journal, volume, pages, doi } =
+  Astro.props as JournalProps;
+---
+
+<Container>
+  <p>
+    {
+      authors.length > 1
+        ? authors.slice(0, -1).join(", ") +
+          ", and " +
+          authors[authors.length - 1]
+        : authors[0]
+    }. ({year}). {title}. <em>{journal}</em>
+    {volume}: {pages}.{" "}
+    <Link label={doi} url={doi} />
+  </p>
+</Container>
