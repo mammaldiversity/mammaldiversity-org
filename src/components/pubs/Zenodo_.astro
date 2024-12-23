@@ -1,0 +1,23 @@
+---
+import Link from "../Link.astro";
+import Container from "./container.astro";
+
+interface ZenodoRecord {
+  authors: string[];
+
+  year: number;
+  title: string;
+  doi: string;
+}
+
+const { authors, year, title, doi } = Astro.props as ZenodoRecord;
+---
+
+<Container>
+  <p>
+    {authors.join(", ")}.({year}) {title}. Zenodo. <Link
+      label={doi}
+      url={doi}
+    />
+  </p>
+</Container>

@@ -12,6 +12,11 @@ import maddie from "../assets/images/team_images/Madeleine.jpg";
 import heru from "../assets/images/team_images/Heru.jpg";
 import jelle from "../assets/images/team_images/Jelle.jpg";
 import david from "../assets/images/team_images/David.jpg";
+import Link from "../components/Link.astro";
+import Zenodo from "../components/pubs/Zenodo.astro";
+
+// Get current year
+const year = new Date().getFullYear();
 ---
 
 <Layout title="About MDD">
@@ -99,6 +104,20 @@ import david from "../assets/images/team_images/David.jpg";
           Ruedas, B. Tanis, H. Taylor, N. Upham (chair), J. Widness, J. Zijlstra
         </p>
       </Section>
+      <Section title="Citing MDD">
+        <p>
+          The current database (via <Link
+            url="https://doi.org/10.5281/zenodo.4139722"
+            label="Zenodo"
+          />):
+        </p>
+        <Zenodo
+          authors={["Mammal Diversity Database"]}
+          year={year}
+          title="Mammal Diversity Database (Version 1.13) [Data set]"
+          doi="https://doi.org/10.5281/zenodo.10595931"
+        />
+      </Section>
     </div>
-  </MainPage>
-</Layout>
+  </MainPage></Layout
+>
