@@ -1,0 +1,23 @@
+---
+import Link from "../Link.astro";
+import Container from "./Container.astro";
+
+interface SpeciesCitationProps {
+  species: string;
+  mddID: string;
+  date: string;
+  year: number;
+}
+
+const { species, mddID, date, year } = Astro.props as SpeciesCitationProps;
+---
+
+<Container>
+  <p>
+    <em>{species}</em> (ASM Mammal Diversity Database #{mddID}) fetched {date}.
+    Mammal Diversity Database. {year}. <Link
+      label={mddID}
+      url={`https://www.mammaldiversity.org/taxon/${mddID}`}
+    />
+  </p>
+</Container>
