@@ -1,0 +1,15 @@
+---
+interface LinkProps {
+  label: string;
+  url: string;
+}
+
+const { label, url } = Astro.props as LinkProps;
+---
+
+<a
+  class="underline text-spectra-700 dark:text-spectra-300"
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer">{label}</a
+>
