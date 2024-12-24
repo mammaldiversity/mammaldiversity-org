@@ -29,4 +29,5 @@ const { authors, year, title, journal, volume, pages, doi } =
     {volume}{pages && `: ${pages}`}.{" "}
     <Link label={doi} url={doi} />
   </p>
+  <slot />
 </Container>

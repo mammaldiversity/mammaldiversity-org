@@ -7,9 +7,10 @@ interface JournalProps {
   year: number;
   title: string;
   publisher: string;
+  doi?: string;
 }
 
-const { authors, year, title, publisher } = Astro.props as JournalProps;
+const { authors, year, title, publisher, doi } = Astro.props as JournalProps;
 ---
 
 <Container>
@@ -22,5 +23,7 @@ const { authors, year, title, publisher } = Astro.props as JournalProps;
         : authors[0]
     }. ({year}). {title}{title.endsWith("?") ? "" : "."}
     {publisher}.
+    {doi && <Link label={doi} url={doi} />}
   </p>
+  <slot />
 </Container>
