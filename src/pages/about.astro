@@ -16,6 +16,8 @@ import Link from "../components/Link.astro";
 import Zenodo from "../components/pubs/Zenodo.astro";
 import Journal from "../components/pubs/Journal.astro";
 import SpeciesCitation from "../components/pubs/SpeciesCitation.astro";
+import Paragraph from "../components/Paragraph.astro";
+import Book from "../components/pubs/Book.astro";
 
 const currentYear = new Date().getFullYear();
 const currentDate = new Date().toLocaleDateString("en-US", {
@@ -28,24 +30,40 @@ const currentDate = new Date().toLocaleDateString("en-US", {
 <Layout title="About MDD">
   <MainPage
     ><div class="text-center item-center mt-8 md:mt-16">
-      <Title>About the Mammal Diversity Database</Title>
+      <Title>About MDD</Title>
       <Section title="Overview">
-        <p>
-          The Mammal Diversity Database (MDD) is a project of the American
-          Society of Mammalogists (ASM) Biodiversity Committee. The MDD is an
-          updatable online database of mammal taxonomic and biodiversity
-          information hosted by ASM at{" "}
-          <a href="http://mammaldiversity.org/">http://mammaldiversity.org/</a>.
-          The MDD aims to provide the latest information on species-level and
-          higher taxonomic changes, thereby promoting more rigorous study of
-          mammalian biodiversity worldwide. The initial objective has been to
-          aggregate, curate, and compile new citations on species descriptions
-          and taxonomic revisions into regular releases that are downloadable in
-          comma-delimited format. Downstream goals include expanded hosting of
-          ecological, trait, and taxonomic data. Overall, this initiative aims
-          to promote the ASM’s role as a leader in high-quality research on
-          mammalian biology.
-        </p>
+        <Paragraph>
+          Development for the Mammal Diversity Database (MDD) is funded
+          primarily by the <Link
+            label="American Society of Mammalogists"
+            url="https://www.mammalsociety.org/"
+          />
+          (ASM; 2017-present), with initial logistical and planning support (2017-2019)
+          provided by the <Link
+            label="NSF Vertlife Terrestrial grant"
+            url="http://vertlife.org/grant/"
+          />. Logistical support is now also provided by the <Link
+            label="Biodiversity Knowledge Integration Center"
+            url="https://biokic.asu.edu/"
+          /> at Arizona State University.
+        </Paragraph>
+        <Paragraph>
+          The <Link
+            label="ASM Biodiversity Committee"
+            url="http://www.mammalsociety.org/committees/biodiversity"
+          /> compiles and maintains MDD, an updatable online database of mammal taxonomic
+          and biodiversity information hosted by ASM at <Link
+            url="https://mammaldiversity.org/"
+          />. This database aims to provide the latest information on
+          species-level and higher taxonomic changes, thereby promoting more
+          rigorous study of mammalian biodiversity worldwide. The initial
+          objective has been to aggregate, curate, and compile, new citations on
+          species descriptions and taxonomic revisions into regular releases
+          that are downloadable in comma-delimited format. Downstream goals
+          include expanded hosting of ecological, trait, and taxonomic data.
+          Overall, this initiative aims to promote the ASM’s role as a leader in
+          high quality research on mammalian biology.
+        </Paragraph>
       </Section>
       <Section title="Curation team">
         <CurationTeam>
@@ -150,7 +168,7 @@ const currentDate = new Date().toLocaleDateString("en-US", {
         />
       </Section>
       <Section title="Taxonomic overview">
-        <p>
+        <Paragraph>
           The Mammal Diversity Database (MDD), originally released in 2018, aims
           to provide a continuously updated listing of the world’s mammal
           species and higher taxa (all ranks above the species level). The
@@ -160,9 +178,8 @@ const currentDate = new Date().toLocaleDateString("en-US", {
           amount of subjective curation on behalf of the MDD Team. Foremost, the
           MDD aims to adhere to open science principles by providing streamlined
           access to the compiled data from our taxonomic curation efforts.
-        </p>
-        <br />
-        <p>
+        </Paragraph>
+        <Paragraph>
           The MDD includes webpages for each species of currently recognized
           mammals, including taxonomic comments regarding changes since the
           Mammals Species of the World, 3rd Edition (MSW3; (Wilson and Reeder
@@ -173,21 +190,305 @@ const currentDate = new Date().toLocaleDateString("en-US", {
           original name combination as spelled in the original taxonomic
           description of that species, original description citations, links to
           those publications, holotype voucher specimens, and nominal synonyms
-          in a format similar to MSW3. This information is still a work in
-          progress and is primarily under manual curation, so errors of omission
-          or orthography may still be present. The MDD Team is also working on
-          systematically curating synonyms from large publications such as the
-          Mammals of South America and the Taxonomy of Australian Mammals, for
-          which future updates will include compiled information. Subspecies
-          have not yet been addressed here due to their inconsistent historical
-          usages in mammalogy, although future efforts are likely to compile
-          subspecies information for the purposes of species-level synonymy. The
-          MDD is being regularly updated, so users are encouraged to contact the
-          MDD team to report errors, new taxonomic arrangements, or queries
-          regarding the taxonomy and interface via email: mammaldiversity [at]
-          gmail [dot] com.
-        </p>
+          in a format similar to MSW3. This information is <strong
+            >still a work in progress</strong
+          > and is primarily under manual curation, so errors of omission or orthography
+          may still be present. The MDD Team is also working on systematically curating
+          synonyms from large publications such as the Mammals of South America and
+          the Taxonomy of Australian Mammals, for which future updates will include
+          compiled information. Subspecies have not yet been addressed here due to
+          their inconsistent historical usages in mammalogy, although future efforts
+          are likely to compile subspecies information for the purposes of species-level
+          synonymy. The MDD is being regularly updated, so users are encouraged to
+          contact the MDD team to report errors, new taxonomic arrangements, or queries
+          regarding the taxonomy and interface via email:
+          <b>mammaldiversity [at] gmail [dot] com</b>.
+        </Paragraph>
+        <Paragraph>
+          <b>Subjective decisions.—</b> In situations of conflicting taxonomic arrangement
+          in the recent literature, the MDD team has endeavored to provide justifications
+          and citations for the subjective decisions made, as well as a ‘flag’ designation
+          in the CSV file. If the reader finds additional situations or omitted evidence,
+          we kindly request feedback (please use the email noted above). The most
+          substantial subjective decision the MDD has thus far encountered has been
+          how to incorporate the recommendations of Groves and Grubb (2011)’s compendium
+          Ungulate Taxonomy. This taxonomy of Perissodactyla and non-cetacean Artiodactyla
+          was fully included in the initial release of the MDD (Burgin et al. 2018).
+          However, since Groves and Grubb (2011) was based primarily on qualitative
+          morphological diagnoses with small sample sizes, it has since become controversial
+          in the mammalogical community (e.g., (Holbrook 2013; Gutiérrez and Garbino
+          2018)). Many specialists have subsequently reverted to the taxonomic arrangement
+          presented by Peter Grubb in MSW3. In current versions of the MDD, we use
+          MSW3 as a baseline for ungulate taxonomy, leaving out all changes made
+          by Groves and Grubb (2011) with the exception of those supported by other
+          published research.
+        </Paragraph>
+        <Paragraph>
+          <b>Additional subjective decisions</b> have been made in collaboratoration
+          with the <Link
+            url="https://www.iucnbsg.org/global-bat-taxonomy-working-group.html"
+            label="Global Bat Taxonomy Working Group"
+          />
+          of the IUCN SSC Bat Specialist Group to promote harmonization between the
+          MDD and <Link label="batnames.org" url="https://batnames.org/" />, as
+          follows:
+        </Paragraph>
+        <ol class="ml-8 mb-4 list-decimal">
+          <li>
+            Status of <i
+              ><Link
+                label="Myotis keenii"
+                url="https://www.mammaldiversity.org/explore.html#genus=Myotis&species=keenii&id=1005425"
+              /></i
+            > was re-affirmed on the basis of insufficient evidence for including
+            it as a subspecies or junior synonym of <i>Myotis evotis</i>: Upham,
+            N. S. and Francis, C. M. on behalf of the Global Bat Taxonomy
+            Working Group of the IUCN SSC Bat Specialist Group (2022). On the
+            taxonomy of <i>Myotis keenii</i> and <i>Myotis evotis</i>. Zenodo. <Link
+              url="https://doi.org/10.5281/zenodo.7336341"
+            />
+          </li>
+          <li>
+            <i
+              ><Link
+                label="Myotis lucifigus"
+                url="https://www.mammaldiversity.org/explore.html#genus=Myotis&species=lucifugus&id=1005432"
+              /></i
+            > includes <i>alascensis</i>, <i>carissima</i>, <i>pernox</i>, and <i
+              >relictus</i
+            >
+            as subspecies/junior synonyms given the current lack of conclusive evidence
+            regarding the genetic distinctiveness of those subunits: Francis, C.
+            M. and Simmons, N. B. on behalf of the Global Bat Taxonomy Working Group
+            of the IUCN SSC Bat Specialist Group (2022). On the taxonomy of <i
+              >Myotis lucifugus</i
+            >. Zenodo. <Link url="https://doi.org/10.5281/zenodo.7338575" />
+          </li>
+          <li>
+            Recognition of subgenera <i>Lasiurus</i>, <i>Dasypterus</i>, and <i
+              >Aeorestes</i
+            > within the genus <i>Lasiurus</i>: Francis, C. M., N. B. Simmons,
+            V. Van Cakenberghe, N. S. Upham, and C. Burgin, on behalf of the
+            Global Bat Taxonomy Working Group of the IUCN SSC Bat Specialist
+            Group. 2023. On the taxonomy of <i>Lasiurus</i> (v1.0). Zenodo. <Link
+              url="https://doi.org/10.5281/zenodo.7696845"
+            />
+          </li>
+        </ol>
+        <Paragraph>
+          <b>Higher-level taxonomy.—</b> Regarding higher-level taxonomy (i.e., all
+          ranks above the species level), the MDD maintains an updated listing of
+          all taxonomic ranks traditionally used below the order level as well as
+          major superordinal clades. However, higher-level taxa do not yet have individual
+          webpages, so this information is not yet fully transparent. For future
+          updates, we intend to include individual taxonomic pages for each higher-level
+          taxon in a similar format as the species-level pages. Ordinal names generally
+          follow the arrangement presented in MSW3 with updates based on recent phylogenetic
+          studies, resulting in Soricomorpha + Erinaceomorpha as Eulipotyphla, and
+          Cetacea + Artiodactyla as a united Artiodactyla. The name Artiodactyla
+          is preferred over the name Cetartiodactyla following the recommendation
+          of Asher and Helgen (2010), which recalled the principles of Simpson (1945)
+          to balance prevailing usage with priority in naming higher taxa. Asher
+          and Helgen (2010) also recommended using Lipotyphla over Eulipotyphla,
+          but confusion around the association of Lipotyphla with past definitions
+          of the paraphyletic Insectivora assemblage (Woodman 2018) has prompted
+          the MDD to favor Eulipotyphla as the first name used for the current definition
+          of the order.
+        </Paragraph>
+        <Paragraph>
+          <b>Recently extinct species.—</b> The MDD includes all currently extant
+          and wild species, as well as domestic forms and recently extinct species.
+          To be included in the listing, an extinct species must have become extinct
+          (or be expected to have survived) after the year 1500 CE. Extinction codings
+          are informed by data compiled by the International Union for the Conservation
+          of Nature (IUCN) and subfossil records dated from recent strata.
+        </Paragraph>
+        <Paragraph>
+          <b>Domestic species.—</b> The MDD lists domestic forms as separate species
+          following the recommendations given in Gentry et al. (2004), which focus
+          on domestication by human artificial selection during ancient times. The
+          primary reason for recognizing domestic forms as distinct species from
+          their wild counterparts is to avoid confusion regarding what forms are
+          being discussed in both political and conservation situations. Recognizing
+          domestic species also provides emphasis on the wild forms as an entity
+          to consider and protect separately. The MDD's focus on artificial selection
+          by humans excludes the self-domestication of humans by natural selection,
+          which has been argued on the basis that modern humans have some of the
+          same genes up-regulated as domestic mammals (see Zanella et al. 2019).
+        </Paragraph>
+        <Paragraph>
+          <b>Names described in PhD dissertations.—</b> The MDD treats any scientific
+          names described in PhD or MS theses/dissertations as unpublished unless
+          they have expressly been republished, following <Link
+            label="this guidance by the ICZN"
+            url="https://code.iczn.org/criteria-of-publication/article-9-what-does-not-constitute-published-work/?frame=1"
+          />. As a result, any names or types described in theses also need to
+          be published more broadly in order to be considered for recognition in
+          the MDD.
+        </Paragraph>
+        <Paragraph>
+          <b>Unavailable names.—</b> The MDD aims to follow the International Code
+          of Zoological Nomenclature (ICZN) strictly. Therefore, we do not include
+          species names that do not fulfill the requirements of the Code, such as
+          names published without a description or in online-only publications without
+          a ZooBank registration. Some names were included in previous versions of
+          the MDD but removed when we realized they were unavailable; these include
+          Maxomys tompotika (removed in version 1.4), Dryomys yarkandensis (removed
+          in version 1.5), and Murina rongjiangensis (removed in version 1.11).
+        </Paragraph>
+      </Section>
+      <Section title="Content goals for improvement">
+        <Paragraph
+          >Future activities of the MDD include the following:
+        </Paragraph>
+        <ul class="ml-8 mb-4 list-disc">
+          <li>
+            <b>Assembling taxonomic subcommittees.</b> Initial plans have been drawn
+            to assemble experts dedicated to specific mammal clades to collectively
+            provide regular updates and content additions to portions of the MDD
+            taxonomy. This more distributed system of updates by subcommittee will
+            still retain the emphasis upon objective curation based on the published
+            literature, and will develop as the MDD develops.
+          </li>
+          <li>
+            <b>Harmonization of the MDD with existing ASM initiatives.</b> A variety
+            of other ASM activities share a similar mission with the MDD, so the
+            aim is to use the compiled taxonomy here to help keep those efforts up
+            to date. These efforts include joining with the Mammal Images Library
+            (David Huckaby, Chair of the MIL Committee is part of our MDD team) and
+            the ASM journal Mammalian Species, for which it may be possible to link,
+            index, and modernize species accounts dating from 1969-Present.
+          </li>
+        </ul>
+        <Paragraph> Other in progress goals: </Paragraph>
+        <ul class="ml-8 mb-4 list-disc">
+          <li><b>Synonyms</b></li>
+          <li>
+            <b>Type specimens.</b> We recognize a key priority of reconciling these
+            recent taxonomic changes in mammals with the museum location of type
+            specimens that pertain to these recognized mammalian species. Our aim
+            is to focus on primary types (holotypes, lectotypes, syntypes, cotypes,
+            and neotypes), and exclude secondary types like paratypes and topotypes.
+          </li>
+          <li>
+            <b>Authority full citation & year.</b> This content priority will be
+            especially useful for mammalogists without strong library resources.
+            Our goal here is to provide the DOI and links to digitized open-source
+            materials when available (e.g., via Plazi or the Biodiversity Heritage
+            Library).
+          </li>
+          <li>
+            Hyperlinks to new species citations (e.g., in Journal of Mammalogy,
+            Mammalian Biology, Zootaxa).
+          </li>
+          <li>
+            Expansion of per-species content to include detailed natural
+            history, ecological, and geographic information (e.g., linkages to
+            Animal Diversity Web).
+          </li>
+          <li>
+            Per-species information on phylogenetic position (VertLife tree of
+            mammals).
+          </li>
+          <li>
+            Links to genetic sequence data (NCBI, BOLD) and morphological data
+            resources.
+          </li>
+        </ul>
+      </Section>
+      <Section title="References">
+        <Journal
+          authors={["ASHER, R. J.", "HELGEN, K. M"]}
+          year={2010}
+          title="Nomenclature and placental mammal phylogeny"
+          journal="BMC Evolutionary Biology"
+          volume="10"
+          pages="102"
+        />
+        <Journal
+          authors={[
+            "BURGIN, C. J.",
+            "COLELLA, J. P.",
+            "KAHN, P. L.",
+            "UPHAM, N. S",
+          ]}
+          year={2018}
+          title="How many species of mammals are there?"
+          journal="Journal of Mammalogy"
+          volume="99"
+          pages="1—14"
+          doi="https://doi.org/10.1093/jmammal/gyx147"
+        />
+        <Journal
+          authors={["GENTRY, A.", "CLUTTON-BROCK, J.", "GROVES, C. P"]}
+          year={2004}
+          title="The naming of wild animal species and their domestic derivatives"
+          journal="Journal of Archaeological Science"
+          volume="31"
+          pages="645—651"
+        />
+        <Book
+          authors={["GROVES, C. P.", "GRUBB, P"]}
+          year={2011}
+          title="Ungulate Taxonomy"
+          publisher="The Johns Hopkins University Press"
+        />
+        <Journal
+          authors={["GUTIÉRREZ, E. E.", "GARBINO, G"]}
+          year={2018}
+          title="Species delimitation based on diagnosis and monophyly, and its importance for advancing mammalian taxonomy"
+          journal="Zoological Research"
+          volume="97"
+        />
+        <Journal
+          authors={["HOLBROOK, L. T"]}
+          year={2013}
+          title="The taxonomy of ungulates in the 21st century"
+          journal="Journal of Mammalogy"
+          volume="94"
+          pages="1304—1306"
+        />
+        <Journal
+          authors={["SIMPSON, G. G"]}
+          year={1945}
+          title="The principles of classification and a classification of mammals"
+          journal="Bulletin of the American Museum of Natural History"
+          volume="85"
+          pages="1—350"
+        />
+        <Book
+          authors={["WILSON, D. E.", "REEDER, D. M"]}
+          year={2005}
+          title="Mammal species of the world: a taxonomic and geographic reference, 3rd ed. 3rd edition"
+          publisher="Johns Hopkins University Press, Baltimore, MD."
+        />
+        <Book
+          authors={["WOODMAN, N."]}
+          year={2018}
+          title="American Recent Eulipotyphla: Nesophontids, Solenodons, Moles, and Shrews in the New World 650"
+          publisher="Smithsonian institution scholarly Press"
+        />
+        <Journal
+          authors={[
+            "Zanella, M.",
+            "Vitriolo, A.",
+            "Andirko, A.",
+            "Martins, P.T.,",
+            "Sturm, S.",
+            "O’Rourke, T.",
+            "Laugsch, M.",
+            "Malerba, N.",
+            "Skaros, A.",
+            "Trattaro, S.",
+            "Germain, P.L.",
+          ]}
+          year={2019}
+          title="Dosage analysis of the 7q11.23 Williams region identifies BAZ1B as a major human gene patterning the modern human face and underlying self-domestication"
+          journal="Science Advances"
+          volume="5"
+          pages="eaaw7908"
+        />
       </Section>
     </div>
-  </MainPage>
-</Layout>
+  </MainPage></Layout
+>
