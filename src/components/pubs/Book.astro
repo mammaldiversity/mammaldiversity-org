@@ -6,14 +6,10 @@ interface JournalProps {
   authors: string[];
   year: number;
   title: string;
-  journal: string;
-  volume: string;
-  pages?: string;
-  doi: string;
+  publisher: string;
 }
 
-const { authors, year, title, journal, volume, pages, doi } =
-  Astro.props as JournalProps;
+const { authors, year, title, publisher } = Astro.props as JournalProps;
 ---
 
 <Container>
@@ -25,8 +21,6 @@ const { authors, year, title, journal, volume, pages, doi } =
           authors[authors.length - 1]
         : authors[0]
     }. ({year}). {title}{title.endsWith("?") ? "" : "."}
-    <em>{journal}</em>
-    {volume}{pages && `: ${pages}`}.{" "}
-    <Link label={doi} url={doi} />
+    {publisher}.
   </p>
 </Container>
