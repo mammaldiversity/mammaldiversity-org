@@ -16,7 +16,7 @@ const { species, mddID, date, year } = Astro.props as SpeciesCitationProps;
   <p>
     <em>{species}</em> (ASM Mammal Diversity Database #{mddID}) fetched {date}.
     Mammal Diversity Database. {year}. <Link
-      label={mddID}
+      label={`https://www.mammaldiversity.org/taxon/${mddID}`}
       url={`https://www.mammaldiversity.org/taxon/${mddID}`}
     />
   </p>
