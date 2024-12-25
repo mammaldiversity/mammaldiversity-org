@@ -1,7 +1,12 @@
 ---
+import Section from "../components/Section.astro";
 import Title from "../components/Title.astro";
 import Layout from "../layouts/Layout.astro";
 import MainPage from "../layouts/MainPage.astro";
+
+import { db, Taxonomy } from "astro:db";
+
+const taxa = await db.select().from(Taxonomy).limit(10);
 ---
 
 <Layout title="Search Database">
@@ -14,5 +19,16 @@ import MainPage from "../layouts/MainPage.astro";
         class="input input-bordered w-full max-w-xs"
       />
     </div>
+    <Section title="Taxon list">
+      <ul>
+        {
+          taxa.map((taxon) => (
+            <li>
+              {taxon.genus} {taxon.specificEpithet}
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
   </MainPage>
 </Layout>
