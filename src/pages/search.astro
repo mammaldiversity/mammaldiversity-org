@@ -6,8 +6,8 @@ import MainPage from "../layouts/MainPage.astro";
 
 import { db, Taxonomy, Synonym } from "astro:db";
 
-const taxa = await db.select().from(Taxonomy).limit(10);
-const syn = await db.select().from(Synonym).limit(10);
+const taxa = await db.select().from(Taxonomy).limit(20);
+const syn = await db.select().from(Synonym).limit(20);
 ---
 
 <Layout title="Search Database">
