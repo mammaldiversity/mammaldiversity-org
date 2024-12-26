@@ -7,7 +7,6 @@ import MainPage from "../layouts/MainPage.astro";
 import { db, Taxonomy, Synonym } from "astro:db";
 
 const taxa = await db.select().from(Taxonomy).limit(20);
-const syn = await db.select().from(Synonym).limit(20);
 ---
 
 <Layout title="Search Database">
@@ -31,11 +30,6 @@ const syn = await db.select().from(Synonym).limit(20);
             </li>
           ))
         }
-      </ul>
-    </Section>
-    <Section title="Synonyms">
-      <ul>
-        {syn.map((s) => <li>{s.rootName}</li>)}
       </ul>
     </Section>
   </MainPage>
