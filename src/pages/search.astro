@@ -25,7 +25,9 @@ const syn = await db.select().from(Synonym).limit(20);
         {
           taxa.map((taxon) => (
             <li>
-              {taxon.genus} {taxon.specificEpithet}
+              <a href={`/mammaldiversity-org/taxon/${taxon.id}`}>
+                {taxon.genus} {taxon.specificEpithet}
+              </a>
             </li>
           ))
         }

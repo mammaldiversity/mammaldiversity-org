@@ -1,0 +1,42 @@
+---
+import { db, Taxonomy } from "astro:db";
+import Layout from "../../layouts/Layout.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Title from "../../components/Title.astro";
+import { eq } from "astro:db";
+import Section from "../../components/Section.astro";
+import { Synonym } from "astro:db";
+
+// This page is statically generated at build time
+// We use getStaticPaths to tell Astro to generate this page for each taxon in the database
+// This approach allow us make sure the generated page is always up to date with the database
+export const getStaticPaths = async () => {
+  const taxonIDs = await db.select({ id: Taxonomy.id }).from(Taxonomy);
+  return taxonIDs.map((t: { id: number }) => ({ params: { id: t.id } }));
+};
+
+const { id } = Astro.params;
+
+const taxon = await db.select().from(Taxonomy).where(eq(Taxonomy.id, id)).get();
+const synonyms = await db
+  .select()
+  .from(Synonym)
+  .where(eq(Synonym.speciesId, id));
+---
+
+<Layout title="Taxon">
+  <MainPage>
+    <div class="text-center item-center mt-8 md:mt-16">
+      <Title>{taxon?.genus}{` ${taxon?.specificEpithet}`}</Title>
+    </div>
+    <Section title="Details">
+      <p>Family: {taxon?.family}</p>
+      <p>Order: {taxon?.taxonOrder}</p>
+    </Section>
+    <Section title="Synonyms">
+      <ul>
+        {synonyms.map((s) => <li>{s.rootName}</li>)}
+      </ul>
+    </Section>
+  </MainPage>
+</Layout>
