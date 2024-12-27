@@ -1,56 +1,9 @@
-import leaflet from "leaflet";
-
-const assetUrl =
-  "https://raw.githubusercontent.com/mammaldiversity/mammaldiversity.github.io/refs/heads/master/assets/countries/";
-
-export function drawCountriesOnMap(
-  countryDistribution: string,
-  elementId: string
-) {
-  let countries = splitCountryDistribution(countryDistribution);
-  let countryCodes = matchAllCountriesToCodeName(countries);
-
-  // initialize Leaflet
-  let map = leaflet.map(elementId);
-
-  // add the OpenStreetMap tiles
-  leaflet
-    .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-    })
-    .addTo(map);
-
-  let distribution = new leaflet.FeatureGroup();
-  countryCodes.forEach(function (countryCode) {
-    async function addGeoJson() {
-      const response = await fetch(assetUrl + countryCode + ".json");
-      const shape = await response.json();
-      if (shape) {
-        distribution.addLayer(leaflet.geoJSON(shape));
-        distribution.addTo(map);
-        if (distribution.getLayers().length > 0) {
-          map.fitBounds(distribution.getBounds());
-        }
-      }
-    }
-
-    addGeoJson();
-  });
+function matchCountryToCodeName(countries) {
+  let codes = countries.map((country) => countryCode[country]);
+  return codes[0];
 }
 
-export function splitCountryDistribution(
-  countryDistribution: string
-): string[] {
-  return countryDistribution.split("|").map((country) => country.trim());
-}
-
-export function matchAllCountriesToCodeName(countries: string[]): string[] {
-  return countries.map((country) => countryCode[country]);
-}
-
-const countryCode: { [key: string]: string } = {
+const countryCode = {
   Afghanistan: "AF",
   Albania: "AL",
   Algeria: "DZ",
