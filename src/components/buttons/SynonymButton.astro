@@ -1,0 +1,34 @@
+---
+interface SynonymsProps {
+  rootName: string;
+  originalNameCombination?: string;
+  species: string;
+  authoritySpeciesAuthor: string;
+  authoritySpeciesYear: number;
+  authorityParentheses: number;
+}
+
+const {
+  rootName,
+  originalNameCombination,
+  species,
+  authoritySpeciesAuthor,
+  authoritySpeciesYear,
+  authorityParentheses,
+} = Astro.props as SynonymsProps;
+
+const synonymText = originalNameCombination
+  ? originalNameCombination
+  : `${species} ${rootName}`;
+const authority = `${authoritySpeciesAuthor}, ${authoritySpeciesYear}`;
+const authorityText = authorityParentheses === 1 ? `(${authority})` : authority;
+---
+
+<div
+  class="w-fit rounded-full p-2 mr-4 border-2 border-spectra-700 dark:border-spectra-300"
+>
+  <p class="text-sm text-spectra-700 dark:text-spectra-300">
+    <span class="italic">{synonymText}</span>
+    {authorityText}
+  </p>
+</div>

@@ -1,0 +1,23 @@
+---
+import Link from "./Link.astro";
+
+interface TaxonDataProps {
+  label: string;
+  content: string;
+  isUrl?: boolean;
+  isItalic?: boolean;
+}
+
+const { label, content, isUrl, isItalic } = Astro.props as TaxonDataProps;
+---
+
+<div class="mb-4">
+  <h3 class="text-lg md:text-xl font-semibold">{label}</h3>
+  {
+    isUrl ? (
+      <Link url={content} />
+    ) : (
+      <p class={isItalic ? "italic" : ""}>{content}</p>
+    )
+  }
+</div>
