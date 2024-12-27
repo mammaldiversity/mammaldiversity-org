@@ -57,115 +57,134 @@ const common_name_class = cntl`
       </h2>
     </div>
     <div class="flex-grow border-t border-gray-400"></div>
-    <Section title="Taxonomy">
-      <p>Subclass: {taxon?.subclass}</p>
-      <p>Infraclass: {taxon?.infraclass}</p>
-      <p>Order: {taxon?.taxonOrder}</p>
-      <p>Family: {taxon?.family}</p>
-      <p>Genus: <span class="italic">{taxon?.genus} </span></p>
-    </Section>
-    <TaxonData
-      label="Authority citation"
-      content={taxon?.authoritySpeciesCitation}
-    />
-    <TaxonData
-      label="Authority publication link"
-      content={taxon?.authoritySpeciesLink}
-      isUrl
-    />
-    <TaxonData
-      label="Original name as described"
-      content={taxon?.originalNameCombination}
-      isItalic
-    />
-    <TaxonData label="Other common names" content={taxon?.otherCommonNames} />
-    <TaxonData label="Type material" content={taxon?.typeVoucher} />
-    <TaxonData label="Type kind" content={taxon?.typeKind} />
-    <TaxonData
-      label="Type specimen URI"
-      content={taxon?.typeVoucherURIs}
-      isUrl
-    />
-    <TaxonData label="Type locality" content={taxon?.typeLocality} />
-    <TaxonData
-      label="Country distribution"
-      content={taxon?.countryDistribution}
-    />
-    <TaxonData label="Distribution notes" content={taxon?.distributionNotes} />
-    <TaxonData
-      label="Distribution references"
-      content={taxon?.distributionNotesCitation}
-    />
-    <TaxonData label="Taxonomy notes" content={taxon?.taxonomyNotes} />
-    <TaxonData
-      label="Taxonomy notes citation"
-      content={taxon?.taxonomyNotesCitation}
-    />
-    <TaxonData label="IUCN Red List status" content={iucnStatus} />
-    <TaxonData label="Species Permalink" content={mddSpeciesLink} isUrl />
-    <Section title="Map">
-      <distribution-map data-countries={taxon?.countryDistribution}>
-        <div id="map" class="w-80"></div></distribution-map
-      >
-    </Section>
-    <Section title="Synonyms">
-      <SynonymList>
-        {
-          synonyms.map((s) => (
-            <SynonymButton
-              rootName={s.rootName}
-              originalNameCombination={s.originalCombination}
-              species={s.species}
-              authoritySpeciesAuthor={s.author}
-              authoritySpeciesYear={s.year}
-              authorityParentheses={s.authorityParentheses}
-            />
-          ))
-        }
-      </SynonymList>
-    </Section>
+    <div class="grid md:grid-cols-2 justify-between gap-4 mt-4">
+      <div>
+        <div
+          class="bg-spicy-mix-200 dark:bg-spicy-mix-800 pl-4 py-2 my-2 rounded-xl"
+        >
+          <h3 class="font-semibold text-lg md:text-xl mb-2">Taxonomy</h3>
+          <p>Subclass: {taxon?.subclass}</p>
+          <p>Infraclass: {taxon?.infraclass}</p>
+          <p>Order: {taxon?.taxonOrder}</p>
+          <p>Family: {taxon?.family}</p>
+          <p>Genus: <span class="italic">{taxon?.genus} </span></p>
+        </div>
+
+        <TaxonData
+          label="Authority citation"
+          content={taxon?.authoritySpeciesCitation}
+        />
+        <TaxonData
+          label="Authority publication link"
+          content={taxon?.authoritySpeciesLink}
+          isUrl
+        />
+        <TaxonData
+          label="Original name as described"
+          content={taxon?.originalNameCombination}
+          isItalic
+        />
+        <TaxonData
+          label="Other common names"
+          content={taxon?.otherCommonNames}
+        />
+        <TaxonData label="Type material" content={taxon?.typeVoucher} />
+        <TaxonData label="Type kind" content={taxon?.typeKind} />
+        <TaxonData
+          label="Type specimen URI"
+          content={taxon?.typeVoucherURIs}
+          isUrl
+        />
+        <TaxonData label="Type locality" content={taxon?.typeLocality} />
+        <TaxonData
+          label="Country distribution"
+          content={taxon?.countryDistribution}
+        />
+        <TaxonData
+          label="Distribution notes"
+          content={taxon?.distributionNotes}
+        />
+        <TaxonData
+          label="Distribution references"
+          content={taxon?.distributionNotesCitation}
+        />
+        <TaxonData label="Taxonomy notes" content={taxon?.taxonomyNotes} />
+        <TaxonData
+          label="Taxonomy notes citation"
+          content={taxon?.taxonomyNotesCitation}
+        />
+        <TaxonData label="IUCN Red List status" content={iucnStatus} />
+        <TaxonData label="Species Permalink" content={mddSpeciesLink} isUrl />
+      </div>
+      <div>
+        <div class="border-2 border-spectra-500 rounded-xl p-2 my-2">
+          <h3 class="text-lg md:text-xl font-semibold mb-2">
+            Country distribution map
+          </h3>
+          <distribution-map data-countries={taxon?.countryDistribution}>
+            <div id="map" class="justify-items-center"></div></distribution-map
+          >
+        </div>
+        <Section title="Synonyms">
+          <SynonymList>
+            {
+              synonyms.map((s) => (
+                <SynonymButton
+                  rootName={s.rootName}
+                  originalNameCombination={s.originalCombination}
+                  species={s.species}
+                  authoritySpeciesAuthor={s.author}
+                  authoritySpeciesYear={s.year}
+                  authorityParentheses={s.authorityParentheses}
+                />
+              ))
+            }
+          </SynonymList>
+        </Section>
+      </div>
+    </div>
   </MainPage>
-</Layout>
 
-<script
-  is:inline
-  type="text/javascript"
-  src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="../../scripts/map.js"></script>
-<script type="text/javascript">
-  class DistributionMap extends HTMLElement {
-    connectedCallback() {
-      // Read the message from the data attribute.
-      const countryDistribution = this.dataset.countries;
-      const countries = countryDistribution
-        .split("|")
-        .map((country) => country.trim());
-      google.charts.load("current", {
-        packages: ["geochart"],
-      });
-      google.charts.setOnLoadCallback(drawRegionsMap);
+  <script src="../../scripts/map.ts"></script>
+  <script
+    is:inline
+    type="text/javascript"
+    src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    class DistributionMap extends HTMLElement {
+      connectedCallback() {
+        // Read the message from the data attribute.
+        const countryDistribution = this.dataset.countries;
+        const countries = countryDistribution
+          .split("|")
+          .map((country) => country.trim());
 
-      function drawRegionsMap() {
-        var data = google.visualization.arrayToDataTable([
-          ["Country"],
-          ...countries.map((country) => [country]),
-        ]);
+        google.charts.load("current", {
+          packages: ["geochart"],
+        });
+        google.charts.setOnLoadCallback(drawRegionsMap);
 
-        var options = {
-          //   region: "AU",
-          displayMode: "Regions",
-          colorAxis: { colors: ["#00853f"] },
-          legend: "none",
-        };
+        function drawRegionsMap() {
+          var data = google.visualization.arrayToDataTable([
+            ["Country"],
+            ...countries.map((country) => [country]),
+          ]);
 
-        var chart = new google.visualization.GeoChart(
-          document.getElementById("map")
-        );
+          var options = {
+            displayMode: "Regions",
+            colorAxis: { colors: ["#00853f"] },
+            legend: "none",
+          };
 
-        chart.draw(data, options);
+          var chart = new google.visualization.GeoChart(
+            document.getElementById("map")
+          );
+
+          chart.draw(data, options);
+        }
       }
     }
-  }
 
-  customElements.define("distribution-map", DistributionMap);
-</script>
+    customElements.define("distribution-map", DistributionMap);
+  </script>
+</Layout>
