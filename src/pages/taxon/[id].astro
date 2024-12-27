@@ -104,8 +104,8 @@ const common_name_class = cntl`
     <TaxonData label="IUCN Red List status" content={iucnStatus} />
     <TaxonData label="Species Permalink" content={mddSpeciesLink} isUrl />
     <Section title="Map">
-      <leaflet-map data-message={taxon?.countryDistribution}>
-        <div id="map"></div></leaflet-map
+      <distribution-map data-countries={taxon?.countryDistribution}>
+        <div id="map" class="w-80"></div></distribution-map
       >
     </Section>
     <Section title="Synonyms">
@@ -127,14 +127,45 @@ const common_name_class = cntl`
   </MainPage>
 </Layout>
 
-<!-- <script>
-  import { drawCountriesOnMap } from "../../scripts/map";
-  class LeafletMap extends HTMLElement {
+<script
+  is:inline
+  type="text/javascript"
+  src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="../../scripts/map.js"></script>
+<script type="text/javascript">
+  class DistributionMap extends HTMLElement {
     connectedCallback() {
-      const countryDistribution = this.dataset.message || "";
-      drawCountriesOnMap(countryDistribution, "map");
+      // Read the message from the data attribute.
+      const countryDistribution = this.dataset.countries;
+      const countries = countryDistribution
+        .split("|")
+        .map((country) => country.trim());
+      google.charts.load("current", {
+        packages: ["geochart"],
+      });
+      google.charts.setOnLoadCallback(drawRegionsMap);
+
+      function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable([
+          ["Country"],
+          ...countries.map((country) => [country]),
+        ]);
+
+        var options = {
+          //   region: "AU",
+          displayMode: "Regions",
+          colorAxis: { colors: ["#00853f"] },
+          legend: "none",
+        };
+
+        var chart = new google.visualization.GeoChart(
+          document.getElementById("map")
+        );
+
+        chart.draw(data, options);
+      }
     }
   }
 
-  customElements.define("leaflet-map", LeafletMap);
-</script> -->
+  customElements.define("distribution-map", DistributionMap);
+</script>
