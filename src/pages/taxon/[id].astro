@@ -2,11 +2,14 @@
 import { db, Taxonomy } from "astro:db";
 import Layout from "../../layouts/Layout.astro";
 import MainPage from "../../layouts/MainPage.astro";
-import Title from "../../components/Title.astro";
 import { eq } from "astro:db";
 import Section from "../../components/Section.astro";
 import { Synonym } from "astro:db";
 import cntl from "cntl";
+import SynonymButton from "../../components/buttons/SynonymButton.astro";
+import SynonymList from "../../layouts/SynonymList.astro";
+import TaxonData from "../../components/TaxonData.astro";
+import { matchIUCNRedlistStatus } from "../../scripts/iucn";
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
@@ -25,6 +28,11 @@ const synonyms = await db
   .where(eq(Synonym.speciesId, id));
 
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
+
+const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");
+
+const mddSpeciesPermanentLink = "https://www.mammaldiversity.org/taxon/";
+const mddSpeciesLink = `${mddSpeciesPermanentLink}${taxon?.id}`;
 
 const common_name_class = cntl`
   text-xl 
@@ -48,20 +56,67 @@ const common_name_class = cntl`
       </h2>
     </div>
     <div class="flex-grow border-t border-gray-400"></div>
-    <Section title="Details">
-      <p>Family: {taxon?.family}</p>
+    <Section title="Taxonomy">
+      <p>Subclass: {taxon?.subclass}</p>
+      <p>Infraclass: {taxon?.infraclass}</p>
       <p>Order: {taxon?.taxonOrder}</p>
+      <p>Family: {taxon?.family}</p>
+      <p>Genus: <span class="italic">{taxon?.genus} </span></p>
     </Section>
+    <TaxonData
+      label="Authority citation"
+      content={taxon?.authoritySpeciesCitation}
+    />
+    <TaxonData
+      label="Authority publication link"
+      content={taxon?.authoritySpeciesLink}
+      isUrl
+    />
+    <TaxonData
+      label="Original name as described"
+      content={taxon?.originalNameCombination}
+      isItalic
+    />
+    <TaxonData label="Other common names" content={taxon?.otherCommonNames} />
+    <TaxonData label="Type material" content={taxon?.typeVoucher} />
+    <TaxonData label="Type kind" content={taxon?.typeKind} />
+    <TaxonData
+      label="Type specimen URI"
+      content={taxon?.typeVoucherURIs}
+      isUrl
+    />
+    <TaxonData label="Type locality" content={taxon?.typeLocality} />
+    <TaxonData
+      label="Country distribution"
+      content={taxon?.countryDistribution}
+    />
+    <TaxonData label="Distribution notes" content={taxon?.distributionNotes} />
+    <TaxonData
+      label="Distribution references"
+      content={taxon?.distributionNotesCitation}
+    />
+    <TaxonData label="Taxonomy notes" content={taxon?.taxonomyNotes} />
+    <TaxonData
+      label="Taxonomy notes citation"
+      content={taxon?.taxonomyNotesCitation}
+    />
+    <TaxonData label="IUCN Red List status" content={iucnStatus} />
+    <TaxonData label="Species Permalink" content={mddSpeciesLink} isUrl />
     <Section title="Synonyms">
-      <ul>
+      <SynonymList>
         {
           synonyms.map((s) => (
-            <li>
-              {s.originalCombination} {s.author}, {parseInt(s.year)}
-            </li>
+            <SynonymButton
+              rootName={s.rootName}
+              originalNameCombination={s.originalCombination}
+              species={s.species}
+              authoritySpeciesAuthor={s.author}
+              authoritySpeciesYear={s.year}
+              authorityParentheses={s.authorityParentheses}
+            />
           ))
         }
-      </ul>
+      </SynonymList>
     </Section>
   </MainPage>
 </Layout>
