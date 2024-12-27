@@ -14,6 +14,7 @@ import { matchIUCNRedlistStatus } from "../../scripts/iucn";
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
 // This approach allow us make sure the generated page is always up to date with the database
+// It also ensure that the links to the taxon pages are always available
 export const getStaticPaths = async () => {
   const taxonIDs = await db.select({ id: Taxonomy.id }).from(Taxonomy);
   return taxonIDs.map((t: { id: number }) => ({ params: { id: t.id } }));
@@ -102,6 +103,11 @@ const common_name_class = cntl`
     />
     <TaxonData label="IUCN Red List status" content={iucnStatus} />
     <TaxonData label="Species Permalink" content={mddSpeciesLink} isUrl />
+    <Section title="Map">
+      <leaflet-map data-message={taxon?.countryDistribution}>
+        <div id="map"></div></leaflet-map
+      >
+    </Section>
     <Section title="Synonyms">
       <SynonymList>
         {
@@ -120,3 +126,15 @@ const common_name_class = cntl`
     </Section>
   </MainPage>
 </Layout>
+
+<!-- <script>
+  import { drawCountriesOnMap } from "../../scripts/map";
+  class LeafletMap extends HTMLElement {
+    connectedCallback() {
+      const countryDistribution = this.dataset.message || "";
+      drawCountriesOnMap(countryDistribution, "map");
+    }
+  }
+
+  customElements.define("leaflet-map", LeafletMap);
+</script> -->
