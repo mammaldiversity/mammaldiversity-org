@@ -6,6 +6,7 @@ import Title from "../../components/Title.astro";
 import { eq } from "astro:db";
 import Section from "../../components/Section.astro";
 import { Synonym } from "astro:db";
+import cntl from "cntl";
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
@@ -22,20 +23,44 @@ const synonyms = await db
   .select()
   .from(Synonym)
   .where(eq(Synonym.speciesId, id));
+
+const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
+
+const common_name_class = cntl`
+  text-xl 
+  md:text-2xl
+  text-spicy-mix-800 
+  dark:text-spicy-mix-200
+`;
 ---
 
 <Layout title="Taxon">
   <MainPage>
-    <div class="text-center item-center mt-8 md:mt-16">
-      <Title>{taxon?.genus}{` ${taxon?.specificEpithet}`}</Title>
+    <div class="text-center item-center mt-8 md:mt-16 mb-4">
+      <h1 class="font-serif text-3xl md:text-5xl italic mb-2">
+        {taxon?.genus}{` ${taxon?.specificEpithet}`}
+      </h1>
+      <h2 class="text-xl md:text-2xl">
+        {taxon?.authorityParentheses === 1 ? `(${authority})` : authority}
+      </h2>
+      <h2 class={common_name_class}>
+        {taxon?.mainCommonName}
+      </h2>
     </div>
+    <div class="flex-grow border-t border-gray-400"></div>
     <Section title="Details">
       <p>Family: {taxon?.family}</p>
       <p>Order: {taxon?.taxonOrder}</p>
     </Section>
     <Section title="Synonyms">
       <ul>
-        {synonyms.map((s) => <li>{s.rootName}</li>)}
+        {
+          synonyms.map((s) => (
+            <li>
+              {s.originalCombination} {s.author}, {parseInt(s.year)}
+            </li>
+          ))
+        }
       </ul>
     </Section>
   </MainPage>
