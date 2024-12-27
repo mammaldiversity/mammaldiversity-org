@@ -144,47 +144,47 @@ const common_name_class = cntl`
       </div>
     </div>
   </MainPage>
+</Layout>
 
-  <script src="../../scripts/map.ts"></script>
-  <script
-    is:inline
-    type="text/javascript"
-    src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-    class DistributionMap extends HTMLElement {
-      connectedCallback() {
-        // Read the message from the data attribute.
-        const countryDistribution = this.dataset.countries;
-        const countries = countryDistribution
-          .split("|")
-          .map((country) => country.trim());
+<script src="../../scripts/map.ts"></script>
+<script
+  is:inline
+  type="text/javascript"
+  src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  class DistributionMap extends HTMLElement {
+    connectedCallback() {
+      // Read the message from the data attribute.
+      const countryDistribution = this.dataset.countries;
+      const countries = countryDistribution
+        .split("|")
+        .map((country) => country.trim());
 
-        google.charts.load("current", {
-          packages: ["geochart"],
-        });
-        google.charts.setOnLoadCallback(drawRegionsMap);
+      google.charts.load("current", {
+        packages: ["geochart"],
+      });
+      google.charts.setOnLoadCallback(drawRegionsMap);
 
-        function drawRegionsMap() {
-          var data = google.visualization.arrayToDataTable([
-            ["Country"],
-            ...countries.map((country) => [country]),
-          ]);
+      function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable([
+          ["Country"],
+          ...countries.map((country) => [country]),
+        ]);
 
-          var options = {
-            displayMode: "Regions",
-            colorAxis: { colors: ["#00853f"] },
-            legend: "none",
-          };
+        var options = {
+          displayMode: "Regions",
+          colorAxis: { colors: ["#00853f"] },
+          legend: "none",
+        };
 
-          var chart = new google.visualization.GeoChart(
-            document.getElementById("map")
-          );
+        var chart = new google.visualization.GeoChart(
+          document.getElementById("map")
+        );
 
-          chart.draw(data, options);
-        }
+        chart.draw(data, options);
       }
     }
+  }
 
-    customElements.define("distribution-map", DistributionMap);
-  </script>
-</Layout>
+  customElements.define("distribution-map", DistributionMap);
+</script>
