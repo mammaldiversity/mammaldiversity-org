@@ -1,12 +1,11 @@
 ---
-import Section from "../components/Section.astro";
 import Title from "../components/Title.astro";
 import Layout from "../layouts/Layout.astro";
 import MainPage from "../layouts/MainPage.astro";
 
-import { db, Taxonomy, Synonym } from "astro:db";
+import { db, Taxonomy } from "astro:db";
 
-const taxa = await db.select().from(Taxonomy).limit(20);
+const taxa = await db.select().from(Taxonomy);
 ---
 
 <Layout title="Search Database">
@@ -15,22 +14,54 @@ const taxa = await db.select().from(Taxonomy).limit(20);
       <Title>Search Database</Title>
       <input
         type="text"
+        id="search-input"
         placeholder="E.g., Taeromys dominator, Peromyscus maniculatus"
         class="input input-bordered w-full max-w-xs"
       />
+      <button id="search-button" class="btn btn-primary">Search</button>
     </div>
-    <Section title="Taxon list">
-      <ul>
-        {
-          taxa.map((taxon) => (
-            <li>
-              <a href={`/mammaldiversity-org/taxon/${taxon.id}`}>
-                {taxon.genus} {taxon.specificEpithet}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </Section>
+    <ul id="taxon-list">
+      <filter-results data-taxa={taxa}></filter-results>
+      {
+        taxa.map((taxon) => (
+          <li id="taxa">
+            <a href={`/mammaldiversity-org/taxon/${taxon.id}`}>
+              {taxon.genus} {taxon.specificEpithet}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <button id="reset-button" class="btn btn-primary" style="display: none;">
+      Reset
+    </button>
   </MainPage>
 </Layout>
+
+<script type="text/javascript">
+  document.querySelectorAll("#search-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const query = document.getElementById("search-input").value;
+      const taxonList = document.getElementById("taxon-list");
+
+      // Filter id elements li id="taxa" based on query
+      taxonList.querySelectorAll("#taxa").forEach((taxon) => {
+        if (taxon.textContent.includes(query)) {
+          taxon.style.display = "block";
+        } else {
+          taxon.style.display = "none";
+        }
+      });
+
+      const resetBtn = document.getElementById("reset-button");
+      resetBtn.style.display = "block";
+      resetBtn.addEventListener("click", () => {
+        taxonList.querySelectorAll("#taxa").forEach((taxon) => {
+          taxon.style.display = "block";
+        });
+        document.getElementById("search-input").value = "";
+        resetBtn.style.display = "none";
+      });
+    });
+  });
+</script>
