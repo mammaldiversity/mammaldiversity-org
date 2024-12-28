@@ -1,4 +1,4 @@
-import { defineDb, defineTable, column, isNotNull } from "astro:db";
+import { defineDb, defineTable, column } from "astro:db";
 
 const Taxonomy = defineTable({
   columns: {
