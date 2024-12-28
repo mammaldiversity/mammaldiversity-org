@@ -1,0 +1,42 @@
+---
+import cntl from "cntl";
+
+interface ActionButton {
+  label: string;
+  uri: string;
+  extendClass?: string;
+  svg?: string;
+  isPrimary?: boolean;
+}
+
+const { label, uri, extendClass, svg, isPrimary } = Astro.props;
+
+const buttonClasses = cntl`
+  btn
+  btn-md
+  ${extendClass} 
+  ${isPrimary ? "btn-primary" : "btn-outline"}
+`;
+---
+
+<button class={buttonClasses}>
+  {
+    svg && (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d={svg}
+        />
+      </svg>
+    )
+  }
+  <a href={uri} target="_blank" rel="noopener noreferrer">{label}</a>
+</button>

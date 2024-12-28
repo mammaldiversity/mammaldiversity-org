@@ -1,0 +1,31 @@
+---
+import ActionButton from "./buttons/ActionButton.astro";
+import Link from "./Link.astro";
+
+interface MainActionButtons {
+  searchURI: string;
+  downloadURI: string;
+  previousVersionsURI: string;
+  versionDescription: string;
+}
+
+const { searchURI, downloadURI, previousVersionsURI, versionDescription } =
+  Astro.props;
+---
+
+<div class="flex gap-4 mt-16">
+  <div>
+    <ActionButton label="Download latest version" uri={downloadURI} />
+  </div>
+  <div>
+    <ActionButton label="Search Database" uri={searchURI} isPrimary />
+  </div>
+</div>
+<div>
+  <p class="text-left text-xs mt-2">
+    {versionDescription}. Previous versions are available on <Link
+      url={previousVersionsURI}
+      label="Zenodo"
+    />.
+  </p>
+</div>
