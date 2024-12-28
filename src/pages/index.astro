@@ -3,20 +3,35 @@ import Layout from "../layouts/Layout.astro";
 import MainPage from "../layouts/MainPage.astro";
 import mammalImg from "../assets/images/mammal_images/1004046.jpg";
 import cntl from "cntl";
-import SearchBar from "../components/SearchBar.astro";
+import MainActionButtons from "../components/MainActionButtons.astro";
+import Zenodo from "../components/pubs/Zenodo.astro";
+import SpeciesCitation from "../components/pubs/SpeciesCitation.astro";
+import Section from "../components/Section.astro";
+import Journal from "../components/pubs/Journal.astro";
+import Link from "../components/Link.astro";
 
 const currentVersion = "v1.13";
 const releaseDate = "13 Jul 2024";
 const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
+const mddDownloadLink = "https://www.mammaldiversity.org/assets/data/MDD.zip";
 
 // Define version description
 const versionDescription = `Current version:${currentVersion}, released ${releaseDate}`;
 
+const currentYear = new Date().getFullYear();
+const currentDate = new Date().toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
 const titleClasses = cntl`
-  text-4xl
+  font-serif
+  font-semibold
+  text-5xl
   text-spectra-700
   dark:text-spectra-200
-  mt-16
+  mb-2
 `;
 
 const descriptionClasses = cntl`
@@ -29,40 +44,83 @@ const descriptionClasses = cntl`
 
 <Layout title="ASM Mammal Diversity Database">
   <MainPage
-    ><div class="text-center item-center mt-8">
-      <h1 class={titleClasses}>The ASM's Mammal Diversity Database</h1>
-      <p class={descriptionClasses}>
-        The Mammal Diversity Database of the <a
-          href="http://www.mammalsociety.org/"
-          >American Society of Mammalogists</a
-        > (ASM) is your home base for tracking the latest taxonomic changes to living
-        and recently extinct (i.e., since ~1500 CE) species and higher taxa of mammals.
-      </p>
+    ><div class="text-left grid grid-cols-2 item-center mt-8">
+      <div>
+        <h1 class="text-md mt-16">The American Society of Mammalogists'</h1>
+        <h1 class={titleClasses}>Mammal Diversity Database</h1>
 
-      <SearchBar
-        versionDescription={versionDescription}
-        prevVersionsLink={prevVersionsLink}
-      />
-    </div>
-    <div
-      class="mt-16 bg-spectra-600 text-center items-center rounded-3xl max-w-3xl mx-auto"
-    >
-      <img
-        class="-z-10 h-60 object-cover object-center rounded-3xl w-full"
-        src={mammalImg.src}
-        alt="A rat photo from the ASM’s mammal image library"
-      />
-      <div id="goal-content" class="py-4 px-2">
-        <h2
-          class="font-serif text-4xl font-semibold text-spicy-mix-400 mb-4 mt-4"
-        >
-          Our Goals
-        </h2>
-        <p class="text-2xl">
-          We are curating the taxonomic implications of new research
-          publications in real time — with the goal of promoting rigorous study
-          of mammal biodiversity worldwide.
+        <p class={descriptionClasses}>
+          Track the latest taxonomic changes to living and recently extinct
+          (i.e., since ~1500 CE) species and higher taxa of mammals.
         </p>
+
+        <MainActionButtons
+          searchURI="/search"
+          downloadURI={mddDownloadLink}
+          previousVersionsURI={prevVersionsLink}
+          versionDescription={versionDescription}
+        />
+      </div>
+      <div class="flex justify-center items-center mt-8">
+        <img
+          class="-z-10 object-center rounded-3xl h-80"
+          src={mammalImg.src}
+          alt="A rat photo from the ASM’s mammal image library"
+        />
+      </div>
+    </div>
+    <div id="goal-content" class="py-4 px-2 text-center mt-16">
+      <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
+        Our Goals
+      </h2>
+      <p class="text-lg max-w-3xl mx-auto">
+        We are curating the taxonomic implications of new research publications
+        in real time — with the goal of promoting rigorous study of mammal
+        biodiversity worldwide.
+      </p>
+    </div>
+    <div class="py-4 px-2 text-center mt-4 mb-4 max-w-4xl mx-auto">
+      <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
+        Cite MDD
+      </h2>
+      <div class="text-md">
+        <p>
+          The current database (via <Link
+            url="https://doi.org/10.5281/zenodo.4139722"
+            label="Zenodo"
+          />):
+        </p>
+        <Zenodo
+          authors={["Mammal Diversity Database"]}
+          year={currentYear}
+          title="Mammal Diversity Database (Version 1.13) [Data set]"
+          doi="https://doi.org/10.5281/zenodo.10595931"
+        />
+        <p>
+          A specific entry: Each entry has a citation string at the end. For
+          example:
+        </p>
+        <SpeciesCitation
+          species="Dipodomys deserti"
+          mddID="1001892"
+          date={currentDate}
+          year={currentYear}
+        />
+        <p>Describing the MDD v1.0 taxonomy:</p>
+        <Journal
+          authors={[
+            "Burgin, C. J.",
+            "Colella, J. P.",
+            "Kahn, P. L.",
+            "Upham, N. S",
+          ]}
+          year={2018}
+          title="How many species of mammals are there?"
+          journal="Journal of Mammalogy"
+          volume="99"
+          pages="1—11"
+          doi="https://doi.org/10.1093/jmammal/gyx147"
+        />
       </div>
     </div>
   </MainPage>
