@@ -6,6 +6,43 @@ import MainPage from "../layouts/MainPage.astro";
 import { db, Taxonomy } from "astro:db";
 
 const taxa = await db.select().from(Taxonomy);
+
+interface Taxon {
+  id: number;
+  family: string;
+  genus: string;
+  specificEpithet: string;
+  authorityYear: string;
+  commonName: string;
+}
+
+// We create a map with order as key and an array of taxa as value
+const taxonByOrder: Record<string, Taxon[]> = {};
+
+function getAuthority(author: string, year: number, isParentheses: boolean) {
+  return isParentheses ? `(${author}, ${year})` : `${author}, ${year}`;
+}
+
+taxa.forEach((taxon) => {
+  const taxonOrder = taxon.taxonOrder ?? "Unknown";
+
+  if (!taxonByOrder[taxonOrder]) {
+    taxonByOrder[taxonOrder] = [];
+  }
+  const authority = getAuthority(
+    taxon.authoritySpeciesAuthor ?? "Unknown",
+    taxon.authoritySpeciesYear ?? 0,
+    taxon.authorityParentheses === 1
+  );
+  taxonByOrder[taxonOrder].push({
+    id: taxon.id,
+    family: taxon.family ?? "Unknown",
+    genus: taxon.genus ?? "Unknown",
+    specificEpithet: taxon.specificEpithet ?? "unknown",
+    authorityYear: authority,
+    commonName: taxon.mainCommonName ?? "Unknown",
+  });
+});
 ---
 
 <Layout title="Search Database">
@@ -17,26 +54,39 @@ const taxa = await db.select().from(Taxonomy);
       <input
         type="text"
         id="search-input"
-        placeholder="E.g., Taeromys dominator, Peromyscus maniculatus"
-        class="input input-bordered w-full max-w-xs"
+        placeholder="E.g., Taeromys dominator, platypus"
+        class="input input-bordered w-full max-w-sm"
       />
-      <button id="search-button" class="btn btn-primary">Search</button>
+      <button id="search-button" class="btn btn-primary">Filter</button>
     </div>
     <div class="flex-grow border-t border-gray-400 mb-4"></div>
-
-    <ul id="taxon-list">
-      <filter-results data-taxa={taxa}></filter-results>
-      {
-        taxa.map((taxon) => (
-          <li id="taxa">
-            <a href={`/mammaldiversity-org/taxon/${taxon.id}`}>
-              {taxon.genus} {taxon.specificEpithet}
+    <div
+      id="taxon-list"
+      tabindex="0"
+      class="collapse collapse-arrow border-base-300 bg-base-200 border"
+    ><input type="checkbox" />{
+      Object.entries(taxonByOrder).map(([order, taxa]) => (
+      <div class="collapse-title text-xl font-medium">
+          {order}</div>
+          <div class="collapse-content">
+            <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p>
+            {taxa.map((taxon) => (
+              <a href={`/mammaldiversity-org/taxon/${taxon.id}`}>
+              <div id="taxa" class="mb-2 bg-spectra-200 dark:bg-spectra-800 p-2 rounded-lg">
+              <p class="text-lg">
+                <span class="italic">{taxon.genus} {taxon.specificEpithet}</span> {taxon.authorityYear}
+              </p>
+              <p class="text-sm">
+                MDD ID {taxon.id} &middot; {taxon.family} &middot; {taxon.commonName}
+              </p>
+            </div>
             </a>
-          </li>
-        ))
-      }
-    </ul>
-    <button id="reset-button" class="btn btn-primary" style="display: none;">
+            ))}
+        </div>
+      ))
+    }</div>
+    
+    <button id="reset-button" class="btn btn-secondary mt-4" style="display: none;">
       Reset
     </button>
   </MainPage>
@@ -50,7 +100,7 @@ const taxa = await db.select().from(Taxonomy);
 
       // Filter id elements li id="taxa" based on query
       taxonList.querySelectorAll("#taxa").forEach((taxon) => {
-        if (taxon.textContent.includes(query)) {
+        if (taxon.textContent.toLowerCase().includes(query.toLowerCase())) {
           taxon.style.display = "block";
         } else {
           taxon.style.display = "none";
