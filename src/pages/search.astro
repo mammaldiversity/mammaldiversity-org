@@ -63,13 +63,27 @@ taxa.forEach((taxon) => {
       <Title>Search Database</Title>
     </div>
     <div class="mb-4">
-      <input
-        type="text"
-        id="search-input"
-        placeholder="E.g., Taeromys dominator, platypus"
-        class="input input-bordered w-full max-w-sm"
-      />
-      <button id="search-button" class="btn btn-primary">Filter</button>
+      <label
+        class="input input-bordered flex items-center gap-2 w-full max-w-md"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="h-4 w-4 opacity-70"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+            clip-rule="evenodd"></path>
+        </svg>
+        <input
+          id="search-input"
+          type="text"
+          class="grow"
+          placeholder="E.g., Ornithorhynchus, anatinus, platypus, etc."
+        />
+      </label>
     </div>
     <div class="flex-grow border-t border-gray-400 mb-4"></div>
 
@@ -111,7 +125,7 @@ taxa.forEach((taxon) => {
 
     <button
       id="reset-button"
-      class="btn btn-secondary my-4"
+      class="btn btn-neutral my-4"
       style="display: none;"
     >
       Reset
@@ -150,33 +164,36 @@ taxa.forEach((taxon) => {
     }
   }
 
-  document.querySelectorAll("#search-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      searchQuery();
-    });
-  });
+  const resetBtn = document.getElementById("reset-button");
+  function reset() {
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        const taxonList = document.querySelectorAll("#taxon-list");
+        taxonList.forEach((list) => {
+          const taxa = list.querySelectorAll("#taxa");
+          (list as HTMLElement).style.display = "block";
+          taxa.forEach((taxon) => {
+            (taxon as HTMLElement).style.display = "block";
+          });
+        });
+
+        resetBtn.style.display = "none";
+      });
+    }
+  }
 
   const searchInput = document.getElementById("search-input");
   if (searchInput) {
-    searchInput.addEventListener("keypress", (event) => {
-      if (event.key === "Enter") {
+    searchInput.addEventListener("input", () => {
+      if ((searchInput as HTMLInputElement).value.trim() !== "") {
         searchQuery();
+        reset();
       }
-    });
-  }
-
-  const resetBtn = document.getElementById("reset-button");
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      const taxonList = document.querySelectorAll("#taxon-list");
-      taxonList.forEach((list) => {
-        const taxa = list.querySelectorAll("#taxa");
-        (list as HTMLElement).style.display = "block";
-        taxa.forEach((taxon) => {
-          (taxon as HTMLElement).style.display = "block";
-        });
-      });
-      resetBtn.style.display = "none";
+      if ((searchInput as HTMLInputElement).value.trim() === "") {
+        if (resetBtn) {
+          resetBtn.style.display = "none";
+        }
+      }
     });
   }
 </script>
