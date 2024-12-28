@@ -146,12 +146,11 @@ const common_name_class = cntl`
   </MainPage>
 </Layout>
 
-<script src="../../scripts/map.ts"></script>
 <script
   is:inline
   type="text/javascript"
   src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
+<script is:inline>
   class DistributionMap extends HTMLElement {
     connectedCallback() {
       // Read the message from the data attribute.
