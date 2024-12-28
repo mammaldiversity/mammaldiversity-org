@@ -5,8 +5,7 @@ import MainPage from "../layouts/MainPage.astro";
 
 import { db, Taxonomy } from "astro:db";
 
-const taxa = await db.select().from(Taxonomy).limit(200);
-
+const taxa = await db.select().from(Taxonomy).limit(500);
 interface Taxon {
   id: number;
   family: string;
@@ -60,7 +59,6 @@ taxa.forEach((taxon) => {
       <button id="search-button" class="btn btn-primary">Filter</button>
     </div>
     <div class="flex-grow border-t border-gray-400 mb-4"></div>
-
     {
       Object.entries(taxonByOrder).map(([order, taxa]) => (
         <div

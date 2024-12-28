@@ -117,7 +117,7 @@ const common_name_class = cntl`
         <TaxonData label="Species Permalink" content={mddSpeciesLink} isUrl />
       </div>
       <div>
-        <div class="border-2 border-spectra-500 rounded-xl p-2 my-2">
+        <div class="bg-spicy-mix-50 dark:bg-spectra-950 rounded-xl p-4 my-2">
           <h3 class="text-lg md:text-xl font-semibold mb-2">
             Country distribution map
           </h3>
@@ -125,22 +125,21 @@ const common_name_class = cntl`
             <div id="map" class="justify-items-center"></div></distribution-map
           >
         </div>
-        <Section title="Synonyms">
-          <SynonymList>
-            {
-              synonyms.map((s) => (
-                <SynonymButton
-                  rootName={s.rootName}
-                  originalNameCombination={s.originalCombination}
-                  species={s.species}
-                  authoritySpeciesAuthor={s.author}
-                  authoritySpeciesYear={s.year}
-                  authorityParentheses={s.authorityParentheses}
-                />
-              ))
-            }
-          </SynonymList>
-        </Section>
+
+        <SynonymList>
+          {
+            synonyms.map((s) => (
+              <SynonymButton
+                rootName={s.rootName}
+                originalNameCombination={s.originalCombination}
+                species={s.species}
+                authoritySpeciesAuthor={s.author}
+                authoritySpeciesYear={s.year}
+                authorityParentheses={s.authorityParentheses}
+              />
+            ))
+          }
+        </SynonymList>
       </div>
     </div>
   </MainPage>
