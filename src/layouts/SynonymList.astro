@@ -2,9 +2,13 @@
 
 ---
 
-<div class="bg-spicy-mix-50 dark:bg-spectra-950 pl-4 px-8 py-4 my-4 rounded-xl">
-  <h3 class="text-lg md:text-xl font-semibold mb-4">Synonyms</h3>
-  <div class="flex flex-wrap justify-items-start gap-4">
+<div
+  class="bg-spicy-mix-50 dark:bg-spectra-950 my-4 max-h-dvh rounded-xl overflow-y-auto"
+>
+  <div class="sticky top-0 bg-spicy-mix-50 dark:bg-spectra-950 rounded-xl py-2">
+    <h3 class="text-lg md:text-xl font-semibold mt-4 mb-2 mx-4">Synonyms</h3>
+  </div>
+  <div class="flex flex-wrap justify-items-start gap-4 p-4">
     <slot />
   </div>
 </div>
