@@ -3,7 +3,6 @@ import { db, Taxonomy } from "astro:db";
 import Layout from "../../layouts/Layout.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import { eq } from "astro:db";
-import Section from "../../components/Section.astro";
 import { Synonym } from "astro:db";
 import cntl from "cntl";
 import SynonymButton from "../../components/buttons/SynonymButton.astro";
@@ -126,20 +125,22 @@ const common_name_class = cntl`
             </div></distribution-map
           >
         </div>
-        <SynonymList>
-          {
-            synonyms.map((s) => (
-              <SynonymButton
-                rootName={s.rootName}
-                originalNameCombination={s.originalCombination}
-                species={s.species}
-                authoritySpeciesAuthor={s.author}
-                authoritySpeciesYear={s.year}
-                authorityParentheses={s.authorityParentheses}
-              />
-            ))
-          }
-        </SynonymList>
+        {
+          synonyms.length > 0 && (
+            <SynonymList>
+              {synonyms.map((s) => (
+                <SynonymButton
+                  rootName={s.rootName}
+                  originalNameCombination={s.originalCombination}
+                  species={s.species}
+                  authoritySpeciesAuthor={s.author}
+                  authoritySpeciesYear={s.year}
+                  authorityParentheses={s.authorityParentheses}
+                />
+              ))}
+            </SynonymList>
+          )
+        }
       </div>
     </div>
   </MainPage>
