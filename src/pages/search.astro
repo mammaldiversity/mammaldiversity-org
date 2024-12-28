@@ -5,7 +5,7 @@ import MainPage from "../layouts/MainPage.astro";
 
 import { db, Taxonomy } from "astro:db";
 
-const taxa = await db.select().from(Taxonomy);
+const taxa = await db.select().from(Taxonomy).limit(200);
 
 interface Taxon {
   id: number;
@@ -60,33 +60,47 @@ taxa.forEach((taxon) => {
       <button id="search-button" class="btn btn-primary">Filter</button>
     </div>
     <div class="flex-grow border-t border-gray-400 mb-4"></div>
-    <div
-      id="taxon-list"
-      tabindex="0"
-      class="collapse collapse-arrow border-base-300 bg-base-200 border"
-    ><input type="checkbox" />{
+
+    {
       Object.entries(taxonByOrder).map(([order, taxa]) => (
-      <div class="collapse-title text-xl font-medium">
-          {order}</div>
+        <div
+          id="taxon-list"
+          tabindex="0"
+          class="collapse collapse-arrow border-base-300 bg-base-200 border my-2"
+        >
+          <input type="checkbox" />
+          <div class="collapse-title text-xl font-medium">{order}</div>
           <div class="collapse-content">
             <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p>
             {taxa.map((taxon) => (
               <a href={`/mammaldiversity-org/taxon/${taxon.id}`}>
-              <div id="taxa" class="mb-2 bg-spectra-200 dark:bg-spectra-800 p-2 rounded-lg">
-              <p class="text-lg">
-                <span class="italic">{taxon.genus} {taxon.specificEpithet}</span> {taxon.authorityYear}
-              </p>
-              <p class="text-sm">
-                MDD ID {taxon.id} &middot; {taxon.family} &middot; {taxon.commonName}
-              </p>
-            </div>
-            </a>
+                <div
+                  id="taxa"
+                  class="mb-2 bg-spectra-200 dark:bg-spectra-800 p-2 rounded-lg"
+                >
+                  <p class="text-lg">
+                    <span class="italic">
+                      {taxon.genus} {taxon.specificEpithet}
+                    </span>{" "}
+                    {taxon.authorityYear}
+                  </p>
+                  <p class="text-sm">
+                    MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
+                    {taxon.commonName}
+                  </p>
+                </div>
+              </a>
             ))}
+          </div>
         </div>
       ))
-    }</div>
-    
-    <button id="reset-button" class="btn btn-secondary mt-4" style="display: none;">
+    }
+
+    <button
+      id="reset-button"
+      class="btn btn-secondary mt-4"
+      style="display: none;"
+    >
       Reset
     </button>
   </MainPage>
