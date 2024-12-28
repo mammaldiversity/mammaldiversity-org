@@ -119,40 +119,64 @@ taxa.forEach((taxon) => {
   </MainPage>
 </Layout>
 
-<script type="text/javascript">
+<script>
+  function searchQuery() {
+    const searchInput = document.getElementById("search-input");
+    if (!searchInput) return;
+    const query = (searchInput as HTMLInputElement).value;
+    const taxonList = document.querySelectorAll("#taxon-list");
+
+    // Filter elements with id="taxa" based on query
+    taxonList.forEach((list) => {
+      const taxa = list.querySelectorAll("#taxa");
+      let hasMatch = false;
+      taxa.forEach((taxon) => {
+        if (
+          taxon.textContent &&
+          taxon.textContent.toLowerCase().includes(query.toLowerCase())
+        ) {
+          (taxon as HTMLElement).style.display = "block";
+          hasMatch = true;
+        } else {
+          (taxon as HTMLElement).style.display = "none";
+        }
+      });
+      (list as HTMLElement).style.display = hasMatch ? "block" : "none";
+    });
+
+    const resetBtn = document.getElementById("reset-button");
+    if (resetBtn) {
+      resetBtn.style.display = "block";
+    }
+  }
+
   document.querySelectorAll("#search-button").forEach((button) => {
     button.addEventListener("click", () => {
-      const query = document.getElementById("search-input").value;
-      const taxonList = document.querySelectorAll("#taxon-list");
-
-      // Filter elements with id="taxa" based on query
-      taxonList.forEach((list) => {
-        const taxa = list.querySelectorAll("#taxa");
-        let hasMatch = false;
-        taxa.forEach((taxon) => {
-          if (taxon.textContent.toLowerCase().includes(query.toLowerCase())) {
-            taxon.style.display = "block";
-            hasMatch = true;
-          } else {
-            taxon.style.display = "none";
-          }
-        });
-        list.style.display = hasMatch ? "block" : "none";
-      });
-
-      const resetBtn = document.getElementById("reset-button");
-      resetBtn.style.display = "block";
-      resetBtn.addEventListener("click", () => {
-        taxonList.forEach((list) => {
-          const taxa = list.querySelectorAll("#taxa");
-          list.style.display = "block";
-          taxa.forEach((taxon) => {
-            taxon.style.display = "block";
-          });
-        });
-        document.getElementById("search-input").value = "";
-        resetBtn.style.display = "none";
-      });
+      searchQuery();
     });
   });
+
+  const searchInput = document.getElementById("search-input");
+  if (searchInput) {
+    searchInput.addEventListener("keypress", (event) => {
+      if (event.key === "Enter") {
+        searchQuery();
+      }
+    });
+  }
+
+  const resetBtn = document.getElementById("reset-button");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      const taxonList = document.querySelectorAll("#taxon-list");
+      taxonList.forEach((list) => {
+        const taxa = list.querySelectorAll("#taxa");
+        (list as HTMLElement).style.display = "block";
+        taxa.forEach((taxon) => {
+          (taxon as HTMLElement).style.display = "block";
+        });
+      });
+      resetBtn.style.display = "none";
+    });
+  }
 </script>
