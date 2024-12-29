@@ -62,11 +62,32 @@ const common_name_class = cntl`
           class="bg-spicy-mix-200 dark:bg-spicy-mix-800 pl-4 py-2 my-2 rounded-xl"
         >
           <h3 class="font-semibold text-lg md:text-xl mb-2">Taxonomy</h3>
-          <p>Subclass: {taxon?.subclass}</p>
-          <p>Infraclass: {taxon?.infraclass}</p>
-          <p>Order: {taxon?.taxonOrder}</p>
-          <p>Family: {taxon?.family}</p>
-          <p>Genus: <span class="italic">{taxon?.genus} </span></p>
+          <table class="table-auto">
+            <tbody>
+              <tr>
+                <td class="pr-2">Subclass</td>
+                <td class="pl-2">: {taxon?.subclass}</td>
+              </tr>
+              <tr>
+                <td class="pr-2">Infraclass</td>
+                <td class="pl-2">: {taxon?.infraclass}</td>
+              </tr>
+              <tr>
+                <td class="pr-2">Order</td>
+                <td class="pl-2">: {taxon?.taxonOrder}</td>
+              </tr>
+              <tr>
+                <td class="pr-2">Family</td>
+                <td class="pl-2">: {taxon?.family}</td>
+              </tr>
+              <tr>
+                <td class="pr-2">Genus</td>
+                <td class="pl-2"
+                  >: <span class="italic">{taxon?.genus}</span></td
+                >
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <TaxonData
