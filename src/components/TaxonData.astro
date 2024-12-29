@@ -1,5 +1,6 @@
 ---
 import Link from "./Link.astro";
+import { cleanTaxonData } from "../scripts/taxon";
 
 interface TaxonDataProps {
   label: string;
@@ -9,15 +10,25 @@ interface TaxonDataProps {
 }
 
 const { label, content, isUrl, isItalic } = Astro.props as TaxonDataProps;
+
+// Replace content "|" (if available) with middle dot for country distribution
+// Check if content is not URL and contain "|"
+// If so, replace "|" with "·" (middle dot)
+const textData = !isUrl ? cleanTaxonData(content) : content;
 ---
 
 <div class="mb-4">
   <h3 class="text-lg md:text-xl font-semibold">{label}</h3>
   {
     isUrl ? (
-      <Link url={content} />
+      // If contain "|", split the content and create multiple links
+      textData.includes("|") ? (
+        textData.split("|").map((link) => <Link url={link} label={link} />)
+      ) : (
+        <Link url={textData} label={textData} />
+      )
     ) : (
-      <p class={isItalic ? "italic" : ""}>{content}</p>
+      <p class={isItalic ? "italic" : ""}>{textData}</p>
     )
   }
 </div>
