@@ -6,9 +6,9 @@ import cntl from "cntl";
 import MainActionButtons from "../components/MainActionButtons.astro";
 import Zenodo from "../components/pubs/Zenodo.astro";
 import SpeciesCitation from "../components/pubs/SpeciesCitation.astro";
-import Section from "../components/Section.astro";
 import Journal from "../components/pubs/Journal.astro";
 import Link from "../components/Link.astro";
+import Image from "astro/components/Image.astro";
 
 const currentVersion = "v1.13";
 const releaseDate = "13 Jul 2024";
@@ -60,10 +60,13 @@ const descriptionClasses = cntl`
           versionDescription={versionDescription}
         />
       </div>
-      <div class="flex justify-center items-center mt-8">
-        <img
-          class="-z-10 object-center rounded-3xl h-80"
-          src={mammalImg.src}
+      <div
+        class="flex justify-center items-center mt-8 order-first lg:order-last"
+      >
+        <Image
+          class="-z-10 object-center rounded-3xl"
+          height="360"
+          src={mammalImg}
           alt="A rat photo from the ASM’s mammal image library"
         />
       </div>
