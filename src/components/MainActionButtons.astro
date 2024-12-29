@@ -1,6 +1,7 @@
 ---
 import ActionButton from "./buttons/ActionButton.astro";
 import Link from "./Link.astro";
+import searchIcon from "../assets/svg/search.svg";
 
 interface MainActionButtons {
   searchURI: string;
@@ -18,7 +19,12 @@ const { searchURI, downloadURI, previousVersionsURI, versionDescription } =
     <ActionButton label="Download latest version" uri={downloadURI} />
   </div>
   <div>
-    <ActionButton label="Search Database" uri={searchURI} isPrimary />
+    <ActionButton
+      label="Search database"
+      uri={searchURI}
+      svg={searchIcon}
+      isPrimary
+    />
   </div>
 </div>
 <div>

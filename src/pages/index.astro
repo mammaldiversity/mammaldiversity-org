@@ -31,7 +31,7 @@ const titleClasses = cntl`
   text-5xl
   text-spectra-700
   dark:text-spectra-200
-  mb-2
+  mt-8
 `;
 
 const descriptionClasses = cntl`
@@ -44,18 +44,17 @@ const descriptionClasses = cntl`
 
 <Layout title="ASM Mammal Diversity Database">
   <MainPage
-    ><div class="text-left grid grid-cols-2 item-center mt-8">
+    ><div class="text-left grid grid-cols-1 lg:grid-cols-2 item-center mt-8">
       <div>
-        <h1 class="text-md mt-16">The American Society of Mammalogists'</h1>
-        <h1 class={titleClasses}>Mammal Diversity Database</h1>
-
+        <h1 class={titleClasses}>The Mammal Diversity Database</h1>
+        <h1 class="text-md mb-4">of the American Society of Mammalogists</h1>
         <p class={descriptionClasses}>
           Track the latest taxonomic changes to living and recently extinct
           (i.e., since ~1500 CE) species and higher taxa of mammals.
         </p>
 
         <MainActionButtons
-          searchURI="/search"
+          searchURI="./search"
           downloadURI={mddDownloadLink}
           previousVersionsURI={prevVersionsLink}
           versionDescription={versionDescription}
