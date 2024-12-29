@@ -83,9 +83,28 @@ taxa.forEach((taxon) => {
           class="grow"
           placeholder="E.g., Ornithorhynchus, anatinus, platypus, etc."
         />
+        <button
+          id="clear-search"
+          class="btn btn-sm btn-circle btn-ghost hidden"
+          aria-label="Clear search"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-4 w-4"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </label>
     </div>
-    <div class="flex-grow border-t border-gray-400 mb-4"></div>
+    <div class="flex-grow border-t-2 border-spectra-500 mb-4 rounded"></div>
 
     {
       Object.entries(taxonByOrder).map(([order, taxa]) => (
@@ -122,14 +141,10 @@ taxa.forEach((taxon) => {
         </div>
       ))
     }
-
-    <button
-      id="reset-button"
-      class="btn btn-neutral my-4"
-      style="display: none;"
-    >
-      Reset
-    </button>
+    <!-- 
+      <button id="clear-search" class="btn btn-neutral my-4 hidden">
+        Reset
+      </button> -->
   </MainPage>
 </Layout>
 
@@ -149,35 +164,40 @@ taxa.forEach((taxon) => {
           taxon.textContent &&
           taxon.textContent.toLowerCase().includes(query.toLowerCase())
         ) {
-          (taxon as HTMLElement).style.display = "block";
+          (taxon as HTMLElement).classList.remove("hidden");
           hasMatch = true;
         } else {
-          (taxon as HTMLElement).style.display = "none";
+          (taxon as HTMLElement).classList.add("hidden");
         }
       });
-      (list as HTMLElement).style.display = hasMatch ? "block" : "none";
+      (list as HTMLElement).classList.toggle("hidden", !hasMatch);
     });
 
-    const resetBtn = document.getElementById("reset-button");
+    const resetBtn = document.getElementById("clear-search");
     if (resetBtn) {
-      resetBtn.style.display = "block";
+      resetBtn.classList.remove("hidden");
     }
   }
 
-  const resetBtn = document.getElementById("reset-button");
+  const resetBtn = document.getElementById("clear-search");
   function reset() {
     if (resetBtn) {
       resetBtn.addEventListener("click", () => {
         const taxonList = document.querySelectorAll("#taxon-list");
         taxonList.forEach((list) => {
           const taxa = list.querySelectorAll("#taxa");
-          (list as HTMLElement).style.display = "block";
+          (list as HTMLElement).classList.remove("hidden");
           taxa.forEach((taxon) => {
-            (taxon as HTMLElement).style.display = "block";
+            (taxon as HTMLElement).classList.remove("hidden");
           });
         });
 
-        resetBtn.style.display = "none";
+        resetBtn.classList.add("hidden");
+        // Clear search input
+        const searchInput = document.getElementById("search-input");
+        if (searchInput) {
+          (searchInput as HTMLInputElement).value = "";
+        }
       });
     }
   }
@@ -191,7 +211,7 @@ taxa.forEach((taxon) => {
       }
       if ((searchInput as HTMLInputElement).value.trim() === "") {
         if (resetBtn) {
-          resetBtn.style.display = "none";
+          resetBtn.classList.add("hidden");
         }
       }
     });
