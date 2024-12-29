@@ -1,4 +1,5 @@
 ---
+import Image from "astro/components/Image.astro";
 import LinkIcon from "../components/LinkIcon.astro";
 import cntl from "cntl";
 
@@ -26,7 +27,11 @@ const iconStyle = cntl`
 ---
 
 <div class="flex items-center space-x-4">
-  <img src={imgSrc} alt={name} class="w-24 h-24 rounded-full" />
+  <div class="avatar">
+    <div class="w-24 rounded-full">
+      <Image src={imgSrc} alt={name} width={96} height={96} />
+    </div>
+  </div>
   <div>
     <h3
       class="text-lg font-semibold text-spectra-950 dark:text-spectra-50 mb-1"
