@@ -13,7 +13,7 @@ const { searchURI, downloadURI, previousVersionsURI, versionDescription } =
   Astro.props;
 ---
 
-<div class="flex gap-4 mt-16">
+<div class="grid md:flex md:grid-cols-2 gap-2 mt-8 md:mt-16">
   <div>
     <ActionButton label="Download the latest version" uri={downloadURI} />
   </div>
