@@ -1,6 +1,5 @@
 ---
 import { db, Taxonomy } from "astro:db";
-import Layout from "../../layouts/Layout.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import { eq } from "astro:db";
 import { Synonym } from "astro:db";
@@ -9,6 +8,7 @@ import SynonymButton from "../../components/buttons/SynonymButton.astro";
 import SynonymList from "../../layouts/SynonymList.astro";
 import TaxonData from "../../components/TaxonData.astro";
 import { matchIUCNRedlistStatus } from "../../scripts/iucn";
+import Page from "../../layouts/Page.astro";
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
@@ -42,7 +42,7 @@ const common_name_class = cntl`
 `;
 ---
 
-<Layout title="Taxon">
+<Page title="Taxon">
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16 mb-4">
       <h1 class="font-serif text-3xl md:text-5xl italic mb-2">
@@ -165,7 +165,7 @@ const common_name_class = cntl`
       </div>
     </div>
   </MainPage>
-</Layout>
+</Page>
 
 <script
   is:inline

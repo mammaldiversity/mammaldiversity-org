@@ -1,0 +1,18 @@
+---
+import Footer from "../components/Footer.astro";
+import Head from "../components/Head.astro";
+import Header from "../components/Header.astro";
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <Head title={title} />
+  <body class="bg-white dark:bg-black">
+    <div class="relative text-lg isolate px-6 pt-8 lg:px-8 dark:text-slate-100">
+      <Header />
+      <slot />
+    </div>
+  </body><Footer />
+</html>
