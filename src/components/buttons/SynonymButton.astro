@@ -24,11 +24,50 @@ const authority = `${authoritySpeciesAuthor}, ${authoritySpeciesYear}`;
 const authorityText = authorityParentheses === 1 ? `(${authority})` : authority;
 ---
 
-<div
-  class="w-fit rounded-full p-2 mr-4 border-2 hover:bg-spectra-50 dark:hover:bg-spectra-950 border-spectra-700 dark:border-spectra-300"
->
-  <p class="text-sm text-spectra-700 dark:text-spectra-300">
-    <span class="italic">{synonymText}</span>
-    {authorityText}
-  </p>
-</div>
+<button onclick="my_modal_5.showModal()">
+  <div
+    class="w-fit rounded-full p-2 mr-4 border-2 hover:bg-spectra-50 dark:hover:bg-spectra-950 border-spectra-700 dark:border-spectra-300"
+  >
+    <p class="text-sm text-spectra-700 dark:text-spectra-300">
+      <span class="italic">{synonymText}</span>
+      {authorityText}
+    </p>
+  </div>
+</button>
+
+<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Hello!</h3>
+    <p class="py-4">Press ESC key or click the button below to close</p>
+    <div class="modal-action">
+      <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const modal = document.getElementById("my_modal_5");
+  const btn = document.getElementById("myBtn");
+  const span = document.getElementsByClassName("close")[0] as HTMLElement;
+
+  if (btn) {
+    btn.onclick = function () {
+      modal?.classList.add("open");
+    };
+  }
+
+  if (span) {
+    span.onclick = function () {
+      modal?.classList.remove("open");
+    };
+  }
+
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal?.classList.remove("open");
+    }
+  };
+</script>
