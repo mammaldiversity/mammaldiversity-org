@@ -4,7 +4,6 @@ import shrewImg from "../assets/images/mammal_images/1004046.jpg";
 import goldenMouse from "../assets/images/mammal_images/1002250.jpg";
 import selenodon from "../assets/images/mammal_images/1003840.jpg";
 import duiker from "../assets/images/mammal_images/1006226.jpg";
-import reigMouse from "../assets/images/mammal_images/1002756.jpg";
 import cntl from "cntl";
 import MainActionButtons from "../components/MainActionButtons.astro";
 import Zenodo from "../components/pubs/Zenodo.astro";
@@ -25,23 +24,19 @@ const versionDescription = `Current version:${currentVersion}, released ${releas
 const allImages = [
   {
     src: shrewImg,
-    alt: "A shrew from the ASM’s mammal image library",
+    alt: "A palawan moss shrew. Courtesy of the ASM’s MIL",
   },
   {
     src: goldenMouse,
-    alt: "A golden mouse from the ASM’s mammal image library",
+    alt: "A golden mouse. Courtesy of the ASM’s MIL",
   },
   {
     src: selenodon,
-    alt: "A selenodon from the ASM’s mammal image library",
+    alt: "A hispaniolan selenodon. Courtesy of the ASM’s MIL",
   },
   {
     src: duiker,
-    alt: "A duiker from the ASM’s mammal image library",
-  },
-  {
-    src: reigMouse,
-    alt: "A reig mouse from the ASM’s mammal image library",
+    alt: "An Abbott's duiker. Courtesy of the ASM’s MIL",
   },
 ];
 const mammalImg = allImages[Math.floor(Math.random() * allImages.length)];
