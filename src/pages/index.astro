@@ -22,7 +22,28 @@ const mddDownloadLink = "https://www.mammaldiversity.org/assets/data/MDD.zip";
 // Define version description
 const versionDescription = `Current version:${currentVersion}, released ${releaseDate}`;
 
-const allImages = [shrewImg, goldenMouse, selenodon, duiker, reigMouse];
+const allImages = [
+  {
+    src: shrewImg,
+    alt: "A shrew from the ASM’s mammal image library",
+  },
+  {
+    src: goldenMouse,
+    alt: "A golden mouse from the ASM’s mammal image library",
+  },
+  {
+    src: selenodon,
+    alt: "A selenodon from the ASM’s mammal image library",
+  },
+  {
+    src: duiker,
+    alt: "A duiker from the ASM’s mammal image library",
+  },
+  {
+    src: reigMouse,
+    alt: "A reig mouse from the ASM’s mammal image library",
+  },
+];
 const mammalImg = allImages[Math.floor(Math.random() * allImages.length)];
 
 const currentYear = new Date().getFullYear();
@@ -38,7 +59,8 @@ const titleClasses = cntl`
   text-5xl
   text-spectra-700
   dark:text-spectra-200
-  mt-8
+  mt-4
+  lg:mt-2
 `;
 
 const descriptionClasses = cntl`
@@ -47,14 +69,32 @@ const descriptionClasses = cntl`
   dark:text-spectra-50
   mt-2
 `;
+
+const heroClasses = cntl`
+  text-left
+  grid
+  grid-cols-1
+  lg:grid-cols-2
+  mt-14
+  px-8
+  py-8
+  bg-spectra-100
+  bg-gradient-to-r
+  from-spectra-100
+  to-spicy-mix-100
+  dark:from-spectra-900
+  dark:to-spicy-mix-900
+  rounded-xl
+  mx-8
+`;
 ---
 
 <FrontPage title="ASM Mammal Diversity Database">
   <MainPage>
-    <div class="text-left grid grid-cols-1 lg:grid-cols-2 mt-8 px-8">
+    <div class={heroClasses}>
       <div>
         <h1 class={titleClasses}>The Mammal Diversity Database</h1>
-        <h1 class="text-md mb-4">of the American Society of Mammalogists</h1>
+        <h2 class="text-md mb-4">of the American Society of Mammalogists</h2>
         <p class={descriptionClasses}>
           Track the latest taxonomic changes to living and recently extinct
           (i.e., since ~1500 CE) species and higher taxa of mammals.
@@ -67,70 +107,68 @@ const descriptionClasses = cntl`
           versionDescription={versionDescription}
         />
       </div>
-      <div class="justify-items-center mt-8 order-first lg:order-last">
+      <div class="justify-items-center order-first lg:order-last">
         <Image
           class="-z-10 object-center rounded-3xl"
           height="360"
-          src={mammalImg}
-          alt="A rat photo from the ASM’s mammal image library"
+          src={mammalImg.src}
+          alt={mammalImg.alt}
         />
       </div>
     </div>
 
-    <div class="bg-spectra-800 rounded-t-xl mt-16">
-      <div id="goal-content" class="py-4 px-2 text-center">
-        <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
-          Our Goals
-        </h2>
-        <p class="text-lg max-w-3xl mx-auto">
-          We are curating the taxonomic implications of new research
-          publications in real time — with the goal of promoting rigorous study
-          of mammal biodiversity worldwide.
+    <div id="goal-content" class="py-4 px-2 text-center mt-8">
+      <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4">
+        Our Goals
+      </h2>
+      <p class="text-lg max-w-3xl mx-auto">
+        We are curating the taxonomic implications of new research publications
+        in real time — with the goal of promoting rigorous study of mammal
+        biodiversity worldwide.
+      </p>
+    </div>
+    <div class="py-4 px-2 text-center mt-4 mb-4 max-w-4xl mx-auto">
+      <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
+        Cite MDD
+      </h2>
+      <div class="text-md">
+        <p>
+          The current database (via <Link
+            url="https://doi.org/10.5281/zenodo.4139722"
+            label="Zenodo"
+          />):
         </p>
-      </div>
-      <div class="py-4 px-2 text-center mt-4 mb-4 max-w-4xl mx-auto">
-        <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
-          Cite MDD
-        </h2>
-        <div class="text-md">
-          <p>
-            The current database (via <Link
-              url="https://doi.org/10.5281/zenodo.4139722"
-              label="Zenodo"
-            />):
-          </p>
-          <Zenodo
-            authors={["Mammal Diversity Database"]}
-            year={currentYear}
-            title="Mammal Diversity Database (Version 1.13) [Data set]"
-            doi="https://doi.org/10.5281/zenodo.10595931"
-          />
-          <p>
-            A specific entry: Each entry has a citation string at the end. For
-            example:
-          </p>
-          <SpeciesCitation
-            species="Dipodomys deserti"
-            mddID="1001892"
-            date={currentDate}
-            year={currentYear}
-          />
-          <p>Describing the MDD v1.0 taxonomy:</p>
-          <Journal
-            authors={[
-              "Burgin, C. J.",
-              "Colella, J. P.",
-              "Kahn, P. L.",
-              "Upham, N. S",
-            ]}
-            year={2018}
-            title="How many species of mammals are there?"
-            journal="Journal of Mammalogy"
-            volume="99"
-            pages="1—11"
-            doi="https://doi.org/10.1093/jmammal/gyx147"
-          />
-        </div>
+        <Zenodo
+          authors={["Mammal Diversity Database"]}
+          year={currentYear}
+          title="Mammal Diversity Database (Version 1.13) [Data set]"
+          doi="https://doi.org/10.5281/zenodo.10595931"
+        />
+        <p>
+          A specific entry: Each entry has a citation string at the end. For
+          example:
+        </p>
+        <SpeciesCitation
+          species="Dipodomys deserti"
+          mddID="1001892"
+          date={currentDate}
+          year={currentYear}
+        />
+        <p>Describing the MDD v1.0 taxonomy:</p>
+        <Journal
+          authors={[
+            "Burgin, C. J.",
+            "Colella, J. P.",
+            "Kahn, P. L.",
+            "Upham, N. S",
+          ]}
+          year={2018}
+          title="How many species of mammals are there?"
+          journal="Journal of Mammalogy"
+          volume="99"
+          pages="1—11"
+          doi="https://doi.org/10.1093/jmammal/gyx147"
+        />
       </div>
     </div>
   </MainPage>
