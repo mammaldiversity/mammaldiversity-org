@@ -24,7 +24,7 @@ const authority = `${authoritySpeciesAuthor}, ${authoritySpeciesYear}`;
 const authorityText = authorityParentheses === 1 ? `(${authority})` : authority;
 ---
 
-<button id="modal-btn" onclick="my_modal_5.showModal()">
+<button id="modal-btn">
   <div
     class="w-fit rounded-full p-2 mr-4 border-2 hover:bg-spectra-50 dark:hover:bg-spectra-950 border-spectra-700 dark:border-spectra-300"
   >
@@ -37,8 +37,19 @@ const authorityText = authorityParentheses === 1 ? `(${authority})` : authority;
 
 <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
   <div class="modal-box">
-    <h3 class="text-lg font-bold">Hello!</h3>
-    <p class="py-4">Press ESC key or click the button below to close</p>
+    <h3 class="text-lg font-bold">
+      <span class="italic">{synonymText}</span>
+      {authorityText}
+    </h3>
+    <p class="text-sm">
+      <span class="italic">{rootName}</span>
+    </p>
+    <p class="text-sm">
+      <span class="italic">{species}</span>
+    </p>
+    <p class="text-sm">
+      {authority}
+    </p>
     <div class="modal-action">
       <form method="dialog">
         <!-- if there is a button in form, it will close the modal -->
