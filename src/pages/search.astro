@@ -105,7 +105,9 @@ taxa.forEach((taxon) => {
       </label>
     </div>
     <div class="flex-grow border-t-2 border-spectra-500 mb-4 rounded"></div>
-
+    <p id="no-results" class="hidden text-center text-lg font-medium my-4">
+      No results found.
+    </p>
     {
       Object.entries(taxonByOrder).map(([order, taxa]) => (
         <div id="taxon-list">
@@ -173,6 +175,14 @@ taxa.forEach((taxon) => {
       (list as HTMLElement).classList.toggle("hidden", !hasMatch);
     });
 
+    const noResults = document.getElementById("no-results");
+    if (noResults) {
+      const hasAnyMatch = Array.from(taxonList).some(
+        (list) => !list.classList.contains("hidden")
+      );
+      noResults.classList.toggle("hidden", hasAnyMatch);
+    }
+
     const resetBtn = document.getElementById("clear-search");
     if (resetBtn) {
       resetBtn.classList.remove("hidden");
@@ -197,6 +207,11 @@ taxa.forEach((taxon) => {
         const searchInput = document.getElementById("search-input");
         if (searchInput) {
           (searchInput as HTMLInputElement).value = "";
+        }
+        // Hide no results message
+        const noResults = document.getElementById("no-results");
+        if (noResults) {
+          noResults.classList.add("hidden");
         }
       });
     }
