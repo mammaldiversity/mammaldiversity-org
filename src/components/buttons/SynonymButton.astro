@@ -24,7 +24,7 @@ const authority = `${authoritySpeciesAuthor}, ${authoritySpeciesYear}`;
 const authorityText = authorityParentheses === 1 ? `(${authority})` : authority;
 ---
 
-<button onclick="my_modal_5.showModal()">
+<button id="modal-btn" onclick="my_modal_5.showModal()">
   <div
     class="w-fit rounded-full p-2 mr-4 border-2 hover:bg-spectra-50 dark:hover:bg-spectra-950 border-spectra-700 dark:border-spectra-300"
   >
@@ -49,25 +49,14 @@ const authorityText = authorityParentheses === 1 ? `(${authority})` : authority;
 </dialog>
 
 <script>
-  const modal = document.getElementById("my_modal_5");
-  const btn = document.getElementById("myBtn");
-  const span = document.getElementsByClassName("close")[0] as HTMLElement;
+  const dialog = document.querySelector("#my_modal_5") as HTMLDialogElement;
+  const modalBtn = document.querySelectorAll("#modal-btn");
 
-  if (btn) {
-    btn.onclick = function () {
-      modal?.classList.add("open");
-    };
-  }
-
-  if (span) {
-    span.onclick = function () {
-      modal?.classList.remove("open");
-    };
-  }
-
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal?.classList.remove("open");
-    }
-  };
+  modalBtn.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (dialog) {
+        dialog.showModal();
+      }
+    });
+  });
 </script>
