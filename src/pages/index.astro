@@ -78,58 +78,60 @@ const descriptionClasses = cntl`
         />
       </div>
     </div>
-    <div id="goal-content" class="py-4 px-2 text-center mt-16">
-      <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
-        Our Goals
-      </h2>
-      <p class="text-lg max-w-3xl mx-auto">
-        We are curating the taxonomic implications of new research publications
-        in real time — with the goal of promoting rigorous study of mammal
-        biodiversity worldwide.
-      </p>
-    </div>
-    <div class="py-4 px-2 text-center mt-4 mb-4 max-w-4xl mx-auto">
-      <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
-        Cite MDD
-      </h2>
-      <div class="text-md">
-        <p>
-          The current database (via <Link
-            url="https://doi.org/10.5281/zenodo.4139722"
-            label="Zenodo"
-          />):
+    <div class="bg-spectra-800 rounded-t-3xl">
+      <div id="goal-content" class="py-4 px-2 text-center mt-16">
+        <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
+          Our Goals
+        </h2>
+        <p class="text-lg max-w-3xl mx-auto">
+          We are curating the taxonomic implications of new research
+          publications in real time — with the goal of promoting rigorous study
+          of mammal biodiversity worldwide.
         </p>
-        <Zenodo
-          authors={["Mammal Diversity Database"]}
-          year={currentYear}
-          title="Mammal Diversity Database (Version 1.13) [Data set]"
-          doi="https://doi.org/10.5281/zenodo.10595931"
-        />
-        <p>
-          A specific entry: Each entry has a citation string at the end. For
-          example:
-        </p>
-        <SpeciesCitation
-          species="Dipodomys deserti"
-          mddID="1001892"
-          date={currentDate}
-          year={currentYear}
-        />
-        <p>Describing the MDD v1.0 taxonomy:</p>
-        <Journal
-          authors={[
-            "Burgin, C. J.",
-            "Colella, J. P.",
-            "Kahn, P. L.",
-            "Upham, N. S",
-          ]}
-          year={2018}
-          title="How many species of mammals are there?"
-          journal="Journal of Mammalogy"
-          volume="99"
-          pages="1—11"
-          doi="https://doi.org/10.1093/jmammal/gyx147"
-        />
+      </div>
+      <div class="py-4 px-2 text-center mt-4 mb-4 max-w-4xl mx-auto">
+        <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
+          Cite MDD
+        </h2>
+        <div class="text-md">
+          <p>
+            The current database (via <Link
+              url="https://doi.org/10.5281/zenodo.4139722"
+              label="Zenodo"
+            />):
+          </p>
+          <Zenodo
+            authors={["Mammal Diversity Database"]}
+            year={currentYear}
+            title="Mammal Diversity Database (Version 1.13) [Data set]"
+            doi="https://doi.org/10.5281/zenodo.10595931"
+          />
+          <p>
+            A specific entry: Each entry has a citation string at the end. For
+            example:
+          </p>
+          <SpeciesCitation
+            species="Dipodomys deserti"
+            mddID="1001892"
+            date={currentDate}
+            year={currentYear}
+          />
+          <p>Describing the MDD v1.0 taxonomy:</p>
+          <Journal
+            authors={[
+              "Burgin, C. J.",
+              "Colella, J. P.",
+              "Kahn, P. L.",
+              "Upham, N. S",
+            ]}
+            year={2018}
+            title="How many species of mammals are there?"
+            journal="Journal of Mammalogy"
+            volume="99"
+            pages="1—11"
+            doi="https://doi.org/10.1093/jmammal/gyx147"
+          />
+        </div>
       </div>
     </div>
   </MainPage>
