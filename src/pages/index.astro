@@ -50,8 +50,8 @@ const descriptionClasses = cntl`
 ---
 
 <FrontPage title="ASM Mammal Diversity Database">
-  <MainPage
-    ><div class="text-left grid grid-cols-1 lg:grid-cols-2 item-center mt-8">
+  <MainPage>
+    <div class="text-left grid grid-cols-1 lg:grid-cols-2 mt-8 px-8">
       <div>
         <h1 class={titleClasses}>The Mammal Diversity Database</h1>
         <h1 class="text-md mb-4">of the American Society of Mammalogists</h1>
@@ -67,9 +67,7 @@ const descriptionClasses = cntl`
           versionDescription={versionDescription}
         />
       </div>
-      <div
-        class="flex justify-center items-center mt-8 order-first lg:order-last"
-      >
+      <div class="justify-items-center mt-8 order-first lg:order-last">
         <Image
           class="-z-10 object-center rounded-3xl"
           height="360"
@@ -78,8 +76,9 @@ const descriptionClasses = cntl`
         />
       </div>
     </div>
-    <div class="bg-spectra-800 rounded-t-3xl">
-      <div id="goal-content" class="py-4 px-2 text-center mt-16">
+
+    <div class="bg-spectra-800 rounded-t-xl mt-16">
+      <div id="goal-content" class="py-4 px-2 text-center">
         <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4 mt-4">
           Our Goals
         </h2>
