@@ -1,7 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import MainPage from "../layouts/MainPage.astro";
-import mammalImg from "../assets/images/mammal_images/1004046.jpg";
+import shrewImg from "../assets/images/mammal_images/1004046.jpg";
+import goldenMouse from "../assets/images/mammal_images/1002250.jpg";
+import selenodon from "../assets/images/mammal_images/1003840.jpg";
+import duiker from "../assets/images/mammal_images/1006226.jpg";
+import reigMouse from "../assets/images/mammal_images/1002756.jpg";
 import cntl from "cntl";
 import MainActionButtons from "../components/MainActionButtons.astro";
 import Zenodo from "../components/pubs/Zenodo.astro";
@@ -17,6 +21,9 @@ const mddDownloadLink = "https://www.mammaldiversity.org/assets/data/MDD.zip";
 
 // Define version description
 const versionDescription = `Current version:${currentVersion}, released ${releaseDate}`;
+
+const allImages = [shrewImg, goldenMouse, selenodon, duiker, reigMouse];
+const mammalImg = allImages[Math.floor(Math.random() * allImages.length)];
 
 const currentYear = new Date().getFullYear();
 const currentDate = new Date().toLocaleDateString("en-US", {
