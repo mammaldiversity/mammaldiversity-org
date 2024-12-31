@@ -89,7 +89,7 @@ const heroClasses = cntl`
 
 <FrontPage title="ASM Mammal Diversity Database">
   <MainPage>
-    <div class={heroClasses}>
+    <div id="hero" class={heroClasses}>
       <div>
         <h1 class={titleClasses}>The Mammal Diversity Database</h1>
         <h2 class="text-md mb-4">By the American Society of Mammalogists</h2>
@@ -113,19 +113,21 @@ const heroClasses = cntl`
         />
       </div>
     </div>
-    <div id="goal-content" class="py-4 px-2 text-center mt-8">
-      <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4">
-        Our Goals
-      </h2>
-      <p class="text-lg max-w-4xl mx-auto">
-        We are curating the taxonomic implications of new research publications
-        in real time — with the goal of promoting rigorous study of mammal
-        biodiversity worldwide. The initial objective has been to aggregate,
-        curate, and compile, new citations on species descriptions and taxonomic
-        revisions into regular releases that are downloadable in comma-delimited
-        format. Downstream goals include expanded hosting of ecological, trait,
-        and taxonomic data.
-      </p>
+    <div id="content" class="mx-8">
+      <div id="goal-content" class="py-4 px-2 text-center mt-8">
+        <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4">
+          Our Goals
+        </h2>
+        <p class="text-lg max-w-4xl mx-auto">
+          We are curating the taxonomic implications of new research
+          publications in real time — with the goal of promoting rigorous study
+          of mammal biodiversity worldwide. The initial objective has been to
+          aggregate, curate, and compile, new citations on species descriptions
+          and taxonomic revisions into regular releases that are downloadable in
+          comma-delimited format. Downstream goals include expanded hosting of
+          ecological, trait, and taxonomic data.
+        </p>
+      </div>
       <div class="overflow-x-auto py-4 px-2 text-center mt-4 max-w-3xl mx-auto">
         <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4">
           Mammal Diversity Statistics
@@ -138,19 +140,18 @@ const heroClasses = cntl`
         <h2 class="font-serif text-xl lg:text-4xl font-semibold mt-4 mb-4">
           Try the MDD App
         </h2>
-        <div class="flex grid-cols-1 lg:grid-cols-2">
+        <div class="grid lg:flex grid-cols-1 lg:grid-cols-2 justify-center">
           <Image height="320" src={desktopApp} alt="MDD App" />
-          <div class="text-left justify-center mt-4">
+          <div class="text-left mt-4">
             <p class="text-lg text-left">
               The app is currently in beta. It provides offline access to the
               MDD, advanced search features, custom exports, and more.
             </p>
             <p class="text-sm mt-2">Support all major desktop and mobile OS.</p>
             <DownloadButton
-              label="Download the App"
+              label="Learn more"
               url="https://github.com/mammaldiversity/mdd_app?tab=readme-ov-file#try-it-out-"
-              extendClass="mt-4 lg:mt-12"
-              isDownload
+              extendClass="mt-12"
             />
           </div>
         </div>
