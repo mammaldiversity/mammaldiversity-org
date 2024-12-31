@@ -14,6 +14,7 @@ import Image from "astro/components/Image.astro";
 import FrontPage from "../layouts/FrontPage.astro";
 import DiversityStatTable from "../components/DiversityStatTable.astro";
 import DownloadButton from "../components/buttons/DownloadButton.astro";
+import desktopApp from "../assets/images/screenshots/desktopApp.png";
 
 const currentVersion = "v1.13";
 const releaseDate = "13 Jul 2024";
@@ -112,22 +113,6 @@ const heroClasses = cntl`
         />
       </div>
     </div>
-    <div class="py-4 px-2 text-center mt-2 max-w-6xl mx-auto">
-      <h2 class="font-serif text-2xl lg:text-4xl font-semibold mt-4 mb-4">
-        Try the MDD App
-      </h2>
-      <p>
-        The app is currently in beta. It supports all major mobile and desktop
-        operating systems. It provides offline access to the MDD, advanced
-        search features, custom exports, and more.
-      </p>
-      <DownloadButton
-        label="Download the App"
-        url="https://github.com/mammaldiversity/mdd_app"
-        extendClass="mt-4"
-        isDownload
-      />
-    </div>
     <div id="goal-content" class="py-4 px-2 text-center mt-8">
       <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4">
         Our Goals
@@ -146,6 +131,29 @@ const heroClasses = cntl`
           Mammal Diversity Statistics
         </h2>
         <DiversityStatTable />
+      </div>
+      <div
+        class="py-4 px-2 text-center mt-8 max-w-4xl mx-auto bg-gradient-to-r dark:from-spectra-900 dark:to-transparent from-spectra-100 to-transparent rounded-xl"
+      >
+        <h2 class="font-serif text-xl lg:text-4xl font-semibold mt-4 mb-4">
+          Try the MDD App
+        </h2>
+        <div class="flex grid-cols-1 lg:grid-cols-2">
+          <Image height="320" src={desktopApp} alt="MDD App" />
+          <div class="text-left justify-center mt-4">
+            <p class="text-lg text-left">
+              The app is currently in beta. It supports all major mobile and
+              desktop operating systems. It provides offline access to the MDD,
+              advanced search features, custom exports, and more.
+            </p>
+            <DownloadButton
+              label="Download the App"
+              url="https://github.com/mammaldiversity/mdd_app"
+              extendClass="mt-4 lg:mt-16"
+              isDownload
+            />
+          </div>
+        </div>
       </div>
       <div class="py-4 px-2 text-center mb-4 max-w-6xl mx-auto">
         <h2 class="font-serif text-2xl lg:text-4xl font-semibold mt-4">
