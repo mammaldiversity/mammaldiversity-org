@@ -40,14 +40,14 @@ export default {
         light: {
           ...require("daisyui/src/theming/themes")["light"],
           primary: "#0E5D5B",
-          secondary: "#b9d6d2",
+          secondary: "#d6cab1",
         },
       },
       {
         dark: {
           ...require("daisyui/src/theming/themes")["dark"],
           primary: "#24EDEA",
-          secondary: "#2c4243",
+          secondary: "#65453b",
         },
       },
     ],
