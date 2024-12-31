@@ -40,7 +40,7 @@ export default {
         light: {
           ...require("daisyui/src/theming/themes")["light"],
           primary: "#0E5D5B",
-          secondary: "#d6cab1",
+          secondary: "#65453b",
         },
       },
       {
