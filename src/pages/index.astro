@@ -54,7 +54,8 @@ const currentDate = new Date().toLocaleDateString("en-US", {
 const titleClasses = cntl`
   font-serif
   font-semibold
-  text-5xl
+  text-4xl
+  lg:text-5xl
   text-spectra-700
   dark:text-spectra-200
   mt-4
@@ -75,7 +76,8 @@ const heroClasses = cntl`
   lg:grid-cols-2
   mt-8
   lg:mt-14
-  px-8
+  px-4
+  lg:px-8
   py-8
   bg-spectra-100
   bg-gradient-to-r
@@ -108,7 +110,7 @@ const heroClasses = cntl`
       </div>
       <div class="justify-items-center order-first lg:order-last">
         <Image
-          class="-z-10 object-center rounded-3xl"
+          class="-z-10 mx-auto rounded-3xl"
           height="360"
           src={mammalImg.src}
           alt={mammalImg.alt}
@@ -117,7 +119,7 @@ const heroClasses = cntl`
     </div>
     <div id="content" class="mx-8">
       <div id="goal-content" class="py-4 px-2 text-center mt-8">
-        <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4">
+        <h2 class="font-serif text-3xl lg:text-4xl font-semibold mb-4">
           Our Goals
         </h2>
         <p class="text-lg max-w-4xl mx-auto">
@@ -131,7 +133,7 @@ const heroClasses = cntl`
         </p>
       </div>
       <div class="overflow-x-auto py-4 px-2 text-center mt-4 max-w-3xl mx-auto">
-        <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4">
+        <h2 class="font-serif text-3xl lg:text-4xl font-semibold mb-4">
           Mammal Diversity Statistics
         </h2>
         <DiversityStatTable />
@@ -139,15 +141,15 @@ const heroClasses = cntl`
       <div
         class="py-4 px-2 text-center mt-8 max-w-4xl mx-auto bg-gradient-to-r dark:from-spectra-900 dark:to-transparent from-spectra-100 to-transparent rounded-xl"
       >
-        <h2 class="font-serif text-xl lg:text-4xl font-semibold mt-4 mb-4">
+        <h2 class="font-serif text-3xl lg:text-4xl font-semibold mt-4 mb-4">
           Try the MDD App <span class="text-sm inline-block align-top"
             >beta</span
           >
         </h2>
         <div
-          class="grid lg:flex grid-cols-1 lg:grid-cols-2 justify-center py-2 px-4"
+          class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center py-2 px-4"
         >
-          <Image height="320" src={desktopApp} alt="MDD App" />
+          <Image class="mx-auto" height="320" src={desktopApp} alt="MDD App" />
           <div class="text-left mt-4">
             <p class="text-lg font-semibold">App features:</p>
             <ul class="text-left ml-4 list-disc list-inside">
@@ -166,7 +168,7 @@ const heroClasses = cntl`
         </div>
       </div>
       <div class="py-4 px-2 text-center mb-4 max-w-6xl mx-auto">
-        <h2 class="font-serif text-2xl lg:text-4xl font-semibold mt-4">
+        <h2 class="font-serif text-3xl lg:text-4xl font-semibold mt-4">
           Cite MDD
         </h2>
         <div class="text-md">
