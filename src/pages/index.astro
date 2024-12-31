@@ -12,6 +12,8 @@ import Journal from "../components/pubs/Journal.astro";
 import Link from "../components/Link.astro";
 import Image from "astro/components/Image.astro";
 import FrontPage from "../layouts/FrontPage.astro";
+import DiversityStatTable from "../components/DiversityStatTable.astro";
+import DownloadButton from "../components/buttons/DownloadButton.astro";
 
 const currentVersion = "v1.13";
 const releaseDate = "13 Jul 2024";
@@ -94,7 +96,6 @@ const heroClasses = cntl`
           Track the latest taxonomic changes to living and recently extinct
           (i.e., since ~1500 CE) species and higher taxa of mammals.
         </p>
-
         <MainActionButtons
           searchURI="./search"
           downloadURI={mddDownloadLink}
@@ -111,6 +112,22 @@ const heroClasses = cntl`
         />
       </div>
     </div>
+    <div class="py-4 px-2 text-center mt-2 max-w-6xl mx-auto">
+      <h2 class="font-serif text-2xl lg:text-4xl font-semibold mt-4 mb-4">
+        Try the MDD App
+      </h2>
+      <p>
+        The app is currently in beta. It supports all major mobile and desktop
+        operating systems. It provides offline access to the MDD, advanced
+        search features, custom exports, and more.
+      </p>
+      <DownloadButton
+        label="Download the App"
+        url="https://github.com/mammaldiversity/mdd_app"
+        extendClass="mt-4"
+        isDownload
+      />
+    </div>
     <div id="goal-content" class="py-4 px-2 text-center mt-8">
       <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4">
         Our Goals
@@ -124,74 +141,13 @@ const heroClasses = cntl`
         format. Downstream goals include expanded hosting of ecological, trait,
         and taxonomic data.
       </p>
-
-      <div class="overflow-x-auto py-4 px-2 text-center mt-4 max-w-6xl mx-auto">
+      <div class="overflow-x-auto py-4 px-2 text-center mt-4 max-w-3xl mx-auto">
         <h2 class="font-serif text-2xl lg:text-4xl font-semibold mb-4">
           Mammal Diversity Statistics
         </h2>
-        <table class="min-w-full">
-          <thead class="bg-spectra-100 dark:bg-spectra-900">
-            <tr>
-              <th class="py-2 px-4 border-b rounded-tl-xl">Taxa</th>
-              <th class="py-2 px-4 border-b">MSW3 2005</th>
-              <th class="py-2 px-4 border-b">MDD 2018</th>
-              <th class="py-2 px-4 border-b rounded-tr-xl">Current</th>
-            </tr>
-          </thead>
-          <tbody>
-            <td class="text-left px-4">Species</td>
-            <tr>
-              <td class="text-left py-2 px-8 border-b">Total</td>
-              <td class="py-2 px-4 border-b">5,416</td>
-              <td class="py-2 px-4 border-b">6,495</td>
-              <td class="py-2 px-4 border-b">6,753</td>
-            </tr>
-            <tr>
-              <td class="text-left py-2 px-8 border-b">Recently Extinct</td>
-              <td class="py-2 px-4 border-b">75</td>
-              <td class="py-2 px-4 border-b">96</td>
-              <td class="py-2 px-4 border-b">113</td>
-            </tr>
-            <tr>
-              <td class="text-left py-2 px-8 border-b">Living</td>
-              <td class="py-2 px-4 border-b">5,341</td>
-              <td class="py-2 px-4 border-b">6,399</td>
-              <td class="py-2 px-4 border-b">6,640</td>
-            </tr>
-            <tr>
-              <td class="text-left py-2 px-8 border-b">Domestic</td>
-              <td class="py-2 px-4 border-b">0</td>
-              <td class="py-2 px-4 border-b">16</td>
-              <td class="py-2 px-4 border-b">17</td>
-            </tr>
-            <tr>
-              <td class="text-left py-2 px-8 border-b">Living Wild</td>
-              <td class="py-2 px-4 border-b">5,338</td>
-              <td class="py-2 px-4 border-b">6,382</td>
-              <td class="py-2 px-4 border-b">6,623</td>
-            </tr>
-            <tr>
-              <td class="text-left py-2 px-4 border-b">Genera</td>
-              <td class="py-2 px-4 border-b">1,230</td>
-              <td class="py-2 px-4 border-b">1,314</td>
-              <td class="py-2 px-4 border-b">1,353</td>
-            </tr>
-            <tr>
-              <td class="text-left py-2 px-4 border-b">Families</td>
-              <td class="py-2 px-4 border-b">153</td>
-              <td class="py-2 px-4 border-b">167</td>
-              <td class="py-2 px-4 border-b">167</td>
-            </tr>
-            <tr>
-              <td class="text-left py-2 px-4 border-b">Orders</td>
-              <td class="py-2 px-4 border-b">29</td>
-              <td class="py-2 px-4 border-b">27</td>
-              <td class="py-2 px-4 border-b">27</td>
-            </tr>
-          </tbody>
-        </table>
+        <DiversityStatTable />
       </div>
-      <div class="py-4 px-2 text-center mt-2 mb-4 max-w-6xl mx-auto">
+      <div class="py-4 px-2 text-center mb-4 max-w-6xl mx-auto">
         <h2 class="font-serif text-2xl lg:text-4xl font-semibold mt-4">
           Cite MDD
         </h2>
