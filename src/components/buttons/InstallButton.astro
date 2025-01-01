@@ -1,14 +1,14 @@
 ---
 import cntl from "cntl";
 
-interface DownloadButton {
+interface InstallButtonProps {
   label: string;
   url: string;
-  isDownload: boolean;
+  withIcon: boolean;
   extendClasses?: string;
 }
 
-const { label, url, isDownload, extendClass } = Astro.props;
+const { label, url, withIcon, extendClass } = Astro.props;
 
 const buttonClasses = cntl`
     btn-md
@@ -21,7 +21,7 @@ const buttonClasses = cntl`
 <a href={url} target="_blank" rel="noopener noreferrer">
   <button class={buttonClasses}>
     {
-      isDownload && (
+      withIcon && (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-4 w-4"
