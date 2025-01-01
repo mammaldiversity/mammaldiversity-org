@@ -1,4 +1,7 @@
 ---
+import PageDivider from "./PageDivider.astro";
+import TaxonData from "./TaxonData.astro";
+
 interface SynonymsProps {
   originalNameCombination?: string;
   species: string;
@@ -19,12 +22,22 @@ interface SynonymsProps {
 }
 
 const {
-  rootName,
   originalNameCombination,
   species,
+  rootName,
   authoritySpeciesAuthor,
   authoritySpeciesYear,
   authorityParentheses,
+  family,
+  validityStatus,
+  nomenclaturalStatus,
+  type,
+  typeKind,
+  typeSpecimenLink,
+  authorityPage,
+  authorityPageLink,
+  authorityPublication,
+  nameUsages,
 } = Astro.props as SynonymsProps;
 
 const synonymText = originalNameCombination
@@ -48,23 +61,46 @@ const authorityCitation =
 
 <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
   <div class="modal-box">
-    <div id="modal-header" class="text-center">
-      <h1 class="text-xl lg:text-2xl font-serif italic">
+    <div id="modal-header" class="text-center mb-2">
+      <h1 class="text-xl md:text-2xl font-serif italic">
         {synonymText}
       </h1>
       <h2 class="text-lg">
         {authorityCitation}
       </h2>
     </div>
-    <p class="text-sm">
-      <span class="italic">{rootName}</span>
-    </p>
-    <p class="text-sm">
-      <span class="italic">{species}</span>
-    </p>
-    <p class="text-sm">
-      {authority}
-    </p>
+    <PageDivider />
+    <div id="modal-content" class="max-h-96 overflow-y-auto">
+      <TaxonData label="Family" content={family} isSynonym />
+      <TaxonData label="Root name" content={rootName} isSynonym />
+      <TaxonData label="Validity status" content={validityStatus} isSynonym />
+      <TaxonData
+        label="Nomenclatural status"
+        content={nomenclaturalStatus}
+        isSynonym
+      />
+      <TaxonData label="Type" content={type} isSynonym />
+      <TaxonData label="Type kind" content={typeKind} isSynonym />
+      <TaxonData
+        label="Type specimen URI"
+        content={typeSpecimenLink}
+        isUrl
+        isSynonym
+      />
+      <TaxonData label="Authority page" content={authorityPage} isSynonym />
+      <TaxonData
+        label="Authority page URI"
+        content={authorityPageLink}
+        isUrl
+        isSynonym
+      />
+      <TaxonData
+        label="Authority publication"
+        content={authorityPublication}
+        isSynonym
+      />
+      <TaxonData label="Name usages" content={nameUsages} isSynonym />
+    </div>
     <div class="modal-action">
       <form method="dialog">
         <!-- if there is a button in form, it will close the modal -->
