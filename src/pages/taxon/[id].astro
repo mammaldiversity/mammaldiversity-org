@@ -4,7 +4,7 @@ import MainPage from "../../layouts/MainPage.astro";
 import { eq } from "astro:db";
 import { Synonym } from "astro:db";
 import cntl from "cntl";
-import SynonymButton from "../../components/buttons/SynonymButton.astro";
+import SynonymPage from "../../components/SynonymPage.astro";
 import SynonymList from "../../layouts/SynonymList.astro";
 import TaxonData from "../../components/TaxonData.astro";
 import { matchIUCNRedlistStatus } from "../../scripts/iucn";
@@ -160,13 +160,23 @@ const common_name_class = cntl`
           synonyms.length > 0 && (
             <SynonymList>
               {synonyms.map((s) => (
-                <SynonymButton
-                  rootName={s.rootName}
+                <SynonymPage
                   originalNameCombination={s.originalCombination}
                   species={s.species}
+                  rootName={s.rootName}
+                  family={s.family}
                   authoritySpeciesAuthor={s.author}
                   authoritySpeciesYear={s.year}
                   authorityParentheses={s.authorityParentheses}
+                  validityStatus={s.validity}
+                  nomenclaturalStatus={s.nomenclatureStatus}
+                  type={s.holotype}
+                  typeKind={s.typeKind}
+                  typeSpecimenLink={s.typeSpecimenLink}
+                  authorityPage={s.authorityPage}
+                  authorityPageLink={s.authorityPageLink}
+                  authorityPublication={s.citationGroup}
+                  nameUsages={s.nameUsages}
                 />
               ))}
             </SynonymList>
