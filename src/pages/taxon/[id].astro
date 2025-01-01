@@ -193,11 +193,6 @@ const common_name_class = cntl`
   type="text/javascript"
   src="https://www.gstatic.com/charts/loader.js"></script>
 <script is:inline>
-  // Refresh page when window is resized
-  // So, the map can be redrawn to fit the new window size
-  window.addEventListener("resize", () => {
-    window.location.reload();
-  });
   class DistributionMap extends HTMLElement {
     connectedCallback() {
       // Read the message from the data attribute.
@@ -229,6 +224,15 @@ const common_name_class = cntl`
 
         chart.draw(data, options);
       }
+
+      // Refresh map when window is resized
+      // So, the map can be redrawn to fit the new window size
+      window.addEventListener("resize", () => {
+        clearTimeout(window.resizedFinished);
+        window.resizedFinished = setTimeout(() => {
+          drawRegionsMap();
+        }, 500);
+      });
     }
   }
 

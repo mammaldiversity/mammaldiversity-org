@@ -19,28 +19,45 @@ const { label, content, isUrl, isItalic, isSynonym } =
 // If so, replace "|" with "·" (middle dot)
 const textData = !isUrl ? cleanTaxonData(content) : content;
 
+// We will hide the component if the content is "NA" or empty
+// To keep the UI clean
+const isHidden =
+  textData === "NA" || textData.trim().length === 0 ? "hidden" : "";
+
 const synonymClasses = cntl`
   text-md
   mb-2
+  ${isHidden}
 `;
 
 const taxonClasses = cntl`
   text-lg
   md:text-xl
   mb-4
+  ${isHidden}
 `;
 ---
 
 <div class={isSynonym ? synonymClasses : taxonClasses}>
   <h3 class="font-semibold">{label}</h3>
   {
-    isUrl ? (
+    isUrl && textData.startsWith("http") ? (
       // If contain "|", split the content and create multiple links
       textData.includes("|") ? (
         textData.split("|").map((link) => <Link url={link} label={link} />)
       ) : (
         <Link url={textData} label={textData} />
       )
+    ) : textData.includes("http") ? (
+      textData
+        .split(" ")
+        .map((part) =>
+          part.startsWith("http") ? (
+            <Link url={part} label={part} />
+          ) : (
+            <span class={isItalic ? "italic" : ""}>{part} </span>
+          )
+        )
     ) : (
       <p class={isItalic ? "italic" : ""}>{textData}</p>
     )
