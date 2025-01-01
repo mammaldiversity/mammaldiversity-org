@@ -1,11 +1,21 @@
 ---
 interface SynonymsProps {
-  rootName: string;
   originalNameCombination?: string;
   species: string;
+  rootName: string;
   authoritySpeciesAuthor: string;
   authoritySpeciesYear: number;
   authorityParentheses: number;
+  family: string;
+  validityStatus?: string;
+  nomenclaturalStatus?: string;
+  type?: string;
+  typeKind?: string;
+  typeSpecimenLink?: string;
+  authorityPage?: string;
+  authorityPageLink?: string;
+  authorityPublication?: string;
+  nameUsages?: string;
 }
 
 const {
@@ -21,7 +31,8 @@ const synonymText = originalNameCombination
   ? originalNameCombination
   : `${species} ${rootName}`;
 const authority = `${authoritySpeciesAuthor}, ${authoritySpeciesYear}`;
-const authorityText = authorityParentheses === 1 ? `(${authority})` : authority;
+const authorityCitation =
+  authorityParentheses === 1 ? `(${authority})` : authority;
 ---
 
 <button id="modal-btn">
@@ -30,17 +41,21 @@ const authorityText = authorityParentheses === 1 ? `(${authority})` : authority;
   >
     <p class="text-sm text-spectra-700 dark:text-spectra-300">
       <span class="italic">{synonymText}</span>
-      {authorityText}
+      {authorityCitation}
     </p>
   </div>
 </button>
 
 <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
   <div class="modal-box">
-    <h3 class="text-lg font-bold">
-      <span class="italic">{synonymText}</span>
-      {authorityText}
-    </h3>
+    <div id="modal-header" class="text-center">
+      <h1 class="text-xl lg:text-2xl font-serif italic">
+        {synonymText}
+      </h1>
+      <h2 class="text-lg">
+        {authorityCitation}
+      </h2>
+    </div>
     <p class="text-sm">
       <span class="italic">{rootName}</span>
     </p>
