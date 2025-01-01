@@ -9,6 +9,7 @@ import SynonymList from "../../layouts/SynonymList.astro";
 import TaxonData from "../../components/TaxonData.astro";
 import { matchIUCNRedlistStatus } from "../../scripts/iucn";
 import Page from "../../layouts/Page.astro";
+import PageDivider from "../../components/PageDivider.astro";
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
@@ -67,7 +68,7 @@ const common_name_class = cntl`
         {taxon?.mainCommonName}
       </h2>
     </div>
-    <div class="flex-grow border-t-2 border-spectra-500 mb-4 rounded"></div>
+    <PageDivider />
     <div class="grid grid-cols-1 lg:grid-cols-2 justify-between gap-4 mt-4">
       <div>
         <div class={taxonomyClasses}>
