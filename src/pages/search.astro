@@ -4,6 +4,7 @@ import MainPage from "../layouts/MainPage.astro";
 
 import { db, Taxonomy } from "astro:db";
 import Page from "../layouts/Page.astro";
+import PageDivider from "../components/PageDivider.astro";
 
 const taxa = await db
   .select({
@@ -104,7 +105,7 @@ taxa.forEach((taxon) => {
         </button>
       </label>
     </div>
-    <div class="flex-grow border-t-2 border-spectra-500 mb-4 rounded"></div>
+    <PageDivider />
     <p id="no-results" class="hidden text-center text-lg font-medium my-4">
       No results found.
     </p>
