@@ -13,8 +13,8 @@ import Link from "../components/Link.astro";
 import Image from "astro/components/Image.astro";
 import FrontPage from "../layouts/FrontPage.astro";
 import DiversityStatTable from "../components/DiversityStatTable.astro";
-import DownloadButton from "../components/buttons/DownloadButton.astro";
 import desktopApp from "../assets/images/screenshots/desktopApp.png";
+import InstallButton from "../components/buttons/InstallButton.astro";
 
 const currentVersion = "v1.13";
 const releaseDate = "13 Jul 2024";
@@ -159,10 +159,11 @@ const heroClasses = cntl`
               <li>And more</li>
             </ul>
             <p class="text-md mt-2">Support all major desktop and mobile OS.</p>
-            <DownloadButton
-              label="Learn more"
+            <InstallButton
+              label="Install"
               url="https://github.com/mammaldiversity/mdd_app?tab=readme-ov-file#try-it-out-"
               extendClass="mt-12"
+              withIcon
             />
           </div>
         </div>
