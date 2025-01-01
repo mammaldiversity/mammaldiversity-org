@@ -1,24 +1,38 @@
 ---
 import Link from "./Link.astro";
 import { cleanTaxonData } from "../scripts/taxon";
+import cntl from "cntl";
 
 interface TaxonDataProps {
   label: string;
   content: string;
   isUrl?: boolean;
   isItalic?: boolean;
+  isSynonym?: boolean;
 }
 
-const { label, content, isUrl, isItalic } = Astro.props as TaxonDataProps;
+const { label, content, isUrl, isItalic, isSynonym } =
+  Astro.props as TaxonDataProps;
 
 // Replace content "|" (if available) with middle dot for country distribution
 // Check if content is not URL and contain "|"
 // If so, replace "|" with "·" (middle dot)
 const textData = !isUrl ? cleanTaxonData(content) : content;
+
+const synonymClasses = cntl`
+  text-md
+  mb-2
+`;
+
+const taxonClasses = cntl`
+  text-lg
+  md:text-xl
+  mb-4
+`;
 ---
 
-<div class="mb-4">
-  <h3 class="text-lg md:text-xl font-semibold">{label}</h3>
+<div class={isSynonym ? synonymClasses : taxonClasses}>
+  <h3 class="font-semibold">{label}</h3>
   {
     isUrl ? (
       // If contain "|", split the content and create multiple links
