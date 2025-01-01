@@ -34,13 +34,23 @@ const taxonClasses = cntl`
 <div class={isSynonym ? synonymClasses : taxonClasses}>
   <h3 class="font-semibold">{label}</h3>
   {
-    isUrl ? (
+    isUrl && textData.startsWith("http") ? (
       // If contain "|", split the content and create multiple links
       textData.includes("|") ? (
         textData.split("|").map((link) => <Link url={link} label={link} />)
       ) : (
         <Link url={textData} label={textData} />
       )
+    ) : textData.includes("http") ? (
+      textData
+        .split(" ")
+        .map((part) =>
+          part.startsWith("http") ? (
+            <Link url={part} label={part} />
+          ) : (
+            <span class={isItalic ? "italic" : ""}>{part} </span>
+          )
+        )
     ) : (
       <p class={isItalic ? "italic" : ""}>{textData}</p>
     )
