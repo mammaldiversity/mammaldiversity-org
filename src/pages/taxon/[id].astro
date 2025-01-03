@@ -228,10 +228,10 @@ const common_name_class = cntl`
       // Refresh map when window is resized
       // So, the map can be redrawn to fit the new window size
       window.addEventListener("resize", () => {
-        clearTimeout(window.resizedFinished);
-        window.resizedFinished = setTimeout(() => {
+        if (window.innerWidth !== this.lastWidth) {
+          this.lastWidth = window.innerWidth;
           drawRegionsMap();
-        }, 500);
+        }
       });
     }
   }
