@@ -10,6 +10,7 @@ import TaxonData from "../../components/TaxonData.astro";
 import { matchIUCNRedlistStatus } from "../../scripts/iucn";
 import Page from "../../layouts/Page.astro";
 import PageDivider from "../../components/PageDivider.astro";
+import SupportNotice from "../../components/SupportNotice.astro";
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
@@ -185,6 +186,7 @@ const common_name_class = cntl`
         }
       </div>
     </div>
+    <SupportNotice />
   </MainPage>
 </Page>
 
@@ -199,7 +201,7 @@ const common_name_class = cntl`
       const countryDistribution = this.dataset.countries;
       const countries = countryDistribution
         .split("|")
-        .map((country) => country.trim());
+        .map((country) => country.trim().replace(/\?$/, ""));
 
       google.charts.load("current", {
         packages: ["geochart"],
