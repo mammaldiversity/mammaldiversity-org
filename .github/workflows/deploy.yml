@@ -28,8 +28,7 @@ jobs:
       - name: Extract MDD data
         working-directory: db/data
         run: |
-          ls -l
-          tar -czvf mdd.json.gz mdd.json
+          tar xzvf mdd.json mdd.json.gz
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         # with:
