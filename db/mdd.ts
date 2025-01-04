@@ -8,12 +8,12 @@ function parseMDDJson(): MddData {
   return jsonData;
 }
 
-export async function getSpeciesData(): Promise<Taxonomy[]> {
-  return await parseMDDJson().data;
+export function getSpeciesData(): Taxonomy[] {
+  return parseMDDJson().data;
 }
 
 // Parse the MDD json file and return the taxonomy data
-export async function getTaxonomyData(speciesId: number): Promise<Taxonomy> {
+export function getTaxonomyData(speciesId: number): Taxonomy {
   // Find the taxonomy data based on the speciesID
   const data = parseMDDJson().data;
   const taxonomy = data
@@ -22,9 +22,9 @@ export async function getTaxonomyData(speciesId: number): Promise<Taxonomy> {
   return taxonomy || ({} as Taxonomy);
 }
 
-export async function getSynonymData(speciesId: number): Promise<Synonym[]> {
+export function getSynonymData(speciesId: number): Synonym[] {
   // Filter the synonyms based on the speciesID
-  return await parseMDDJson().synonyms.filter(
+  return parseMDDJson().synonyms.filter(
     (synonym) => synonym.speciesId === speciesId
   );
 }

@@ -21,14 +21,14 @@ import type { Synonym, Taxonomy } from "../../../db/model";
 // It also ensure that the links to the taxon pages are always available
 export const getStaticPaths = async () => {
   // const taxonIDs = await db.select({ id: Taxonomy.id }).from(Taxonomy);
-  const taxonIDs = await getSpeciesData();
+  const taxonIDs = getSpeciesData();
   return taxonIDs.map((t: { id: number }) => ({ params: { id: t.id } }));
 };
 
 const { id } = Astro.params;
 
-const taxon: Taxonomy = await getTaxonomyData(Number(id));
-const synonyms: Synonym[] = await getSynonymData(Number(id));
+const taxon: Taxonomy = getTaxonomyData(Number(id));
+const synonyms: Synonym[] = getSynonymData(Number(id));
 
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
 const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");

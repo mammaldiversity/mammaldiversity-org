@@ -5,10 +5,10 @@ interface InstallButtonProps {
   label: string;
   url: string;
   withIcon: boolean;
-  extendClasses?: string;
+  extendClass?: string;
 }
 
-const { label, url, withIcon, extendClass } = Astro.props;
+const { label, url, withIcon, extendClass } = Astro.props as InstallButtonProps;
 
 const buttonClasses = cntl`
     btn-md
