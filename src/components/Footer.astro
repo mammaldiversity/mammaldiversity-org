@@ -1,5 +1,6 @@
 ---
 import cntl from "cntl";
+import Link from "./Link.astro";
 // Get current year
 const year = new Date().getFullYear();
 
@@ -13,9 +14,11 @@ const footerClasses = cntl`
   bg-spicy-mix-100
   dark:bg-spicy-mix-900
   text-center
-  rounded-full
+  rounded-t-2xl
+  md:rounded-full
   max-w-7xl
-  mx-8
+  md:mx-8
+  mx-4
   xl:mx-auto
   mt-8
 `;
@@ -23,19 +26,25 @@ const footerClasses = cntl`
 
 <footer>
   <div class={footerClasses}>
-    <p class="text-md font-serif dark:text-spectra-300 text-spectra-800">
-      <a class="underline" href="https:">ASM Website</a> &middot; <a
-        class="underline"
-        href="https://www.mammalsociety.org/index.php/publications"
-        >ASM Journals</a
-      > &middot;
-      <a
-        class="underline"
-        href="https://www.mammalsociety.org/index.php/privacy-policy"
-        >Privacy Policy</a
-      >
+    <p class="text-md dark:text-spectra-300 text-spectra-800">
+      <Link
+        label="MDD GitHub"
+        url="https://github.com/mammaldiversity"
+        extendClass="underline block sm:inline"
+      />
+      <span class="hidden sm:inline"> &middot; </span>
+      <Link
+        label="ASM Website"
+        url="https://www.mammalsociety.org/"
+        extendClass="underline block sm:inline"
+      />
+      <span class="hidden sm:inline"> &middot; </span>
+      <Link
+        label="Privacy Policy"
+        url="https://www.mammalsociety.org/index.php/privacy-policy"
+        extendClass="underline block sm:inline"
+      />
     </p>
-
     <p class="text-sm">&copy; {year} The MDD Team. All rights reserved.</p>
   </div>
 </footer>

@@ -78,7 +78,8 @@ const heroClasses = cntl`
   lg:mt-14
   px-4
   lg:px-8
-  py-8
+  py-4
+  lg:py-8
   bg-spectra-100
   bg-gradient-to-r
   from-spectra-100
@@ -132,14 +133,14 @@ const heroClasses = cntl`
           ecological, trait, and taxonomic data.
         </p>
       </div>
-      <div class="overflow-x-auto py-4 px-2 text-center mt-4 max-w-3xl mx-auto">
+      <div class="py-4 px-2 text-center my-4 mx-auto">
         <h2 class="font-serif text-3xl lg:text-4xl font-semibold mb-4">
           Mammal Diversity Statistics
         </h2>
         <DiversityStatTable />
       </div>
       <div
-        class="py-4 px-2 text-center mt-8 max-w-4xl mx-auto bg-gradient-to-r dark:from-spectra-900 dark:to-transparent from-spectra-100 to-transparent rounded-xl"
+        class="py-4 px-2 text-center my-4 max-w-4xl mx-auto bg-gradient-to-r dark:from-spectra-900 dark:to-transparent from-spectra-100 to-transparent rounded-xl"
       >
         <h2 class="font-serif text-3xl lg:text-4xl font-semibold mt-4 mb-4">
           Try the MDD App <span class="text-sm inline-block align-top"
@@ -168,11 +169,11 @@ const heroClasses = cntl`
           </div>
         </div>
       </div>
-      <div class="py-4 px-2 text-center mb-4 max-w-6xl mx-auto">
+      <div id="citation" class="py-4 px-2 text-center mb-4 max-w-6xl mx-auto">
         <h2 class="font-serif text-3xl lg:text-4xl font-semibold mt-4">
           Cite MDD
         </h2>
-        <div class="text-md">
+        <div class="text-md mt-4">
           <p>
             The current database (via <Link
               url="https://doi.org/10.5281/zenodo.4139722"

@@ -43,7 +43,9 @@ export function drawCountriesOnMap(
 export function splitCountryDistribution(
   countryDistribution: string
 ): string[] {
-  return countryDistribution.split("|").map((country) => country.trim());
+  return countryDistribution
+    .split("|")
+    .map((country) => country.trim().replace(/\?$/, ""));
 }
 
 export function matchAllCountriesToCodeName(countries: string[]): string[] {
