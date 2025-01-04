@@ -1,17 +1,27 @@
 ---
+import cntl from "cntl";
+
 interface LinkProps {
   label?: string;
   url: string;
+  extendClass?: string;
 }
 
-const { label, url } = Astro.props as LinkProps;
+const { label, url, extendClass } = Astro.props as LinkProps;
 
 const text = label ? label : url;
+
+const linkClasses = cntl`
+  underline
+  text-spectra-700
+  dark:text-spectra-300
+  break-words
+  overflow-clip
+  text-ellipsis
+  ${extendClass}
+`;
 ---
 
-<a
-  class="underline text-spectra-700 dark:text-spectra-300 break-words overflow-clip text-ellipsis"
-  href={url}
-  target="_blank"
-  rel="noopener noreferrer">{text}</a
+<a class={linkClasses} href={url} target="_blank" rel="noopener noreferrer"
+  >{text}</a
 >

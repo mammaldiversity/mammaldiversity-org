@@ -20,11 +20,15 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
-      - name: Create env file
+      # - name: Create env file
+      #   run: |
+      #     touch .env
+      #     echo "ASTRO_DB_REMOTE_URL=${{secrets.TURSO_DB}}" >> .env
+      #     echo "ASTRO_DB_APP_TOKEN=${{secrets.TURSO_API_TOKEN}}" >> .env
+      - name: Extract MDD data
         run: |
-          touch .env
-          echo "ASTRO_DB_REMOTE_URL=${{secrets.TURSO_DB}}" >> .env
-          echo "ASTRO_DB_APP_TOKEN=${{secrets.TURSO_API_TOKEN}}" >> .env
+          cd db/data/
+          tar -czvf mdd.json.gz mdd.json
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         # with:
