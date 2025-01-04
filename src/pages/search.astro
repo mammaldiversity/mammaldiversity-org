@@ -20,7 +20,7 @@ import PageDivider from "../components/PageDivider.astro";
 //   })
 //   .from(Taxonomy);
 
-const taxa = await getSpeciesData();
+const taxa = getSpeciesData();
 
 interface Taxon {
   id: number;
