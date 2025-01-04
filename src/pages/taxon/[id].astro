@@ -1,8 +1,5 @@
 ---
-import { db, Taxonomy } from "astro:db";
 import MainPage from "../../layouts/MainPage.astro";
-import { eq } from "astro:db";
-import { Synonym } from "astro:db";
 import cntl from "cntl";
 import SynonymPage from "../../components/SynonymPage.astro";
 import SynonymList from "../../layouts/SynonymList.astro";
@@ -11,26 +8,29 @@ import { matchIUCNRedlistStatus } from "../../scripts/iucn";
 import Page from "../../layouts/Page.astro";
 import PageDivider from "../../components/PageDivider.astro";
 import SupportNotice from "../../components/SupportNotice.astro";
+import {
+  getSpeciesData,
+  getTaxonomyData,
+  getSynonymData,
+} from "../../../db/mdd";
+import type { Synonym, Taxonomy } from "../../../db/model";
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
 // This approach allow us make sure the generated page is always up to date with the database
 // It also ensure that the links to the taxon pages are always available
 export const getStaticPaths = async () => {
-  const taxonIDs = await db.select({ id: Taxonomy.id }).from(Taxonomy);
+  // const taxonIDs = await db.select({ id: Taxonomy.id }).from(Taxonomy);
+  const taxonIDs = await getSpeciesData();
   return taxonIDs.map((t: { id: number }) => ({ params: { id: t.id } }));
 };
 
 const { id } = Astro.params;
 
-const taxon = await db.select().from(Taxonomy).where(eq(Taxonomy.id, id)).get();
-const synonyms = await db
-  .select()
-  .from(Synonym)
-  .where(eq(Synonym.speciesId, id));
+const taxon: Taxonomy = await getTaxonomyData(Number(id));
+const synonyms: Synonym[] = await getSynonymData(Number(id));
 
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
-
 const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");
 
 const mddSpeciesPermanentLink = "https://www.mammaldiversity.org/taxon/";
@@ -60,7 +60,7 @@ const common_name_class = cntl`
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16 mb-4">
       <h1 class="font-serif text-3xl md:text-5xl italic mb-2">
-        {taxon?.genus}{` ${taxon?.specificEpithet}`}
+        {taxon.genus}{` ${taxon?.specificEpithet}`}
       </h1>
       <h2 class="text-xl md:text-2xl">
         {taxon?.authorityParentheses === 1 ? `(${authority})` : authority}
@@ -104,7 +104,7 @@ const common_name_class = cntl`
 
         <TaxonData
           label="Authority citation"
-          content={taxon?.authoritySpeciesCitation}
+          content={taxon.authoritySpeciesCitation}
         />
         <TaxonData
           label="Authority publication link"
@@ -194,14 +194,18 @@ const common_name_class = cntl`
   is:inline
   type="text/javascript"
   src="https://www.gstatic.com/charts/loader.js"></script>
-<script is:inline>
+<script>
+  // Declare google as a global variable
+  declare const google: any;
+  import { splitCountryDistribution } from "../../scripts/map";
+
   class DistributionMap extends HTMLElement {
+    lastWidth: number = 0;
+
     connectedCallback() {
       // Read the message from the data attribute.
-      const countryDistribution = this.dataset.countries;
-      const countries = countryDistribution
-        .split("|")
-        .map((country) => country.trim().replace(/\?$/, ""));
+      const countryDistribution = this.dataset.countries ?? "";
+      const countries = splitCountryDistribution(countryDistribution);
 
       google.charts.load("current", {
         packages: ["geochart"],
