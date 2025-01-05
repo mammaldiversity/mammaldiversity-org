@@ -204,16 +204,16 @@ const common_name_class = cntl`
 
     connectedCallback() {
       // Read the message from the data attribute.
-      const countryDistribution = this.dataset.countries ?? "";
-      const countries = splitCountryDistribution(countryDistribution);
+      const countryDistribution = this.dataset.countries;
+      const countries = splitCountryDistribution(countryDistribution ?? "");
 
       google.charts.load("current", {
         packages: ["geochart"],
       });
       google.charts.setOnLoadCallback(drawRegionsMap);
 
-      function drawRegionsMap() {
-        var data = google.visualization.arrayToDataTable([
+      async function drawRegionsMap() {
+        var data = await google.visualization.arrayToDataTable([
           ["Country"],
           ...countries.map((country) => [country]),
         ]);
@@ -228,15 +228,15 @@ const common_name_class = cntl`
           document.getElementById("map")
         );
 
-        chart.draw(data, options);
+        await chart.draw(data, options);
       }
 
       // Refresh map when window is resized
       // So, the map can be redrawn to fit the new window size
-      window.addEventListener("resize", () => {
+      window.addEventListener("resize", async () => {
         if (window.innerWidth !== this.lastWidth) {
           this.lastWidth = window.innerWidth;
-          drawRegionsMap();
+          await drawRegionsMap();
         }
       });
     }
