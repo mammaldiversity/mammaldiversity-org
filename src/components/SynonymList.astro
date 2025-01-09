@@ -1,0 +1,24 @@
+---
+import type { Synonym, SynonymName } from "../../db/model";
+
+interface SynonymListProps {
+  synonyms: SynonymName[];
+}
+
+const { synonyms } = Astro.props as SynonymListProps;
+---
+
+<div class="flex flex-col items-center">
+  <h2 class="text-2xl font-semibold mb-4">Synonyms</h2>
+  <div class="flex flex-col items-center"></div><p>
+    {
+      synonyms.map((synonym, index) => (
+        <>
+          <span class="italic"> {synonym.name}</span>
+          {synonym.citation}
+          {index < synonyms.length - 1 && <span> &middot; </span>}
+        </>
+      ))
+    }
+  </p>
+</div>

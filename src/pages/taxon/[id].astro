@@ -11,9 +11,11 @@ import SupportNotice from "../../components/SupportNotice.astro";
 import {
   getSpeciesData,
   getTaxonomyData,
-  getSynonymData,
+  getAllSynonyms,
+  filterSynonymData,
 } from "../../../db/mdd";
 import type { Synonym, Taxonomy } from "../../../db/model";
+import { file } from "astro/loaders";
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
@@ -28,7 +30,8 @@ export const getStaticPaths = async () => {
 const { id } = Astro.params;
 
 const taxon: Taxonomy = getTaxonomyData(Number(id));
-const synonyms: Synonym[] = getSynonymData(Number(id));
+const allSynonyms: Synonym[] = getAllSynonyms();
+const synonyms: Synonym[] = filterSynonymData(allSynonyms, Number(id));
 
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
 const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");

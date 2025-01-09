@@ -1,6 +1,6 @@
 // MDD data structure
 
-export interface Taxonomy {
+interface Taxonomy {
   id: number;
   sciName: string;
   mainCommonName: string;
@@ -53,7 +53,7 @@ export interface Taxonomy {
   diffSinceMSW3: number;
 }
 
-export interface Synonym {
+interface Synonym {
   synId: number;
   hespId: number;
   speciesId: number;
@@ -99,9 +99,16 @@ export interface Synonym {
   comments: string;
 }
 
-export interface MddData {
+interface MddData {
   version: string;
   releaseDate: string;
   data: Taxonomy[];
   synonyms: Synonym[];
 }
+
+interface SynonymName {
+  name: string;
+  citation: string;
+}
+
+export type { Taxonomy, Synonym, MddData, SynonymName };

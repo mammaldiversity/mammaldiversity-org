@@ -1,4 +1,5 @@
 ---
+import { createAuthorityCitation, createSynonymName } from "../scripts/taxon";
 import PageDivider from "./PageDivider.astro";
 import TaxonData from "./TaxonData.astro";
 
@@ -40,19 +41,23 @@ const {
   nameUsages,
 } = Astro.props as SynonymsProps;
 
-const synonymText = originalNameCombination
-  ? originalNameCombination
-  : `${species} ${rootName}`;
-const authority = `${authoritySpeciesAuthor}, ${authoritySpeciesYear}`;
-const authorityCitation =
-  authorityParentheses === 1 ? `(${authority})` : authority;
+const synonymText = createSynonymName(
+  rootName,
+  species,
+  originalNameCombination
+);
+const authorityCitation = createAuthorityCitation(
+  authoritySpeciesAuthor,
+  authoritySpeciesYear,
+  authorityParentheses === 1
+);
 ---
 
 <button id="modal-btn">
   <div
     class="w-fit rounded-full p-2 mr-4 border-2 hover:bg-spectra-50 dark:hover:bg-spectra-950 border-spectra-700 dark:border-spectra-300"
   >
-    <p class="text-sm text-spectra-700 dark:text-spectra-300">
+    <p class="text-sm text-left text-spectra-700 dark:text-spectra-300">
       <span class="italic">{synonymText}</span>
       {authorityCitation}
     </p>

@@ -1,24 +1,12 @@
 ---
 import Title from "../components/Title.astro";
 import MainPage from "../layouts/MainPage.astro";
-import { getSpeciesData } from "../../db/mdd";
+import { getAllSynonyms, getSpeciesData, getSynonymName } from "../../db/mdd";
 // import { db, Taxonomy } from "astro:db";
 import Page from "../layouts/Page.astro";
 import PageDivider from "../components/PageDivider.astro";
-
-// const taxa = await db
-//   .select({
-//     id: Taxonomy.id,
-//     taxonOrder: Taxonomy.taxonOrder,
-//     family: Taxonomy.family,
-//     genus: Taxonomy.genus,
-//     specificEpithet: Taxonomy.specificEpithet,
-//     authoritySpeciesAuthor: Taxonomy.authoritySpeciesAuthor,
-//     authoritySpeciesYear: Taxonomy.authoritySpeciesYear,
-//     authorityParentheses: Taxonomy.authorityParentheses,
-//     mainCommonName: Taxonomy.mainCommonName,
-//   })
-//   .from(Taxonomy);
+import type { Synonym } from "../../db/model";
+import SynonymList from "../components/SynonymList.astro";
 
 const taxa = getSpeciesData();
 
