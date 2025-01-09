@@ -14,12 +14,13 @@ interface TaxonDataProps {
 const { label, content, isUrl, isItalic, isSynonym } =
   Astro.props as TaxonDataProps;
 
-// Replace content "|" (if available) with middle dot for country distribution
 // Check if content is not URL and contain "|"
-// If so, replace "|" with "·" (middle dot)
+// If so, replace "|" with " · " (middle dot)
+// It is easier to read. The space in between makes it
+// recognizable for tailwind to apply line break
 const textData = !isUrl ? cleanTaxonData(content) : content;
 
-// We will hide the component if the content is "NA" or empty
+// We hide the component if the content is "NA" or empty
 // To keep the UI clean
 const isHidden =
   textData === "NA" || textData.trim().length === 0 ? "hidden" : "";
@@ -49,15 +50,20 @@ const taxonClasses = cntl`
         <Link url={textData} label={textData} />
       )
     ) : textData.includes("http") ? (
-      textData
-        .split(" ")
-        .map((part) =>
-          part.startsWith("http") ? (
-            <Link url={part} label={part} />
-          ) : (
-            <span class={isItalic ? "italic" : ""}>{part} </span>
-          )
+      textData.split(/(http\S+)/g).map((part) =>
+        part.startsWith("http") ? (
+          <>
+            <Link
+              url={part.replace(/[.,!?)]*$/, "")}
+              label={part.replace(/[.,!?)]*$/, "")}
+              extendClass="-mr-1"
+            />
+            {part.match(/[.,!?)]*$/)}
+          </>
+        ) : (
+          <span class={isItalic ? "italic" : ""}>{part}</span>
         )
+      )
     ) : (
       <p class={isItalic ? "italic" : ""}>{textData}</p>
     )
