@@ -25,7 +25,7 @@ function getTaxonomyData(speciesId: number): Taxonomy {
 
 function filterSynonymData(synonym: Synonym[], speciesId: number): Synonym[] {
   // Filter the synonyms based on the speciesID
-  return parseMDDJson().synonyms.filter(
+  return synonym.filter(
     (synonym) => synonym.speciesId === speciesId
   );
 }
