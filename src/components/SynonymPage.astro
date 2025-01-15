@@ -58,7 +58,7 @@ const authorityCitation = createAuthorityCitation(
     class="w-fit rounded-full p-2 mr-4 border-2 hover:bg-spectra-50 dark:hover:bg-spectra-950 border-spectra-700 dark:border-spectra-300"
   >
     <p class="text-sm text-left text-spectra-700 dark:text-spectra-300">
-      <span class="italic">{synonymText}</span>
+      <span class="italic tracking-wide">{synonymText}</span>
       {authorityCitation}
     </p>
   </div>
@@ -67,7 +67,7 @@ const authorityCitation = createAuthorityCitation(
 <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
   <div class="modal-box">
     <div id="modal-header" class="text-center">
-      <h1 class="text-xl md:text-2xl font-serif italic">
+      <h1 class="text-xl md:text-2xl font-serif tracking-wide italic">
         {synonymText}
       </h1>
       <h2 class="text-lg">
@@ -116,11 +116,14 @@ const authorityCitation = createAuthorityCitation(
 </dialog>
 
 <script>
-  const dialog = document.querySelector("#my_modal_5") as HTMLDialogElement;
+  const dialogs = Array.from(
+    document.querySelectorAll("#my_modal_5")
+  ) as HTMLDialogElement[];
   const modalBtn = document.querySelectorAll("#modal-btn");
 
-  modalBtn.forEach((btn) => {
+  modalBtn.forEach((btn, index) => {
     btn.addEventListener("click", () => {
+      const dialog = dialogs[index];
       if (dialog) {
         dialog.showModal();
       }
