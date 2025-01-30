@@ -1,0 +1,223 @@
+---
+import Title from "../components/Title.astro";
+import MainPage from "../layouts/MainPage.astro";
+import { getSpeciesData } from "../../db/mdd";
+// import { db, Taxonomy } from "astro:db";
+import Page from "../layouts/Page.astro";
+import PageDivider from "../components/PageDivider.astro";
+
+const taxa = getSpeciesData();
+
+interface Taxon {
+  id: number;
+  family: string;
+  genus: string;
+  specificEpithet: string;
+  authorityYear: string;
+  commonName: string;
+}
+
+// We create a map with order as key and an array of taxa as value
+const taxonByOrder: Record<string, Taxon[]> = {};
+
+function getAuthority(author: string, year: number, isParentheses: boolean) {
+  return isParentheses ? `(${author}, ${year})` : `${author}, ${year}`;
+}
+
+taxa.forEach((taxon) => {
+  const taxonOrder = taxon.taxonOrder ?? "Unknown";
+
+  if (!taxonByOrder[taxonOrder]) {
+    taxonByOrder[taxonOrder] = [];
+  }
+  const authority = getAuthority(
+    taxon.authoritySpeciesAuthor ?? "Unknown",
+    taxon.authoritySpeciesYear ?? 0,
+    taxon.authorityParentheses === 1
+  );
+  taxonByOrder[taxonOrder].push({
+    id: taxon.id,
+    family: taxon.family ?? "Unknown",
+    genus: taxon.genus ?? "Unknown",
+    specificEpithet: taxon.specificEpithet ?? "unknown",
+    authorityYear: authority,
+    commonName: taxon.mainCommonName ?? "Unknown",
+  });
+});
+---
+
+<Page title="Explore Database">
+  <MainPage>
+    <div class="text-center item-center mt-8 md:mt-16">
+      <Title>Search Database</Title>
+    </div>
+    <div class="mb-4">
+      <label
+        class="input input-bordered flex items-center gap-2 w-full max-w-md"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="h-4 w-4 opacity-70"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+            clip-rule="evenodd"></path>
+        </svg>
+        <input
+          id="search-input"
+          type="text"
+          class="grow"
+          placeholder="E.g., Ornithorhynchus, anatinus, platypus, etc."
+        />
+        <button
+          id="clear-search"
+          class="btn btn-sm btn-circle btn-ghost hidden"
+          aria-label="Clear search"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-4 w-4"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </label>
+    </div>
+    <PageDivider />
+    <p id="no-results" class="hidden text-center text-lg font-medium my-4">
+      No results found.
+    </p>
+    {
+      Object.entries(taxonByOrder).map(([order, taxa]) => (
+        <div id="taxon-list">
+          <div
+            tabindex="0"
+            class="collapse collapse-arrow border-base-300 bg-base-200 border my-2"
+          >
+            <input type="checkbox" />
+            <div class="collapse-title text-xl font-medium">{order}</div>
+            <div class="collapse-content">
+              <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p>
+              {taxa.map((taxon) => (
+                <a href={`/mammaldiversity-org/taxon/${taxon.id}`}>
+                  <div
+                    id="taxa"
+                    class="mb-2 bg-spectra-100 dark:bg-spectra-800 p-2 rounded-lg"
+                  >
+                    <p class="text-lg">
+                      <span class="italic">
+                        {taxon.genus} {taxon.specificEpithet}
+                      </span>{" "}
+                      {taxon.authorityYear}
+                    </p>
+                    <p class="text-sm">
+                      MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
+                      {taxon.commonName}
+                    </p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))
+    }
+    <!-- 
+      <button id="clear-search" class="btn btn-neutral my-4 hidden">
+        Reset
+      </button> -->
+  </MainPage>
+</Page>
+
+<script>
+  function searchQuery() {
+    const searchInput = document.getElementById("search-input");
+    if (!searchInput) return;
+    const query = (searchInput as HTMLInputElement).value;
+    const taxonList = document.querySelectorAll("#taxon-list");
+
+    // Filter elements with id="taxa" based on query
+    taxonList.forEach((list) => {
+      const taxa = list.querySelectorAll("#taxa");
+      let hasMatch = false;
+      taxa.forEach((taxon) => {
+        if (
+          taxon.textContent &&
+          taxon.textContent.toLowerCase().includes(query.toLowerCase())
+        ) {
+          (taxon as HTMLElement).classList.remove("hidden");
+          hasMatch = true;
+        } else {
+          (taxon as HTMLElement).classList.add("hidden");
+        }
+      });
+      (list as HTMLElement).classList.toggle("hidden", !hasMatch);
+    });
+
+    const noResults = document.getElementById("no-results");
+    if (noResults) {
+      const hasAnyMatch = Array.from(taxonList).some(
+        (list) => !list.classList.contains("hidden")
+      );
+      noResults.classList.toggle("hidden", hasAnyMatch);
+    }
+
+    const resetBtn = document.getElementById("clear-search");
+    if (resetBtn) {
+      resetBtn.classList.remove("hidden");
+    }
+  }
+
+  const resetBtn = document.getElementById("clear-search");
+  function reset() {
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        const taxonList = document.querySelectorAll("#taxon-list");
+        taxonList.forEach((list) => {
+          const taxa = list.querySelectorAll("#taxa");
+          (list as HTMLElement).classList.remove("hidden");
+          taxa.forEach((taxon) => {
+            (taxon as HTMLElement).classList.remove("hidden");
+          });
+        });
+
+        resetBtn.classList.add("hidden");
+        // Clear search input
+        const searchInput = document.getElementById("search-input");
+        if (searchInput) {
+          (searchInput as HTMLInputElement).value = "";
+        }
+        // Hide no results message
+        const noResults = document.getElementById("no-results");
+        if (noResults) {
+          noResults.classList.add("hidden");
+        }
+      });
+    }
+  }
+
+  const searchInput = document.getElementById("search-input");
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      if ((searchInput as HTMLInputElement).value.trim() !== "") {
+        searchQuery();
+        reset();
+      }
+      if ((searchInput as HTMLInputElement).value.trim() === "") {
+        if (resetBtn) {
+          resetBtn.classList.add("hidden");
+        }
+      }
+    });
+  }
+</script>
