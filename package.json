@@ -4,12 +4,11 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "dev": "astro build && yarn run postbuild && astro dev",
+    "dev": "astro dev",
     "start": "astro dev --remote",
     "build": "astro check && astro build && yarn run postbuild",
     "preview": "astro preview",
-    "astro": "astro",
-    "postbuild": "pagefind --site dist/"
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
