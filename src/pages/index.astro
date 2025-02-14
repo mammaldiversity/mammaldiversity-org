@@ -15,14 +15,16 @@ import FrontPage from "../layouts/FrontPage.astro";
 import DiversityStatTable from "../components/DiversityStatTable.astro";
 import desktopApp from "../assets/images/screenshots/desktopApp.png";
 import InstallButton from "../components/buttons/InstallButton.astro";
+import { getMetadata } from "../../db/mdd";
 
-const currentVersion = "v1.13";
-const releaseDate = "13 Jul 2024";
+const meta = getMetadata();
+const currentVersion = meta.version;
+const releaseDate = meta.releaseDate;
 const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
 const mddDownloadLink = "https://www.mammaldiversity.org/assets/data/MDD.zip";
 
 // Define version description
-const versionDescription = `Current version:${currentVersion}, released ${releaseDate}`;
+const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
 
 const allImages = [
   {

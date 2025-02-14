@@ -4,6 +4,7 @@ import MainPage from "../layouts/MainPage.astro";
 import { getSpeciesData } from "../../db/mdd";
 import Page from "../layouts/Page.astro";
 import PageDivider from "../components/PageDivider.astro";
+import { createSynonymName } from "../scripts/taxon";
 
 const taxa = getSpeciesData();
 
@@ -14,6 +15,7 @@ interface Taxon {
   specificEpithet: string;
   authorityYear: string;
   commonName: string;
+  synonyms: string[];
 }
 
 // We create a map with order as key and an array of taxa as value
@@ -34,6 +36,15 @@ taxa.forEach((taxon) => {
     taxon.species_data.authoritySpeciesYear ?? 0,
     taxon.species_data.authorityParentheses === 1
   );
+
+  const synonymNames: string[] = taxon.synonyms.map((synonym) => {
+    return createSynonymName(
+      synonym.rootName,
+      synonym.species,
+      synonym.originalCombination
+    );
+  });
+
   taxonByOrder[taxonOrder].push({
     id: taxon.species_data.id,
     family: taxon.species_data.family ?? "Unknown",
@@ -41,6 +52,7 @@ taxa.forEach((taxon) => {
     specificEpithet: taxon.species_data.specificEpithet ?? "unknown",
     authorityYear: authority,
     commonName: taxon.species_data.mainCommonName ?? "Unknown",
+    synonyms: synonymNames,
   });
 });
 ---
@@ -48,7 +60,7 @@ taxa.forEach((taxon) => {
 <Page title="Explore Database">
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
-      <Title>Search Database</Title>
+      <Title>Explore Database</Title>
     </div>
     <div class="mb-4">
       <label
@@ -123,6 +135,12 @@ taxa.forEach((taxon) => {
                       MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
                       {taxon.commonName}
                     </p>
+                    <p class="text-sm font-semibold text-spectra-400 dark:text-spectra-200 mt-2">
+                      Synonyms:
+                    </p>
+                    <p class="text-sm italic text-spectra-400 dark:text-spectra-200">
+                      {taxon.synonyms.join(" • ")}
+                    </p>
                   </div>
                 </a>
               ))}
@@ -131,10 +149,6 @@ taxa.forEach((taxon) => {
         </div>
       ))
     }
-    <!-- 
-      <button id="clear-search" class="btn btn-neutral my-4 hidden">
-        Reset
-      </button> -->
   </MainPage>
 </Page>
 

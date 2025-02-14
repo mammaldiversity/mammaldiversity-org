@@ -112,9 +112,14 @@ interface MddData {
   synonym_only: Synonym[];
 }
 
+interface Metadata {
+  version: string;
+  releaseDate: string;
+}
+
 interface SynonymName {
   name: string;
   citation: string;
 }
 
-export type { Taxonomy, Synonym, MddData, SpeciesData, SynonymName };
+export type { Taxonomy, Synonym, MddData, SpeciesData, SynonymName, Metadata };
