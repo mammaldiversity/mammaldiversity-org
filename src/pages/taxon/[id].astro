@@ -36,6 +36,8 @@ const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");
 const mddSpeciesPermanentLink = "https://www.mammaldiversity.org/taxon/";
 const mddSpeciesLink = `${mddSpeciesPermanentLink}${taxon?.id}`;
 
+const species = taxon?.genus + " " + taxon?.specificEpithet;
+
 const taxonomyClasses = cntl`
   bg-gradient-to-r
   from-spectra-100
@@ -56,11 +58,11 @@ const common_name_class = cntl`
 `;
 ---
 
-<Page title="Taxon">
+<Page title={`${species} • ${taxon?.mainCommonName}`}>
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16 mb-4">
       <h1 class="font-serif text-3xl md:text-5xl italic mb-2">
-        {taxon.genus}{` ${taxon?.specificEpithet}`}
+        {species}
       </h1>
       <h2 class="text-xl md:text-2xl">
         {taxon?.authorityParentheses === 1 ? `(${authority})` : authority}
