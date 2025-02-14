@@ -40,11 +40,11 @@ if (taxa.length === 0) {
       taxon.speciesData.authorityParentheses === 1
     );
 
-    const synonymNames: string[] = taxon.synonyms?.map((synonym) => {
+    const synonymNames: string[] = taxon.synonyms.map((synonym) => {
       return createSynonymName(
-        synonym?.rootName,
-        synonym?.species,
-        synonym?.originalCombination
+        synonym.rootName,
+        synonym.species,
+        synonym.originalCombination
       );
     });
 
@@ -139,12 +139,14 @@ if (taxa.length === 0) {
                       MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
                       {taxon.commonName}
                     </p>
-                    <p class="text-sm font-semibold text-spectra-400 dark:text-spectra-200 mt-2">
-                      Synonyms:
-                    </p>
-                    <p class="text-sm italic text-spectra-400 dark:text-spectra-200">
-                      {taxon.synonyms.join(" • ")}
-                    </p>
+                    {taxon.synonyms.length > 0 && (
+                      <>
+                        <p class="text-sm mt-2">Synonyms:</p>
+                        <p class="text-sm italic">
+                          {taxon.synonyms.join(" • ")}
+                        </p>
+                      </>
+                    )}
                   </div>
                 </a>
               ))}
