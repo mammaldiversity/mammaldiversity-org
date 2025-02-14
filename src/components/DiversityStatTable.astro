@@ -1,8 +1,27 @@
 ---
+import cntl from "cntl";
+import { getMetadata } from "../../db/mdd";
 
+const metadata = getMetadata();
+
+const totalSpecies = metadata.speciesCount.toLocaleString();
+const recentlyExtinct = metadata.recentlyExtinct.toLocaleString();
+const living = metadata.living.toLocaleString();
+const domestic = metadata.domestic.toLocaleString();
+const livingWild = metadata.livingWild.toLocaleString();
+const genera = metadata.genusCount.toLocaleString();
+const families = metadata.familyCount.toLocaleString();
+const orders = metadata.orderCount.toLocaleString();
+const synonyms = metadata.synonymCount.toLocaleString();
+
+const diversityTable = cntl`
+  overflow-x-auto
+  max-w-3xl
+  mx-auto
+`;
 ---
 
-<div id="diversity-table" class="overflow-x-auto max-w-3xl mx-auto">
+<div id="diversity-table" class={diversityTable}>
   <table class="table-auto lg:min-w-full my-4 mx-auto">
     <thead class="bg-spectra-100 dark:bg-spectra-900">
       <tr>
@@ -18,49 +37,55 @@
         <td class="text-left py-2 px-8 border-b">Total</td>
         <td class="py-2 px-4 border-b">5,416</td>
         <td class="py-2 px-4 border-b">6,495</td>
-        <td class="py-2 px-4 border-b">6,753</td>
+        <td class="py-2 px-4 border-b">{totalSpecies}</td>
       </tr>
       <tr>
         <td class="text-left py-2 px-8 border-b">Recently Extinct</td>
         <td class="py-2 px-4 border-b">75</td>
         <td class="py-2 px-4 border-b">96</td>
-        <td class="py-2 px-4 border-b">113</td>
+        <td class="py-2 px-4 border-b">{recentlyExtinct}</td>
       </tr>
       <tr>
         <td class="text-left py-2 px-8 border-b">Living</td>
         <td class="py-2 px-4 border-b">5,341</td>
         <td class="py-2 px-4 border-b">6,399</td>
-        <td class="py-2 px-4 border-b">6,640</td>
+        <td class="py-2 px-4 border-b">{living}</td>
       </tr>
       <tr>
         <td class="text-left py-2 px-8 border-b">Domestic</td>
         <td class="py-2 px-4 border-b">0</td>
         <td class="py-2 px-4 border-b">16</td>
-        <td class="py-2 px-4 border-b">17</td>
+        <td class="py-2 px-4 border-b">{domestic}</td>
       </tr>
       <tr>
         <td class="text-left py-2 px-8 border-b">Living Wild</td>
         <td class="py-2 px-4 border-b">5,338</td>
         <td class="py-2 px-4 border-b">6,382</td>
-        <td class="py-2 px-4 border-b">6,623</td>
+        <td class="py-2 px-4 border-b">{livingWild}</td>
       </tr>
       <tr>
         <td class="text-left py-2 px-4 border-b">Genera</td>
         <td class="py-2 px-4 border-b">1,230</td>
         <td class="py-2 px-4 border-b">1,314</td>
-        <td class="py-2 px-4 border-b">1,353</td>
+        <td class="py-2 px-4 border-b">{genera}</td>
       </tr>
       <tr>
         <td class="text-left py-2 px-4 border-b">Families</td>
         <td class="py-2 px-4 border-b">153</td>
         <td class="py-2 px-4 border-b">167</td>
-        <td class="py-2 px-4 border-b">167</td>
+        <td class="py-2 px-4 border-b">{families}</td>
       </tr>
       <tr>
         <td class="text-left py-2 px-4 border-b">Orders</td>
         <td class="py-2 px-4 border-b">29</td>
         <td class="py-2 px-4 border-b">27</td>
-        <td class="py-2 px-4 border-b">27</td>
+        <td class="py-2 px-4 border-b">{orders}</td>
+      </tr>
+      <tr>
+        <td class="text-left py-2 px-4 border-b">Synonyms</td>
+        <td class="py-2 px-4 border-b">-</td>
+        <td class="py-2 px-4 border-b">-</td>
+        <td class="py-2 px-4 border-b">{synonyms}</td>
       </tr>
     </tbody>
   </table>
