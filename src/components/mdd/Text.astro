@@ -1,0 +1,21 @@
+---
+// Text span with _italic_ formatting awareness
+
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props as Props;
+---
+
+{
+  text
+    .split(/(_[^_]*?_)/g)
+    .map((part) =>
+      part.startsWith("_") && part.endsWith("_") ? (
+        <span class="italic">{part.slice(1, -1)}</span>
+      ) : (
+        part
+      )
+    )
+}
