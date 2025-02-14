@@ -2,6 +2,7 @@
 import { createAuthorityCitation, createSynonymName } from "../scripts/taxon";
 import PageDivider from "./PageDivider.astro";
 import TaxonData from "./TaxonData.astro";
+import cntl from "cntl";
 
 interface SynonymsProps {
   originalNameCombination?: string;
@@ -51,23 +52,55 @@ const authorityCitation = createAuthorityCitation(
   authoritySpeciesYear,
   authorityParentheses === 1
 );
+
+const dialogClasses = cntl`
+  modal
+  modal-bottom
+  sm:modal-middle
+`;
+
+const headerClasses = cntl`
+  w-fit
+  rounded-full
+  p-2
+  mr-4
+  border-2
+  hover:bg-spectra-50
+  dark:hover:bg-spectra-950
+  border-spectra-700
+  dark:border-spectra-300
+`;
+
+const buttonTextClasses = cntl`
+  mx-2
+  text-sm
+  text-left
+  text-spectra-700
+  dark:text-spectra-300
+`;
+
+const synonymTitleClasses = cntl`
+  text-xl
+  md:text-2xl
+  font-serif
+  tracking-wide
+  italic
+`;
 ---
 
 <button id="modal-btn">
-  <div
-    class="w-fit rounded-full p-2 mr-4 border-2 hover:bg-spectra-50 dark:hover:bg-spectra-950 border-spectra-700 dark:border-spectra-300"
-  >
-    <p class="text-sm text-left text-spectra-700 dark:text-spectra-300">
+  <div id="header" class={headerClasses}>
+    <p class={buttonTextClasses}>
       <span class="italic tracking-wide">{synonymText}</span>
       {authorityCitation}
     </p>
   </div>
 </button>
 
-<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
+<dialog id="my_modal_5" class={dialogClasses}>
   <div class="modal-box">
     <div id="modal-header" class="text-center">
-      <h1 class="text-xl md:text-2xl font-serif tracking-wide italic">
+      <h1 class={synonymTitleClasses}>
         {synonymText}
       </h1>
       <h2 class="text-lg">
