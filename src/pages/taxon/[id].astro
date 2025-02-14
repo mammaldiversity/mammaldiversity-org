@@ -12,8 +12,6 @@ import { filterSpeciesId, getTaxonomyData } from "../../../db/mdd";
 import type { SpeciesData, Synonym, Taxonomy } from "../../../db/model";
 import { getSpeciesData } from "../../../db/mdd";
 
-const data = getSpeciesData();
-
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
 // This approach allow us make sure the generated page is always up to date with the database
@@ -27,9 +25,10 @@ export const getStaticPaths = async () => {
 
 const { id } = Astro.params;
 
+const data = getSpeciesData();
 const species_data: SpeciesData = getTaxonomyData(data, Number(id));
 const synonyms: Synonym[] = species_data.synonyms ?? [];
-const taxon: Taxonomy = species_data.species_data;
+const taxon: Taxonomy = species_data.speciesData;
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
 const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");
 

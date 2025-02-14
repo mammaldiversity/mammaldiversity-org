@@ -2,8 +2,6 @@
 import fs from "fs";
 import type {
   MddData,
-  Synonym,
-  SynonymName,
   SpeciesData,
   Metadata,
 } from "./model";
@@ -19,21 +17,17 @@ function getSpeciesData(): SpeciesData[] {
 }
 
 function getMetadata(): Metadata {
-  const data = parseMDDJson();
-  return {
-    version: data.version,
-    releaseDate: data.releaseDate,
-  };
+  return parseMDDJson().metadata;
 }
 
 function filterSpeciesId(data: SpeciesData[]): number[] {
-  return data.map((species) => species.mdd_id);
+  return data.map((species) => species.mddId);
 }
 
 // Parse the MDD json file and return the taxonomy data
 function getTaxonomyData(data: SpeciesData[], speciesId: number): SpeciesData {
   // Find the taxonomy data based on the speciesID
-  const taxonomy = data.find((species) => species.mdd_id === speciesId);
+  const taxonomy = data.find((species) => species.mddId === speciesId);
 
   return taxonomy || ({} as SpeciesData);
 }
