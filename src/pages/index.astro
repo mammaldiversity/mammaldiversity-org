@@ -19,7 +19,12 @@ import { getMetadata } from "../../db/mdd";
 
 const meta = getMetadata();
 const currentVersion = meta.version;
-const releaseDate = meta.releaseDate;
+const releaseDate = new Date(meta.releaseDate).toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
 const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
 const mddDownloadLink = "https://www.mammaldiversity.org/assets/data/MDD.zip";
 

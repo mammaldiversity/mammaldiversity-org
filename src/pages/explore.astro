@@ -25,36 +25,40 @@ function getAuthority(author: string, year: number, isParentheses: boolean) {
   return isParentheses ? `(${author}, ${year})` : `${author}, ${year}`;
 }
 
-taxa.forEach((taxon) => {
-  const taxonOrder = taxon.species_data.taxonOrder ?? "Unknown";
+if (taxa.length === 0) {
+  console.error("No taxa data available.");
+} else {
+  taxa.forEach((taxon) => {
+    const taxonOrder = taxon.speciesData.taxonOrder ?? "Unknown";
 
-  if (!taxonByOrder[taxonOrder]) {
-    taxonByOrder[taxonOrder] = [];
-  }
-  const authority = getAuthority(
-    taxon.species_data.authoritySpeciesAuthor ?? "Unknown",
-    taxon.species_data.authoritySpeciesYear ?? 0,
-    taxon.species_data.authorityParentheses === 1
-  );
-
-  const synonymNames: string[] = taxon.synonyms.map((synonym) => {
-    return createSynonymName(
-      synonym.rootName,
-      synonym.species,
-      synonym.originalCombination
+    if (!taxonByOrder[taxonOrder]) {
+      taxonByOrder[taxonOrder] = [];
+    }
+    const authority = getAuthority(
+      taxon.speciesData.authoritySpeciesAuthor ?? "Unknown",
+      taxon.speciesData.authoritySpeciesYear ?? 0,
+      taxon.speciesData.authorityParentheses === 1
     );
-  });
 
-  taxonByOrder[taxonOrder].push({
-    id: taxon.species_data.id,
-    family: taxon.species_data.family ?? "Unknown",
-    genus: taxon.species_data.genus ?? "Unknown",
-    specificEpithet: taxon.species_data.specificEpithet ?? "unknown",
-    authorityYear: authority,
-    commonName: taxon.species_data.mainCommonName ?? "Unknown",
-    synonyms: synonymNames,
+    const synonymNames: string[] = taxon.synonyms?.map((synonym) => {
+      return createSynonymName(
+        synonym?.rootName,
+        synonym?.species,
+        synonym?.originalCombination
+      );
+    });
+
+    taxonByOrder[taxonOrder].push({
+      id: taxon.speciesData.id,
+      family: taxon.speciesData.family ?? "Unknown",
+      genus: taxon.speciesData.genus ?? "Unknown",
+      specificEpithet: taxon.speciesData.specificEpithet ?? "unknown",
+      authorityYear: authority,
+      commonName: taxon.speciesData.mainCommonName ?? "Unknown",
+      synonyms: synonymNames,
+    });
   });
-});
+}
 ---
 
 <Page title="Explore Database">

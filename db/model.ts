@@ -100,21 +100,29 @@ interface Synonym {
 }
 
 interface SpeciesData {
-  mdd_id: number;
-  species_data: Taxonomy;
+  mddId: number;
+  speciesData: Taxonomy;
   synonyms: Synonym[];
 }
 
 interface MddData {
-  version: string;
-  releaseDate: string;
+  metadata: Metadata;
   data: SpeciesData[];
-  synonym_only: Synonym[];
+  synonymOnly: Synonym[];
 }
 
 interface Metadata {
   version: string;
   releaseDate: string;
+  speciesCount: number;
+  synonymCount: number;
+  recentlyExtinct: number;
+  living: number;
+  domestic: number;
+  livingWild: number;
+  genusCount: number;
+  familyCount: number;
+  orderCount: number;
 }
 
 interface SynonymName {
