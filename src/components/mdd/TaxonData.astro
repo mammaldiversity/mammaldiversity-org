@@ -4,6 +4,7 @@ import { cleanTaxonData } from "../../scripts/taxon";
 import cntl from "cntl";
 import MixedLink from "./MixedLink.astro";
 import TaxonDataList from "./TaxonDataList.astro";
+import MddText from "./MddText.astro";
 
 interface TaxonDataProps {
   label: string;
@@ -57,7 +58,9 @@ const taxonClasses = cntl`
     ) : textData.includes("http") ? (
       <MixedLink text={textData} isItalic={isItalic} />
     ) : (
-      <p class={isItalic ? "italic" : ""}>{textData}</p>
+      <p class={isItalic ? "italic" : ""}>
+        <MddText text={textData} />
+      </p>
     )
   }
 </div>
