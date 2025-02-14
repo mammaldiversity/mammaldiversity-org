@@ -1,6 +1,12 @@
 // Parser for parsing the MDD json file
 import fs from "fs";
-import type { MddData, Synonym, SynonymName, SpeciesData } from "./model";
+import type {
+  MddData,
+  Synonym,
+  SynonymName,
+  SpeciesData,
+  Metadata,
+} from "./model";
 
 function parseMDDJson(): MddData {
   const rawData = fs.readFileSync("./db/data/mdd.json", "utf8");
@@ -10,6 +16,14 @@ function parseMDDJson(): MddData {
 
 function getSpeciesData(): SpeciesData[] {
   return parseMDDJson().data;
+}
+
+function getMetadata(): Metadata {
+  const data = parseMDDJson();
+  return {
+    version: data.version,
+    releaseDate: data.releaseDate,
+  };
 }
 
 function filterSpeciesId(data: SpeciesData[]): number[] {
@@ -24,4 +38,4 @@ function getTaxonomyData(data: SpeciesData[], speciesId: number): SpeciesData {
   return taxonomy || ({} as SpeciesData);
 }
 
-export { getSpeciesData, getTaxonomyData, filterSpeciesId };
+export { getSpeciesData, getTaxonomyData, filterSpeciesId, getMetadata };
