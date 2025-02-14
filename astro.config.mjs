@@ -1,8 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-
 import tailwind from "@astrojs/tailwind";
-
 import pagefind from "astro-pagefind";
 
 // https://astro.build/config
