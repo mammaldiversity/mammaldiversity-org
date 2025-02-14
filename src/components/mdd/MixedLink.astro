@@ -1,5 +1,6 @@
 ---
 import Link from "../Link.astro";
+import MddText from "./MddText.astro";
 
 interface Props {
   text: string;
@@ -20,7 +21,9 @@ const { text, isItalic } = Astro.props as Props;
         {part.match(/[.,!?)]*$/)}
       </>
     ) : (
-      <span class={isItalic ? "italic" : ""}>{part}</span>
+      <span class={isItalic ? "italic" : ""}>
+        <MddText text={part} />
+      </span>
     )
   )
 }
