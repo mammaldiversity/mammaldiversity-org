@@ -8,13 +8,11 @@ import { matchIUCNRedlistStatus } from "../../scripts/iucn";
 import Page from "../../layouts/Page.astro";
 import PageDivider from "../../components/PageDivider.astro";
 import SupportNotice from "../../components/SupportNotice.astro";
-import {
-  getSpeciesData,
-  getTaxonomyData,
-  getAllSynonyms,
-  filterSynonymData,
-} from "../../../db/mdd";
-import type { Synonym, Taxonomy } from "../../../db/model";
+import { filterSpeciesId, getTaxonomyData } from "../../../db/mdd";
+import type { SpeciesData, Synonym, Taxonomy } from "../../../db/model";
+import { getSpeciesData } from "../../../db/mdd";
+
+const data = getSpeciesData();
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
@@ -22,16 +20,16 @@ import type { Synonym, Taxonomy } from "../../../db/model";
 // It also ensure that the links to the taxon pages are always available
 export const getStaticPaths = async () => {
   // const taxonIDs = await db.select({ id: Taxonomy.id }).from(Taxonomy);
-  const taxonIDs = getSpeciesData();
-  return taxonIDs.map((t: { id: number }) => ({ params: { id: t.id } }));
+  const data = getSpeciesData();
+  const taxonIDs = filterSpeciesId(data);
+  return taxonIDs.map((id: number) => ({ params: { id } }));
 };
 
 const { id } = Astro.params;
 
-const taxon: Taxonomy = getTaxonomyData(Number(id));
-const allSynonyms: Synonym[] = getAllSynonyms();
-const synonyms: Synonym[] = filterSynonymData(allSynonyms, Number(id));
-
+const species_data: SpeciesData = getTaxonomyData(data, Number(id));
+const synonyms: Synonym[] = species_data.synonyms ?? [];
+const taxon: Taxonomy = species_data.species_data;
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
 const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");
 

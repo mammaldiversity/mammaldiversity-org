@@ -2,7 +2,6 @@
 import Title from "../components/Title.astro";
 import MainPage from "../layouts/MainPage.astro";
 import { getSpeciesData } from "../../db/mdd";
-// import { db, Taxonomy } from "astro:db";
 import Page from "../layouts/Page.astro";
 import PageDivider from "../components/PageDivider.astro";
 
@@ -25,23 +24,23 @@ function getAuthority(author: string, year: number, isParentheses: boolean) {
 }
 
 taxa.forEach((taxon) => {
-  const taxonOrder = taxon.taxonOrder ?? "Unknown";
+  const taxonOrder = taxon.species_data.taxonOrder ?? "Unknown";
 
   if (!taxonByOrder[taxonOrder]) {
     taxonByOrder[taxonOrder] = [];
   }
   const authority = getAuthority(
-    taxon.authoritySpeciesAuthor ?? "Unknown",
-    taxon.authoritySpeciesYear ?? 0,
-    taxon.authorityParentheses === 1
+    taxon.species_data.authoritySpeciesAuthor ?? "Unknown",
+    taxon.species_data.authoritySpeciesYear ?? 0,
+    taxon.species_data.authorityParentheses === 1
   );
   taxonByOrder[taxonOrder].push({
-    id: taxon.id,
-    family: taxon.family ?? "Unknown",
-    genus: taxon.genus ?? "Unknown",
-    specificEpithet: taxon.specificEpithet ?? "unknown",
+    id: taxon.species_data.id,
+    family: taxon.species_data.family ?? "Unknown",
+    genus: taxon.species_data.genus ?? "Unknown",
+    specificEpithet: taxon.species_data.specificEpithet ?? "unknown",
     authorityYear: authority,
-    commonName: taxon.mainCommonName ?? "Unknown",
+    commonName: taxon.species_data.mainCommonName ?? "Unknown",
   });
 });
 ---

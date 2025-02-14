@@ -99,11 +99,17 @@ interface Synonym {
   comments: string;
 }
 
+interface SpeciesData {
+  mdd_id: number;
+  species_data: Taxonomy;
+  synonyms: Synonym[];
+}
+
 interface MddData {
   version: string;
   releaseDate: string;
-  data: Taxonomy[];
-  synonyms: Synonym[];
+  data: SpeciesData[];
+  synonym_only: Synonym[];
 }
 
 interface SynonymName {
@@ -111,4 +117,4 @@ interface SynonymName {
   citation: string;
 }
 
-export type { Taxonomy, Synonym, MddData, SynonymName };
+export type { Taxonomy, Synonym, MddData, SpeciesData, SynonymName };
