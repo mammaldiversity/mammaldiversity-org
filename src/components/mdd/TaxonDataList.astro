@@ -1,0 +1,32 @@
+---
+// Parse MDD data to a list of text with links
+import Link from "../Link.astro";
+import MixedLink from "./MixedLink.astro";
+
+interface Props {
+  content: string;
+  isItalic?: boolean;
+}
+
+const { content, isItalic } = Astro.props;
+
+// Split content by "|"
+const textData: string[] = content.includes("|")
+  ? content.split("|").map((part: string) => part.trim())
+  : [content];
+---
+
+{
+  textData.length > 1 ? (
+    // create an unordered list
+    <ol class="text-md list-inside list-disc">
+      {textData.map((part: string) => (
+        <li>
+          <MixedLink text={part} isItalic={isItalic} />
+        </li>
+      ))}
+    </ol>
+  ) : (
+    <MixedLink text={textData[0]} isItalic={isItalic} />
+  )
+}

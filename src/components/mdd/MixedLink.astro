@@ -1,0 +1,26 @@
+---
+import Link from "../Link.astro";
+
+interface Props {
+  text: string;
+  isItalic?: boolean;
+}
+
+const { text, isItalic } = Astro.props as Props;
+---
+
+{
+  text.split(/(http\S+)/g).map((part) =>
+    part.startsWith("http") ? (
+      <>
+        <Link
+          url={part.replace(/[.,!?)]*$/, "")}
+          label={part.replace(/[.,!?)]*$/, "")}
+        />
+        {part.match(/[.,!?)]*$/)}
+      </>
+    ) : (
+      <span class={isItalic ? "italic" : ""}>{part}</span>
+    )
+  )
+}
