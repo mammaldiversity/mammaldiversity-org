@@ -1,5 +1,4 @@
 ---
-import PageDivider from "../components/PageDivider.astro";
 import Title from "../components/Title.astro";
 import MainPage from "../layouts/MainPage.astro";
 import Page from "../layouts/Page.astro";
@@ -10,48 +9,77 @@ import Page from "../layouts/Page.astro";
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Search Database</Title>
     </div>
-    <div class="mb-4">
-      <label
-        class="input input-bordered flex items-center gap-2 w-full max-w-md"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-          class="h-4 w-4 opacity-70"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-            clip-rule="evenodd"></path>
-        </svg>
-        <input
-          id="search-input"
-          type="text"
-          class="grow"
-          placeholder="E.g., Ornithorhynchus, anatinus, platypus, etc."
-        />
-        <button
-          id="clear-search"
-          class="btn btn-sm btn-circle btn-ghost hidden"
-          aria-label="Clear search"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="h-4 w-4"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </label>
+    <div class="items-center">
+      <div id="search" class="pagefind-ui"></div>
     </div>
-    <PageDivider />
   </MainPage>
 </Page>
+
+<style is:global>
+  :root {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: theme("colors.primary");
+    --pagefind-ui-text: theme("colors.base-content");
+    --pagefind-ui-background: theme("colors.base-100");
+    --pagefind-ui-border: theme("colors.accent");
+    --pagefind-ui-tag: theme("colors.primary");
+    --pagefind-ui-border-width: 2px;
+    --pagefind-ui-border-radius: 18px;
+    --pagefind-ui-font: sans-serif;
+    --tw-ring-color: #679a98;
+    --focus: #679a98;
+    --border: #679a98;
+  }
+  #search .pagefind-ui__search-input,
+  #search .pagefind-ui__search-clear {
+    background-color: var(--pagefind-input-background);
+    color: var(--pagefind-ui-text);
+    border-color: theme("colors.primary");
+    font-weight: normal;
+  }
+  #search .pagefind-ui__search-clear:focus {
+    background-color: var(--pagefind-ui-primary);
+    color: var(--pagefind-ui-background);
+    border-color: var(--pagefind-ui-primary);
+  }
+  #search
+    .pagefind-ui__search-input:focus
+    .pagefind-ui__search-input:active
+    .pagefind-ui__form:active
+    .pagefind-ui__form:focus {
+    color: var(--pagefind-ui-text);
+    border-color: theme("colors.secondary");
+    font-weight: normal;
+    outline: none;
+  }
+  #search .pagefind-ui__search-input:hover {
+    color: var(--pagefind-ui-text);
+    border-color: theme("colors.secondary");
+    font-weight: normal;
+  }
+  #search .pagefind-ui__result-title,
+  #search .pagefind-ui__result-link {
+    display: inline-block;
+    color: var(--pagefind-ui-result-title-text);
+    font-style: italic;
+    font-weight: bold;
+  }
+  #search .pagefind-ui__button {
+    background-color: theme("colors.primary");
+    color: theme("colors.base-100");
+    font-weight: normal;
+  }
+</style>
+<script src="/pagefind/pagefind-ui.js" is:inline></script>
+<script>
+  declare const PagefindUI: any;
+  window.addEventListener("DOMContentLoaded", () => {
+    if (!window.location.pathname.includes("/explore")) {
+      new PagefindUI({
+        element: "#search",
+        showSubResults: true,
+        showImages: false,
+      });
+    }
+  });
+</script>

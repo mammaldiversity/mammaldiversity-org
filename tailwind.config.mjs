@@ -39,15 +39,19 @@ export default {
       {
         light: {
           ...require("daisyui/src/theming/themes")["light"],
-          primary: "#0E5D5B",
+          primary: "#2c4243",
           secondary: "#65453b",
+          accent: "#b9d6d2",
+          neutral: "#273a39",
         },
       },
       {
         dark: {
           ...require("daisyui/src/theming/themes")["dark"],
-          primary: "#24EDEA",
+          primary: "#679a98",
           secondary: "#65453b",
+          accent: "#2c4243",
+          neutral: "#273a39",
         },
       },
     ],
