@@ -1,6 +1,6 @@
 # mammaldiversity.org
 
-We are migrating the Mammal Diversity Database to a new platform. It includes a redesigned interface and support for synonym data planned for MDD2.
+We are rewriting the Mammal Diversity Database website using a new platform. It includes a redesigned interface, improve performance, and support for synonym data planned for MDD2.
 
 ## Track our progress
 
