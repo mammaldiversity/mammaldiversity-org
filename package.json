@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev --remote",
-    "build": "astro check && astro build && yarn pagefind --site dist",
+    "build": "astro check && astro build && yarn postbuild",
+    "postbuild": "pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -14,10 +15,15 @@
     "@astrojs/check": "^0.9.4",
     "@astrojs/react": "^4.1.2",
     "@astrojs/tailwind": "^5.1.4",
+    "@types/node": "^22.13.4",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
     "astro": "^5.1.1",
     "astro-pagefind": "^1.8.0",
     "cntl": "^1.0.0",
     "leaflet": "^1.9.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.6.3"
   },

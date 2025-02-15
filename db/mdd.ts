@@ -1,10 +1,7 @@
 // Parser for parsing the MDD json file
 import fs from "fs";
-import type {
-  MddData,
-  SpeciesData,
-  Metadata,
-} from "./model";
+
+import type { MddData, SpeciesData, Metadata } from "./model";
 
 function parseMDDJson(): MddData {
   const rawData = fs.readFileSync("./db/data/mdd.json", "utf8");
