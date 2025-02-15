@@ -1,0 +1,51 @@
+---
+interface Props {
+  isLiving: boolean;
+  isExtinct: boolean;
+  isDomesticated: boolean;
+  isInTheWild: boolean;
+  isMSW3: boolean;
+}
+
+const { isLiving, isExtinct, isDomesticated, isInTheWild, isMSW3 } =
+  Astro.props as Props;
+---
+
+<h3 class="font-semibold text-lg md:text-xl mb-2">Species status</h3>
+<div class="flex gap-2 mb-4">
+  {
+    isLiving && (
+      <span class="px-3 py-1 rounded-full bg-green-500 text-white text-sm font-semibold">
+        Living
+      </span>
+    )
+  }
+  {
+    isExtinct && (
+      <span class="px-3 py-1 rounded-full bg-red-500 text-white text-sm font-semibold">
+        Extinct
+      </span>
+    )
+  }
+  {
+    isDomesticated && (
+      <span class="px-3 py-1 rounded-full bg-orange-500 text-white text-sm font-semibold">
+        Domesticated
+      </span>
+    )
+  }
+  {
+    isInTheWild && (
+      <span class="px-3 py-1 rounded-full bg-blue-500 text-white text-sm font-semibold">
+        Found in the wild
+      </span>
+    )
+  }
+  {
+    isMSW3 && (
+      <span class="px-3 py-1 rounded-full bg-purple-500 text-white text-sm font-semibold">
+        Listed in MSW3 2005
+      </span>
+    )
+  }
+</div>
