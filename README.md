@@ -4,7 +4,7 @@ We are migrating the Mammal Diversity Database to a new platform. It includes a 
 
 ## Track our progress
 
-Check out the [temporary website](https://hhandika.github.io/mammaldiversity-org/).
+Check out the [temporary website](https://hhandika.github.io/).
 
 ## Technologies
 
