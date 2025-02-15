@@ -15,37 +15,37 @@ const { isLiving, isExtinct, isDomesticated, isInTheWild, isMSW3 } =
 <div class="flex gap-2 mb-4">
   {
     isLiving && (
-      <span class="px-3 py-1 rounded-full bg-green-500 text-white text-sm font-semibold">
+      <div class="px-3 py-1 rounded-full bg-green-500 text-white text-sm font-semibold">
         Living
-      </span>
+      </div>
     )
   }
   {
     isExtinct && (
-      <span class="px-3 py-1 rounded-full bg-red-500 text-white text-sm font-semibold">
+      <div class="px-3 py-1 rounded-full bg-red-500 text-white text-sm font-semibold">
         Extinct
-      </span>
+      </div>
     )
   }
   {
     isDomesticated && (
-      <span class="px-3 py-1 rounded-full bg-orange-500 text-white text-sm font-semibold">
+      <div class="px-3 py-1 rounded-full bg-orange-500 text-white text-sm font-semibold">
         Domesticated
-      </span>
+      </div>
     )
   }
   {
     isInTheWild && (
-      <span class="px-3 py-1 rounded-full bg-blue-500 text-white text-sm font-semibold">
+      <div class="px-3 py-1 rounded-full bg-blue-500 text-white text-sm font-semibold">
         Found in the wild
-      </span>
+      </div>
     )
   }
   {
     isMSW3 && (
-      <span class="px-3 py-1 rounded-full bg-purple-500 text-white text-sm font-semibold">
+      <div class="px-3 py-1 rounded-full bg-purple-500 text-white text-sm font-semibold">
         Listed in MSW3 2005
-      </span>
+      </div>
     )
   }
 </div>

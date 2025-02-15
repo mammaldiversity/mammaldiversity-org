@@ -2,6 +2,9 @@
 import Title from "../components/Title.astro";
 import MainPage from "../layouts/MainPage.astro";
 import Page from "../layouts/Page.astro";
+import SearchComponent from "astro-pagefind/components/Search";
+import "@pagefind/default-ui/css/ui.css";
+const bundlePath = `${import.meta.env.BASE_URL}pagefind/`;
 ---
 
 <Page title="Search Database">
@@ -10,7 +13,12 @@ import Page from "../layouts/Page.astro";
       <Title>Search Database</Title>
     </div>
     <div class="items-center">
-      <div id="search" class="pagefind-ui"></div>
+      <SearchComponent
+        id="search"
+        className="pagefind-ui"
+        data-bundle-path={bundlePath}
+        uiOptions={{ showImages: false }}
+      />
     </div>
   </MainPage>
 </Page>
@@ -70,7 +78,7 @@ import Page from "../layouts/Page.astro";
     font-weight: normal;
   }
 </style>
-<script src="/pagefind/pagefind-ui.js" is:inline></script>
+
 <script>
   declare const PagefindUI: any;
   window.addEventListener("DOMContentLoaded", () => {
