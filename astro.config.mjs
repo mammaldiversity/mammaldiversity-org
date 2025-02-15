@@ -5,7 +5,6 @@ import pagefind from "astro-pagefind";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://hhandika.github.io",
-  base: "mammaldiversity-org",
+  site: "https://www.mammaldiversity.org/",
   integrations: [tailwind(), pagefind()],
 });
