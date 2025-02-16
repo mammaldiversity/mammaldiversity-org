@@ -87,7 +87,12 @@ const mapContainerClasses = cntl`
             this.lastWidth = window.innerWidth;
             await drawRegionsMap();
           }
-        }, 3000);
+        }, 300);
+      });
+
+      // Prevent refresh on scroll for iPhone
+      window.addEventListener("scroll", () => {
+        clearTimeout(resizeTimeout);
       });
     }
   }
