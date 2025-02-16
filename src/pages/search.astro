@@ -74,8 +74,11 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
     font-weight: bold;
   }
   #search .pagefind-ui__button {
-    background-color: theme("colors.primary");
     color: theme("colors.base-content");
+    font-weight: normal;
+  }
+  #search .pagefind-ui__button:hover {
+    color: theme("colors.primary");
     font-weight: normal;
   }
 </style>
