@@ -2,10 +2,6 @@
 
 We are rewriting the Mammal Diversity Database website using a new platform. It includes a redesigned interface, improve performance, and support for synonym data planned for MDD2.
 
-## Track our progress
-
-Check out the [temporary website](https://mdd.hhandika.com).
-
 ## Technologies
 
 - [Astro](https://astro.build/)
