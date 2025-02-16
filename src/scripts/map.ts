@@ -1,26 +1,35 @@
 interface CountryDistribution {
   known: string[];
-  potential: string[];
+  predicted: string[];
 }
 
-function splitCountryDistribution(countryDistribution: string): string[] {
-  return countryDistribution.split("|");
+function splitCountryDistribution(
+  countryDistribution: string
+): CountryDistribution {
+  let countryList = countryDistribution.split("|");
+  // If ends with "?", it is a potential distribution
+  let known = countryList.filter((country: string) => !country.endsWith("?"));
+
+  // if known contains one info listed domesticated (case insensitive),
+  // then we do not feed the list to the map
+  // Check only it is not empty and contain one member
+  if (known.length === 1 && known[0].toLowerCase().includes("domesticated")) {
+    return { known: [], predicted: [] };
+  }
+
+  let predicted = countryList
+    .filter((country: string) => country.endsWith("?"))
+    .map((country: string) => country.slice(0, -1));
+
+  return { known, predicted };
 }
 
-function countryListToJson(countryList: string[]): string {
+function countryListToJson(countryList: CountryDistribution): string {
   return JSON.stringify(countryList);
 }
 
 function jsonToCountryList(jsonString: string): CountryDistribution {
-  let countryList = JSON.parse(jsonString);
-  // If ends with "?", it is a potential distribution
-  let known = countryList.filter((country: string) => !country.endsWith("?"));
-
-  let potential = countryList
-    .filter((country: string) => country.endsWith("?"))
-    .map((country: string) => country.slice(0, -1));
-
-  return { known, potential };
+  return JSON.parse(jsonString);
 }
 
 export type { CountryDistribution };
