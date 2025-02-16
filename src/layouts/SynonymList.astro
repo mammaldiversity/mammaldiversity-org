@@ -9,11 +9,23 @@ const containerClasses = cntl`
   rounded-xl 
   overflow-y-auto
 `;
+
+const captionTextClasses = cntl`
+  text-spectra-800 
+  dark:text-spectra-100 
+  text-sm 
+  mb-4
+  mx-4
+`;
 ---
 
 <div class={containerClasses}>
   <div class="sticky top-0 bg-spectra-100 dark:bg-spectra-900 rounded-xl py-2">
-    <h3 class="text-lg md:text-xl font-semibold mt-4 mx-4">Synonyms</h3>
+    <h2 class="text-lg md:text-xl font-semibold mt-4 mx-4">Synonyms</h2>
+    <h3 class={captionTextClasses}>
+      Click on a synonym to view its details. If the list is long, scroll down
+      to see more.
+    </h3>
   </div>
   <div class="flex flex-wrap justify-items-start gap-4 p-4">
     <slot />

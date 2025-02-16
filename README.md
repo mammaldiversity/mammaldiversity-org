@@ -2,10 +2,12 @@
 
 We are rewriting the Mammal Diversity Database website using a new platform. It includes a redesigned interface, improve performance, and support for synonym data planned for MDD2.
 
-## Technologies
+## Key Technologies
 
 - [Astro](https://astro.build/)
 - [Tailwind CSS](https://tailwindcss.com/)
+- [Pagefind](https://pagefind.app/)
+- [Playwright](https://playwright.dev/)
 
 ## Contributing
 

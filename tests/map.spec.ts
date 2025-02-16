@@ -6,20 +6,31 @@ import {
 } from "../src/scripts/map";
 
 test("splitCountryDistribution", () => {
-  expect(splitCountryDistribution("India|China")).toEqual(["India", "China"]);
+  expect(splitCountryDistribution("Indonesia|USA")).toEqual(
+    expect.objectContaining({
+      known: ["Indonesia", "USA"],
+      predicted: [],
+    })
+  );
 });
 
 test("countryListToJson", () => {
-  expect(countryListToJson(["India", "China"])).toBe('["India","China"]');
+  expect(
+    countryListToJson({ known: ["Indonesia", "USA"], predicted: [] })
+  ).toEqual('{"known":["Indonesia","USA"],"predicted":[]}');
 });
 
 test("jsonToCountryList", () => {
-  expect(jsonToCountryList('["India","China"]')).toEqual({
-    known: ["India", "China"],
-    potential: [],
+  expect(
+    jsonToCountryList('{"known":["Indonesia","USA"],"predicted":[]}')
+  ).toEqual({
+    known: ["Indonesia", "USA"],
+    predicted: [],
   });
-  expect(jsonToCountryList('["India","China?"]')).toEqual({
-    known: ["India"],
-    potential: ["China"],
+  expect(
+    jsonToCountryList('{"known":["Indonesia"],"predicted":["USA"]}')
+  ).toEqual({
+    known: ["Indonesia"],
+    predicted: ["USA"],
   });
 });
