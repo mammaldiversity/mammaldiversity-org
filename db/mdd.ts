@@ -3,8 +3,11 @@ import fs from "fs";
 
 import type { MddData, SpeciesData, Metadata } from "./model";
 
+const MDD_PATH = "./db/data/mdd.json";
+// const MDD_PATH = "./db/data/test.json";
+
 function parseMDDJson(): MddData {
-  const rawData = fs.readFileSync("./db/data/mdd.json", "utf8");
+  const rawData = fs.readFileSync(MDD_PATH, "utf8");
   const jsonData: MddData = JSON.parse(rawData);
   return jsonData;
 }
