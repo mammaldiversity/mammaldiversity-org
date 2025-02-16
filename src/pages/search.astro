@@ -12,7 +12,7 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Search Database</Title>
-      <p class="text-md md:text-lg mb-4">
+      <p class="text-sm md:text-lg mb-4">
         Search for any information in the database (experimental). It may not
         work as expected. For simple taxon-specific searches, please visit the <Link
           url="./explore"
@@ -30,15 +30,13 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
     --pagefind-ui-scale: 1;
     --pagefind-ui-primary: theme("colors.primary");
     --pagefind-ui-text: theme("colors.base-content");
-    --pagefind-ui-background: theme("colors.base-100");
+    --pagefind-ui-background: theme("colors.primary");
     --pagefind-ui-border: theme("colors.accent");
     --pagefind-ui-tag: theme("colors.primary");
     --pagefind-ui-border-width: 2px;
     --pagefind-ui-border-radius: 18px;
     --pagefind-ui-font: sans-serif;
-    --tw-ring-color: #679a98;
-    --focus: #679a98;
-    --border: #679a98;
+    --pagefind-ui-scale: 1;
   }
   #search .pagefind-ui__search-input,
   #search .pagefind-ui__search-clear {
@@ -55,12 +53,13 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
   #search
     .pagefind-ui__search-input:focus
     .pagefind-ui__search-input:active
+    .pagefind-ui__form:focus
     .pagefind-ui__form:active
-    .pagefind-ui__form:focus {
+    .pagefind-ui__form::after
+    .pagefind-ui__form::before {
     color: var(--pagefind-ui-text);
-    border-color: theme("colors.secondary");
+    border-color: theme("colors.primary");
     font-weight: normal;
-    outline: none;
   }
   #search .pagefind-ui__search-input:hover {
     color: var(--pagefind-ui-text);
@@ -76,7 +75,7 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
   }
   #search .pagefind-ui__button {
     background-color: theme("colors.primary");
-    color: theme("colors.base-100");
+    color: theme("colors.base-content");
     font-weight: normal;
   }
 </style>
