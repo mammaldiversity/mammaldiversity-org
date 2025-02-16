@@ -5,11 +5,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev --remote",
+    "start": "astro dev",
     "build": "astro check && astro build && yarn postbuild",
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "playwright test"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -30,6 +31,7 @@
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
   "devDependencies": {
+    "@playwright/test": "^1.50.1",
     "@types/leaflet": "^1.9.15",
     "daisyui": "^4.12.22"
   }

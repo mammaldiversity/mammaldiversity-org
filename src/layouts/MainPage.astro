@@ -1,6 +1,12 @@
 ---
 import cntl from "cntl";
 
+interface Props {
+  isIndexed?: boolean;
+}
+
+const { isIndexed } = Astro.props;
+
 const mainPageClasses = cntl`
   mx-auto 
   min-h-screen
@@ -8,6 +14,18 @@ const mainPageClasses = cntl`
 `;
 ---
 
-<main>
-  <div class={mainPageClasses}><slot /></div>
-</main>
+{
+  isIndexed ? (
+    <main data-pagefind-body>
+      <div class={mainPageClasses}>
+        <slot />
+      </div>
+    </main>
+  ) : (
+    <main>
+      <div class={mainPageClasses}>
+        <slot />
+      </div>
+    </main>
+  )
+}

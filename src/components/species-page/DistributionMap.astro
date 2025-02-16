@@ -13,13 +13,14 @@ const mapContainerClasses = cntl`
   rounded-xl 
   p-4 
   my-2
+  ${countryList.length === 0 ? "hidden" : ""}
   ${extendClass}
 `;
 ---
 
 <div class={mapContainerClasses}>
   <h3 class="text-lg md:text-xl font-semibold">Country distribution map</h3>
-  <h4 class="text-sm text-spectra-900 dark:text-spectra-400 mb-4">
+  <h4 class="text-sm text-spectra-800 dark:text-spectra-200 mb-4">
     The map below provides a general overview. Most species inhabit only
     specific regions within countries. Hover over the highlighted regions to see
     the country name.
@@ -79,11 +80,20 @@ const mapContainerClasses = cntl`
 
       // Refresh map when window is resized
       // So, the map can be redrawn to fit the new window size
-      window.addEventListener("resize", async () => {
-        if (window.innerWidth !== this.lastWidth) {
-          this.lastWidth = window.innerWidth;
-          await drawRegionsMap();
-        }
+      let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(async () => {
+          if (window.innerWidth !== this.lastWidth) {
+            this.lastWidth = window.innerWidth;
+            await drawRegionsMap();
+          }
+        }, 300);
+      });
+
+      // Prevent refresh on scroll for iPhone
+      window.addEventListener("scroll", () => {
+        clearTimeout(resizeTimeout);
       });
     }
   }

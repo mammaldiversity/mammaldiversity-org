@@ -61,7 +61,7 @@ if (taxa.length === 0) {
 }
 ---
 
-<Page data-pagefind-ignore title="Explore Database">
+<Page title="Explore Database">
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Explore Database</Title>
@@ -85,7 +85,7 @@ if (taxa.length === 0) {
           id="search-input"
           type="text"
           class="grow"
-          placeholder="E.g., Ornithorhynchus, anatinus, platypus, etc."
+          placeholder="Filter by species, family, synonyms, or common name"
         />
         <button
           id="clear-search"
@@ -124,7 +124,7 @@ if (taxa.length === 0) {
             <div class="collapse-content">
               <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p>
               {taxa.map((taxon) => (
-                <a href={`/mammaldiversity-org/taxon/${taxon.id}`}>
+                <a href={`/taxon/${taxon.id}`}>
                   <div
                     id="taxa"
                     class="mb-2 bg-spectra-100 dark:bg-spectra-800 p-2 rounded-lg"
