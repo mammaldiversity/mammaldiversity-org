@@ -4,7 +4,7 @@ We are rewriting the Mammal Diversity Database website using a new platform. It 
 
 ## Track our progress
 
-Check out the [temporary website](https://hhandika.github.io/).
+Check out the [temporary website](https://mdd.hhandika.com).
 
 ## Technologies
 
