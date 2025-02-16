@@ -32,7 +32,6 @@ const mapContainerClasses = cntl`
 
 <script
   is:inline
-  async
   type="text/javascript"
   src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
@@ -80,11 +79,15 @@ const mapContainerClasses = cntl`
 
       // Refresh map when window is resized
       // So, the map can be redrawn to fit the new window size
-      window.addEventListener("resize", async () => {
-        if (window.innerWidth !== this.lastWidth) {
-          this.lastWidth = window.innerWidth;
-          await drawRegionsMap();
-        }
+      let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(async () => {
+          if (window.innerWidth !== this.lastWidth) {
+            this.lastWidth = window.innerWidth;
+            await drawRegionsMap();
+          }
+        }, 3000);
       });
     }
   }
