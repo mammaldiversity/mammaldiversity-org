@@ -3,6 +3,9 @@ import Title from "../components/Title.astro";
 import MainPage from "../layouts/MainPage.astro";
 import Page from "../layouts/Page.astro";
 import Link from "../components/Link.astro";
+import { join } from "path";
+
+const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
 ---
 
 <Page title="Search Database">
@@ -10,8 +13,12 @@ import Link from "../components/Link.astro";
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Search Database</Title>
       <p class="text-md md:text-lg mb-4">
-        This is an experimental search feature. It may not work as expected.
-        Please use the <Link url="./explore" label="Explore Page" /> for better results.
+        Search for any information in the database (experimental). It may not
+        work as expected. For simple taxon-specific searches, please visit the <Link
+          url="./explore"
+          label="Explore Page"
+        />
+        .
       </p>
     </div>
     <div id="search" class="mt-2"></div>
@@ -74,8 +81,7 @@ import Link from "../components/Link.astro";
   }
 </style>
 
-<script src="/pagefind/pagefind-ui.js" type="text/javascript" is:inline
-></script>
+<script src={pageFindPath} type="text/javascript" is:inline --></script>
 <script>
   declare const PagefindUI: any;
   window.addEventListener("DOMContentLoaded", () => {
