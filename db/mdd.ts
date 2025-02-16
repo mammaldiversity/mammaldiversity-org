@@ -32,4 +32,10 @@ function getTaxonomyData(data: SpeciesData[], speciesId: number): SpeciesData {
   return taxonomy || ({} as SpeciesData);
 }
 
-export { getSpeciesData, getTaxonomyData, filterSpeciesId, getMetadata };
+export {
+  getSpeciesData,
+  getTaxonomyData,
+  filterSpeciesId,
+  getMetadata,
+  parseMDDJson,
+};

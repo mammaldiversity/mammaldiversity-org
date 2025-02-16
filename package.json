@@ -10,7 +10,8 @@
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "playwright test"
+    "test": "playwright test",
+    "show-report": "playwright show-report"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

@@ -7,28 +7,74 @@ const { countries, extendClass } = Astro.props;
 const countryList = splitCountryDistribution(countries ?? "");
 const countryListStringify = countryListToJson(countryList);
 
+const emptyDistribution =
+  countryList.known.length === 0 && countryList.predicted.length === 0;
+
+const hasPredictedDistribution = countryList.predicted.length > 0;
+
 const mapContainerClasses = cntl`
   bg-spectra-100 
   dark:bg-spectra-900 
   rounded-xl 
   p-4 
   my-2
-  ${countryList.length === 0 ? "hidden" : ""}
   ${extendClass}
+`;
+
+const mapClasses = cntl`
+  justify-items-center 
+  max-w-full 
+  w-full 
+  h-96
+  overflow-auto
+  ${emptyDistribution ? "hidden" : ""}
+`;
+
+const titleClasses = cntl`
+  text-lg 
+  md:text-xl 
+  font-semibold
+`;
+
+const captionTextClasses = cntl`
+  text-spectra-800 
+  dark:text-spectra-100 
+  text-sm 
+  mb-4
+  ${emptyDistribution ? "hidden" : ""}
+`;
+
+const emptyTextClasses = cntl`
+  text-sm 
+  text-spectra-800 
+  dark:text-spectra-200
+  mt-4
 `;
 ---
 
 <div class={mapContainerClasses}>
-  <h3 class="text-lg md:text-xl font-semibold">Country distribution map</h3>
-  <h4 class="text-sm text-spectra-800 dark:text-spectra-200 mb-4">
+  <h2 class={titleClasses}>Country distribution map</h2>
+  <h3 class={captionTextClasses}>
     The map below provides a general overview. Most species inhabit only
-    specific regions within countries. Hover over the highlighted regions to see
-    the country name.
-  </h4>
-  <distribution-map data-countries={countryListStringify}>
-    <div id="map" class="justify-items-center max-w-full">
-    </div></distribution-map
-  >
+    specific regions within countries. {
+      hasPredictedDistribution && (
+        <span>
+          Known distribution is shown in green and predicted distribution is in
+          yellow.
+        </span>
+      )
+    }
+    Hover over the highlighted regions to see the country name.
+  </h3>
+  {
+    emptyDistribution ? (
+      <p class={emptyTextClasses}>No distribution data available.</p>
+    ) : (
+      <distribution-map data-countries={countryListStringify}>
+        <div id="map" class={mapClasses} />
+      </distribution-map>
+    )
+  }
 </div>
 
 <script
@@ -58,11 +104,11 @@ const mapContainerClasses = cntl`
           /**
            * Represents the distribution data for countries.
            * The first element is the country name.
-           * The second element indicates known distribution: 1 for yes, 0 for no.
+           * The second element indicates predicted: 1 for yes, 0 for no.
            */
           ["Country", "Known distribution (1: yes, 0: no)?"],
           ...countries.known.map((country) => [country, 1]),
-          ...countries.potential.map((country) => [country, 0]),
+          ...countries.predicted.map((country) => [country, 0]),
         ]);
 
         var options = {
@@ -77,24 +123,6 @@ const mapContainerClasses = cntl`
 
         await chart.draw(data, options);
       }
-
-      // Refresh map when window is resized
-      // So, the map can be redrawn to fit the new window size
-      let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
-      window.addEventListener("resize", () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(async () => {
-          if (window.innerWidth !== this.lastWidth) {
-            this.lastWidth = window.innerWidth;
-            await drawRegionsMap();
-          }
-        }, 300);
-      });
-
-      // Prevent refresh on scroll for iPhone
-      window.addEventListener("scroll", () => {
-        clearTimeout(resizeTimeout);
-      });
     }
   }
 
