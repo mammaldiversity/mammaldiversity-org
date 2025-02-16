@@ -43,6 +43,7 @@ export default {
           secondary: "#65453b",
           accent: "#b9d6d2",
           neutral: "#273a39",
+          "base-content": "#131f20",
         },
       },
       {
@@ -52,6 +53,7 @@ export default {
           secondary: "#65453b",
           accent: "#2c4243",
           neutral: "#273a39",
+          "base-content": "#f8f6f2",
         },
       },
     ],
