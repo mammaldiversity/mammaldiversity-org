@@ -25,17 +25,20 @@ const currentPath = Astro.url.pathname;
     <OpenMenuButton />
   </div>
   <div
-    class="grid-cols-4 justify-items-center hidden lg:flex lg:gap-x-12 mx-auto bg-spicy-mix-200 py-2 px-8 dark:bg-spicy-mix-800 rounded-full"
+    class="grid-cols-5 justify-items-center hidden lg:flex lg:gap-x-12 mx-auto bg-spicy-mix-200 py-2 px-8 dark:bg-spicy-mix-800 rounded-full"
   >
     {
       navItems.map(({ path, label }) => (
-        <div class="flex items-center justify-center text-center ">
+        <div class="text-center">
           <a
             href={path}
-            class={`-m-1.5 p-1.5 font-semibold hover:text-spicy-mix-800 dark:hover:text-spicy-mix-200 ${currentPath === path || currentPath === `${path}/` ? "text-spectra-800 dark:text-spectra-100" : "text-spectra-950 dark:text-spectra-50"}`}
+            class={`mx-2 my-2 font-semibold hover:text-spicy-mix-800 dark:hover:text-spicy-mix-200 rounded-xl px-2 `}
           >
             {label}
           </a>
+          <div
+            class={`h-1 w-1/6 mx-auto rounded-full ${currentPath === path || currentPath === `${path}/` ? "bg-spectra-800 dark:bg-spectra-100" : "bg-transparent"}`}
+          />
         </div>
       ))
     }
