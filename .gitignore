@@ -23,5 +23,11 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-tests/
+
 mdd.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

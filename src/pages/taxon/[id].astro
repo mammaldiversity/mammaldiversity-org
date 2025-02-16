@@ -1,18 +1,18 @@
 ---
 import MainPage from "../../layouts/MainPage.astro";
 import cntl from "cntl";
-import SynonymPage from "../../components/SynonymPage.astro";
+import SynonymPage from "../../components/species-page/SynonymPage.astro";
 import SynonymList from "../../layouts/SynonymList.astro";
-import TaxonData from "../../components/mdd/TaxonData.astro";
+import TaxonData from "../../components/species-page/TaxonData.astro";
 import { matchIUCNRedlistStatus } from "../../scripts/iucn";
 import Page from "../../layouts/Page.astro";
 import PageDivider from "../../components/PageDivider.astro";
-import SupportNotice from "../../components/SupportNotice.astro";
+import SupportNotice from "../../components/species-page/SupportNotice.astro";
 import { filterSpeciesId, getTaxonomyData } from "../../../db/mdd";
 import type { SpeciesData, Synonym, Taxonomy } from "../../../db/model";
 import { getSpeciesData } from "../../../db/mdd";
-import SpeciesStatus from "../../components/mdd/SpeciesStatus.astro";
-import DistributionMap from "../../components/mdd/DistributionMap.astro";
+import SpeciesStatus from "../../components/species-page/SpeciesStatus.astro";
+import DistributionMap from "../../components/species-page/DistributionMap.astro";
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
@@ -60,7 +60,7 @@ const common_name_class = cntl`
 ---
 
 <Page title={`${species} • ${taxon?.mainCommonName}`}>
-  <MainPage>
+  <MainPage isIndexed={true}>
     <div class="text-center item-center mt-8 md:mt-16 mb-4">
       <h1 class="font-serif text-3xl md:text-5xl italic mb-2">
         {species}
