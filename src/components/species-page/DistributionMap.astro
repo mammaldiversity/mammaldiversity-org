@@ -53,8 +53,8 @@ const emptyTextClasses = cntl`
 ---
 
 <div class={mapContainerClasses}>
-  <h3 class={titleClasses}>Country distribution map</h3>
-  <h4 class={captionTextClasses}>
+  <h2 class={titleClasses}>Country distribution map</h2>
+  <h3 class={captionTextClasses}>
     The map below provides a general overview. Most species inhabit only
     specific regions within countries. {
       hasPredictedDistribution && (
@@ -65,7 +65,7 @@ const emptyTextClasses = cntl`
       )
     }
     Hover over the highlighted regions to see the country name.
-  </h4>
+  </h3>
   {
     emptyDistribution ? (
       <p class={emptyTextClasses}>No distribution data available.</p>
