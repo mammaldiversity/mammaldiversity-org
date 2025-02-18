@@ -13,6 +13,7 @@ import type { SpeciesData, Synonym, Taxonomy } from "../../../db/model";
 import { getSpeciesData } from "../../../db/mdd";
 import SpeciesStatus from "../../components/species-page/SpeciesStatus.astro";
 import DistributionMap from "../../components/species-page/DistributionMap.astro";
+import getSpeciesPermalink from "../../scripts/permalink";
 
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
@@ -34,8 +35,7 @@ const taxon: Taxonomy = species_data.speciesData;
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
 const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");
 
-const mddSpeciesPermanentLink = "https://www.mammaldiversity.org/taxon/";
-const mddSpeciesLink = `${mddSpeciesPermanentLink}${taxon?.id}`;
+const mddSpeciesLink = getSpeciesPermalink(taxon?.id);
 
 const species = taxon?.genus + " " + taxon?.specificEpithet;
 
