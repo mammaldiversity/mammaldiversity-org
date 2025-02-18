@@ -97,6 +97,30 @@ const heroClasses = cntl`
   lg:mx-8
   mx-4
 `;
+
+const sectionTitleClass = cntl`
+  font-serif
+  text-3xl
+  lg:text-4xl
+  font-semibold
+  mt-4
+  mb-4
+`;
+
+const highlightedContainerClasses = cntl`
+  py-4
+  px-2
+  text-center
+  my-4
+  max-w-4xl
+  mx-auto
+  bg-gradient-to-r
+  dark:from-spectra-900
+  dark:to-transparent
+  from-spectra-100
+  to-transparent
+  rounded-xl
+`;
 ---
 
 <FrontPage data-pagefind-ignore title="ASM Mammal Diversity Database">
@@ -126,10 +150,37 @@ const heroClasses = cntl`
       </div>
     </div>
     <div id="content" class="mx-8">
-      <div id="goal-content" class="py-4 px-2 text-center mt-8">
-        <h2 class="font-serif text-3xl lg:text-4xl font-semibold mb-4">
-          Our Goals
-        </h2>
+      <div
+        id="what-new"
+        class="py-4 px-8 text-center mt-8 max-w-4xl mx-auto rounded-xl bg-spectra-200 dark:bg-spectra-800 p-4"
+      >
+        <h2 class={sectionTitleClass}>What's New in MDD2</h2>
+        <ul class="text-left text-lg ml-4 list-disc list-outside mb-4">
+          <li>
+            Codings of US state, country, continent, and biogeographic realm
+            geographic categories for each species
+          </li>
+          <li>
+            A comprehensive nomenclatural dataset for 50,000+ synonymous
+            species-rank names, curated with type locality and specimen
+            information.
+          </li>
+          <li>
+            Integration between the MDD and the databases Hesperomys and
+            Batnames for greater data accuracy and completeness
+          </li>
+          <li>
+            A rewritten and redesigned of the MDD website with new search
+            feature, better scalability, enhanced data visualization, and more.
+            The original version is available at <Link
+              url="https://classic.mammaldiversity.org"
+              label="classic.mammaldiversity.org"
+            />.
+          </li>
+        </ul>
+      </div>
+      <div id="goal-content" class="py-4 px-2 text-center">
+        <h2 class={sectionTitleClass}>Our Goals</h2>
         <p class="text-lg max-w-4xl mx-auto">
           We are curating the taxonomic implications of new research
           publications in real time — with the goal of promoting rigorous study
@@ -141,15 +192,11 @@ const heroClasses = cntl`
         </p>
       </div>
       <div class="py-4 px-2 text-center my-4 mx-auto">
-        <h2 class="font-serif text-3xl lg:text-4xl font-semibold mb-4">
-          Mammal Diversity Statistics
-        </h2>
+        <h2 class={sectionTitleClass}>Mammal Diversity Statistics</h2>
         <DiversityStatTable />
       </div>
-      <div
-        class="py-4 px-2 text-center my-4 max-w-4xl mx-auto bg-gradient-to-r dark:from-spectra-900 dark:to-transparent from-spectra-100 to-transparent rounded-xl"
-      >
-        <h2 class="font-serif text-3xl lg:text-4xl font-semibold mt-4 mb-4">
+      <div class={highlightedContainerClasses}>
+        <h2 class={sectionTitleClass}>
           Try the MDD App <span class="text-sm inline-block align-top"
             >beta</span
           >
@@ -177,9 +224,7 @@ const heroClasses = cntl`
         </div>
       </div>
       <div id="citation" class="py-4 px-2 text-center mb-4 max-w-6xl mx-auto">
-        <h2 class="font-serif text-3xl lg:text-4xl font-semibold mt-4">
-          Cite MDD
-        </h2>
+        <h2 class={sectionTitleClass}>Cite MDD</h2>
         <div class="text-md mt-4">
           <p>
             The current database (via <Link
