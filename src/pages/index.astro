@@ -152,9 +152,9 @@ const highlightedContainerClasses = cntl`
     <div id="content" class="mx-8">
       <div
         id="what-new"
-        class="py-4 px-8 text-center mt-8 max-w-4xl mx-auto rounded-xl bg-spectra-200 dark:bg-spectra-800 p-4"
+        class="py-4 px-8 text-center mt-12 max-w-4xl mx-auto rounded-xl bg-spectra-200 dark:bg-spectra-800 p-4"
       >
-        <h2 class={sectionTitleClass}>What's New in MDD2</h2>
+        <h2 class={sectionTitleClass}>What's New in the MDD2</h2>
         <ul class="text-left text-lg ml-4 list-disc list-outside mb-4">
           <li>
             Codings of US state, country, continent, and biogeographic realm
@@ -170,16 +170,22 @@ const highlightedContainerClasses = cntl`
             Batnames for greater data accuracy and completeness
           </li>
           <li>
-            A rewritten and redesigned of the MDD website with new search
-            feature, better scalability, enhanced data visualization, and more.
-            The original version is available at <Link
+            A rewritten and redesigned of the MDD website (work in progress). It
+            comes with new search feature, better scalability, enhanced data
+            visualization, and other features. The original version is available
+            at <Link
               url="https://classic.mammaldiversity.org"
               label="classic.mammaldiversity.org"
             />.
           </li>
+          <li>
+            A new cross-platform app (currently in beta) offering offline access
+            to MDD, advanced search capabilities, custom exports, and more.
+          </li>
         </ul>
       </div>
-      <div id="goal-content" class="py-4 px-2 text-center">
+      <div id="
+              goal-content" class="py-4 px-2 text-center">
         <h2 class={sectionTitleClass}>Our Goals</h2>
         <p class="text-lg max-w-4xl mx-auto">
           We are curating the taxonomic implications of new research
@@ -191,7 +197,7 @@ const highlightedContainerClasses = cntl`
           ecological, trait, and taxonomic data.
         </p>
       </div>
-      <div class="py-4 px-2 text-center my-4 mx-auto">
+      <div class="py-4 px-2 text-center mb-4 mx-auto">
         <h2 class={sectionTitleClass}>Mammal Diversity Statistics</h2>
         <DiversityStatTable />
       </div>

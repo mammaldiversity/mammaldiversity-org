@@ -7,12 +7,12 @@ function splitCountryDistribution(
   countryDistribution: string
 ): CountryDistribution {
   let countryList = countryDistribution.split("|");
-  // If ends with "?", it is a potential distribution
+  // If ends with "?", it is a predicted distribution
   let known = countryList.filter((country: string) => !country.endsWith("?"));
 
-  // if known contains one info listed domesticated (case insensitive),
-  // then we do not feed the list to the map
-  // Check only it is not empty and contain one member
+  // If known distribution contains one info
+  // listed domesticated (case insensitive),
+  // then we do not feed the list to the map.
   if (known.length === 1 && known[0].toLowerCase().includes("domesticated")) {
     return { known: [], predicted: [] };
   }
