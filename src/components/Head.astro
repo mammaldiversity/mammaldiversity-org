@@ -14,4 +14,18 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.css");
   <link href={pageFindPath} rel="stylesheet" />
   <meta name="generator" content={Astro.generator} />
   <title>{title}</title>
+  <!-- Google tag (gtag.js) -->
+  <script
+    type="text/partytown"
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-478P4PDQYE"></script>
+  <script type="text/partytown">
+    // Declare dataLayer on the window object
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", "G-478P4PDQYE");
+  </script>
 </head>
