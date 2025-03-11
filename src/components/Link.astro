@@ -5,9 +5,15 @@ interface LinkProps {
   label?: string;
   url: string;
   extendClass?: string;
+  openInNewTab: boolean;
 }
 
-const { label, url, extendClass } = Astro.props as LinkProps;
+const {
+  label,
+  url,
+  extendClass,
+  openInNewTab = false,
+} = Astro.props as LinkProps;
 
 const text = label ? label : url;
 
@@ -22,6 +28,9 @@ const linkClasses = cntl`
 `;
 ---
 
-<a class={linkClasses} href={url} target="_blank" rel="noopener noreferrer"
-  >{text}</a
+<a
+  class={linkClasses}
+  href={url}
+  target={openInNewTab ? "_blank" : "_self"}
+  rel="noopener noreferrer">{text}</a
 >
