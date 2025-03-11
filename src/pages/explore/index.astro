@@ -1,10 +1,10 @@
 ---
-import Title from "../components/Title.astro";
-import MainPage from "../layouts/MainPage.astro";
-import { getSpeciesData } from "../../db/mdd";
-import Page from "../layouts/Page.astro";
-import PageDivider from "../components/PageDivider.astro";
-import { createSynonymName } from "../scripts/taxon";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import { getSpeciesData } from "../../../db/mdd";
+import Page from "../../layouts/Page.astro";
+import PageDivider from "../../components/PageDivider.astro";
+import { createSynonymName } from "../../scripts/taxon";
 
 const taxa = getSpeciesData();
 
@@ -167,89 +167,62 @@ if (taxa.length === 0) {
 </Page>
 
 <script>
-  function searchQuery() {
-    const searchInput = document.getElementById("search-input");
-    if (!searchInput) return;
-    const query = (searchInput as HTMLInputElement).value;
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById(
+      "search-input"
+    ) as HTMLInputElement;
+    const resetBtn = document.getElementById("clear-search");
+    const noResults = document.getElementById("no-results");
     const taxonList = document.querySelectorAll("#taxon-list");
 
-    // Filter elements with id="taxa" based on query
-    taxonList.forEach((list) => {
-      const taxa = list.querySelectorAll("#taxon-container");
+    function searchQuery() {
+      const query = searchInput.value.trim().toLowerCase();
       let hasAnyMatch = false;
 
-      taxa.forEach((taxon) => {
-        const taxonName = taxon.querySelector("#taxa");
-        if (
-          taxon !== null &&
-          taxonName &&
-          taxonName.textContent &&
-          taxonName.textContent.toLowerCase().includes(query.toLowerCase())
-        ) {
-          (taxon as HTMLElement).classList.remove("hidden");
-          hasAnyMatch = true;
-        } else {
-          (taxon as HTMLElement).classList.add("hidden");
-        }
-      });
+      taxonList.forEach((list) => {
+        const taxa = list.querySelectorAll("#taxon-container");
+        let listHasMatch = false;
 
-      (list as HTMLElement).classList.toggle("hidden", !hasAnyMatch);
-    });
-
-    const noResults = document.getElementById("no-results");
-    if (noResults) {
-      const hasAnyMatch = Array.from(taxonList).some(
-        (list) => !list.classList.contains("hidden")
-      );
-      noResults.classList.toggle("hidden", hasAnyMatch);
-    }
-
-    const resetBtn = document.getElementById("clear-search");
-    if (resetBtn) {
-      resetBtn.classList.remove("hidden");
-    }
-  }
-
-  const resetBtn = document.getElementById("clear-search");
-  function reset() {
-    if (resetBtn) {
-      resetBtn.addEventListener("click", () => {
-        const taxonList = document.querySelectorAll("#taxon-list");
-        taxonList.forEach((list) => {
-          const taxa = list.querySelectorAll("#taxon-container");
-          (list as HTMLElement).classList.remove("hidden");
-          taxa.forEach((taxon) => {
-            (taxon as HTMLElement).classList.remove("hidden");
-          });
+        taxa.forEach((taxon) => {
+          const taxonNames = Array.from(taxon.querySelectorAll("#taxa"))
+            .map((element) => element.textContent?.toLowerCase() || "")
+            .join(" ");
+          const match = taxonNames.includes(query);
+          taxon.classList.toggle("hidden", !match);
+          listHasMatch = listHasMatch || match;
         });
 
-        resetBtn.classList.add("hidden");
-        // Clear search input
-        const searchInput = document.getElementById("search-input");
-        if (searchInput) {
-          (searchInput as HTMLInputElement).value = "";
-        }
-        // Hide no results message
-        const noResults = document.getElementById("no-results");
-        if (noResults) {
-          noResults.classList.add("hidden");
-        }
+        list.classList.toggle("hidden", !listHasMatch);
+        hasAnyMatch = hasAnyMatch || listHasMatch;
       });
-    }
-  }
 
-  const searchInput = document.getElementById("search-input");
-  if (searchInput) {
-    searchInput.addEventListener("input", () => {
-      if ((searchInput as HTMLInputElement).value.trim() !== "") {
-        searchQuery();
-        reset();
+      if (noResults) {
+        noResults.classList.toggle("hidden", hasAnyMatch);
       }
-      if ((searchInput as HTMLInputElement).value.trim() === "") {
-        if (resetBtn) {
-          resetBtn.classList.add("hidden");
-        }
+      if (resetBtn) {
+        resetBtn.classList.toggle("hidden", query === "");
       }
-    });
-  }
+    }
+
+    function resetSearch() {
+      searchInput.value = "";
+      taxonList.forEach((list) => {
+        list.classList.remove("hidden");
+        list.querySelectorAll("#taxon-container").forEach((taxon) => {
+          taxon.classList.remove("hidden");
+        });
+      });
+      if (noResults) {
+        noResults.classList.add("hidden");
+      }
+      if (resetBtn) {
+        resetBtn.classList.add("hidden");
+      }
+    }
+
+    searchInput.addEventListener("input", searchQuery);
+    if (resetBtn) {
+      resetBtn.addEventListener("click", resetSearch);
+    }
+  });
 </script>
