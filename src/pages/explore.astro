@@ -66,7 +66,16 @@ if (taxa.length === 0) {
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Explore Database</Title>
     </div>
-    <div class="mb-4">
+    <div class="text-md text-center mt-4 mb-2 md:mt-8 max-w-4xl mx-auto">
+      <p>
+        Explore the list of species in the MDD, organized by phylogeny. Click on
+        the order to reveal the species list. To filter for a species or common
+        name, use the search bar. The original explore table is currently under
+        development.
+      </p>
+    </div>
+
+    <div class="mb-2 mt-8">
       <label
         class="input input-bordered flex items-center gap-2 w-full max-w-md"
       >
@@ -85,7 +94,7 @@ if (taxa.length === 0) {
           id="search-input"
           type="text"
           class="grow"
-          placeholder="Filter by species, family, synonyms, or common name"
+          placeholder="Filter by species or common name"
         />
         <button
           id="clear-search"
@@ -107,8 +116,7 @@ if (taxa.length === 0) {
           </svg>
         </button>
       </label>
-    </div>
-    <PageDivider />
+    </div><PageDivider />
     <p id="no-results" class="hidden text-center text-lg font-medium my-4">
       No results found.
     </p>
@@ -122,14 +130,14 @@ if (taxa.length === 0) {
             <input type="checkbox" />
             <div class="collapse-title text-xl font-medium">{order}</div>
             <div class="collapse-content">
-              <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p>
+              {/* <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p> */}
               {taxa.map((taxon) => (
                 <a href={`/taxon/${taxon.id}`}>
                   <div
-                    id="taxa"
+                    id="taxon-container"
                     class="mb-2 bg-spectra-100 dark:bg-spectra-800 p-2 rounded-lg"
                   >
-                    <p class="text-lg">
+                    <p id="taxa" class="text-lg">
                       <span class="italic">
                         {taxon.genus} {taxon.specificEpithet}
                       </span>{" "}
@@ -137,13 +145,13 @@ if (taxa.length === 0) {
                     </p>
                     <p class="text-sm">
                       MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
-                      {taxon.commonName}
+                      <span id="taxa">{taxon.commonName}</span>
                     </p>
                     {taxon.synonyms.length > 0 && (
                       <>
                         <p class="text-sm mt-2">Synonyms:</p>
                         <p class="text-sm italic">
-                          {taxon.synonyms.join(" • ")}
+                          {taxon.synonyms.join(" · ")}
                         </p>
                       </>
                     )}
@@ -167,20 +175,25 @@ if (taxa.length === 0) {
 
     // Filter elements with id="taxa" based on query
     taxonList.forEach((list) => {
-      const taxa = list.querySelectorAll("#taxa");
-      let hasMatch = false;
+      const taxa = list.querySelectorAll("#taxon-container");
+      let hasAnyMatch = false;
+
       taxa.forEach((taxon) => {
+        const taxonName = taxon.querySelector("#taxa");
         if (
-          taxon.textContent &&
-          taxon.textContent.toLowerCase().includes(query.toLowerCase())
+          taxon !== null &&
+          taxonName &&
+          taxonName.textContent &&
+          taxonName.textContent.toLowerCase().includes(query.toLowerCase())
         ) {
           (taxon as HTMLElement).classList.remove("hidden");
-          hasMatch = true;
+          hasAnyMatch = true;
         } else {
           (taxon as HTMLElement).classList.add("hidden");
         }
       });
-      (list as HTMLElement).classList.toggle("hidden", !hasMatch);
+
+      (list as HTMLElement).classList.toggle("hidden", !hasAnyMatch);
     });
 
     const noResults = document.getElementById("no-results");
@@ -203,7 +216,7 @@ if (taxa.length === 0) {
       resetBtn.addEventListener("click", () => {
         const taxonList = document.querySelectorAll("#taxon-list");
         taxonList.forEach((list) => {
-          const taxa = list.querySelectorAll("#taxa");
+          const taxa = list.querySelectorAll("#taxon-container");
           (list as HTMLElement).classList.remove("hidden");
           taxa.forEach((taxon) => {
             (taxon as HTMLElement).classList.remove("hidden");
