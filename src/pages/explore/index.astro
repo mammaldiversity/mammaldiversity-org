@@ -5,6 +5,7 @@ import { getSpeciesData } from "../../../db/mdd";
 import Page from "../../layouts/Page.astro";
 import PageDivider from "../../components/PageDivider.astro";
 import { createSynonymName } from "../../scripts/taxon";
+import Link from "../../components/Link.astro";
 
 const taxa = getSpeciesData();
 
@@ -68,12 +69,13 @@ if (taxa.length === 0) {
     </div>
     <div class="text-md text-center mt-4 mb-2 md:mt-8 max-w-4xl mx-auto">
       <p>
-        The species are grouped by taxonomic order and sorted according to their
-        phylogenetic hierarchy, following the Checklist of the Mammals of the
-        World (2020). Click on an order to reveal the species list within it.
+        Explore the taxonomy of species listed in the MDD. The list is grouped
+        by taxonomic order and is sorted according to their phylogenetic
+        hierarchy, following the Checklist of the Mammals of the World (2020).
       </p>
       <p class="text-sm mt-2">
-        Notes: the original explore table is currently under development.
+        Notes: the original explore table in the MDD v1 is currently under
+        development.
       </p>
     </div>
 
@@ -119,9 +121,19 @@ if (taxa.length === 0) {
         </button>
       </label>
     </div><PageDivider />
+    <div id="info" class="text-spectra-800 dark:text-spectra-200 mb-4">
+      <p class="font-semibold text-sm">Info:</p>
+      <p class="text-sm">
+        Click on an order to reveal the species list within it. To filter the
+        list, use the search bar above. Query matching is case-insensitive and
+        will match any part of relevant text. For more advanced search, use the
+        <Link url="/search" openInTab={false} label="search page" />.
+      </p>
+    </div>
     <p id="no-results" class="hidden text-center text-lg font-medium my-4">
       No results found.
     </p>
+
     {
       Object.entries(taxonByOrder).map(([order, taxa]) => (
         <div id="taxon-list">
@@ -132,7 +144,9 @@ if (taxa.length === 0) {
             <input type="checkbox" />
             <div class="collapse-title text-xl font-medium">{order}</div>
             <div class="collapse-content">
-              {/* <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p> */}
+              <p id="taxon-counts" class="text-sm mb-2">
+                Taxon counts: {taxa.length} species
+              </p>
               {taxa.map((taxon) => (
                 <a href={`/taxon/${taxon.id}`}>
                   <div
