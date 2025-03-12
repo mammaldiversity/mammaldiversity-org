@@ -1,0 +1,48 @@
+---
+import { getSpeciesData } from "../../../db/mdd";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+
+const taxa = getSpeciesData();
+
+interface Taxon {
+  id: number;
+  family: string;
+  genus: string;
+  specificEpithet: string;
+  authorityYear: string;
+  commonName: string;
+  synonyms: string[];
+}
+
+interface orderData {
+  subclass: string;
+  infraclass: string;
+  family: string[];
+}
+
+// const orderData: Record<string, Taxon[]> = {};
+---
+
+<Page
+  title="Taxonomy Table"
+  description="A table to display taxonomy information."
+  ><MainPage>
+    <div class="text-center item-center mt-8 md:mt-16">
+      <Title>Taxonomy Table</Title>
+
+      <table class="table-auto w-full">
+        <thead>
+          <tr>
+            <th class="px-4 py-2">Taxonomy</th>
+            <th class="px-4 py-2">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <slot />
+        </tbody>
+      </table>
+    </div>
+  </MainPage></Page
+>

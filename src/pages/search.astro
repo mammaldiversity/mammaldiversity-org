@@ -12,11 +12,12 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Search Database</Title>
-      <p class="text-md md:text-xl mb-4">
+      <p class="text-md mb-4">
         Search for any information in the database. For a structured list
         grouped by taxonomic order, visit the <Link
-          url="./explore"
+          url="/explore"
           label="Explore Page"
+          openInNewTab={false}
         />.
       </p>
     </div>

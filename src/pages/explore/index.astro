@@ -5,6 +5,7 @@ import { getSpeciesData } from "../../../db/mdd";
 import Page from "../../layouts/Page.astro";
 import PageDivider from "../../components/PageDivider.astro";
 import { createSynonymName } from "../../scripts/taxon";
+import Link from "../../components/Link.astro";
 
 const taxa = getSpeciesData();
 
@@ -64,13 +65,16 @@ if (taxa.length === 0) {
 <Page title="Explore Database">
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
-      <Title>Explore Database</Title>
+      <Title>Explore Taxonomy</Title>
     </div>
     <div class="text-md text-center mt-4 mb-2 md:mt-8 max-w-4xl mx-auto">
       <p>
-        Explore the list of species in the MDD, organized by phylogeny. Click on
-        the order to reveal the species list. To filter for a species or common
-        name, use the search bar. The original explore table is currently under
+        Explore the taxonomy of species listed in the MDD. The list is grouped
+        by taxonomic order and is sorted according to their phylogenetic
+        hierarchy, following the Checklist of the Mammals of the World (2020).
+      </p>
+      <p class="text-sm mt-2">
+        Notes: the original explore table in the MDD v1 is currently under
         development.
       </p>
     </div>
@@ -94,7 +98,7 @@ if (taxa.length === 0) {
           id="search-input"
           type="text"
           class="grow"
-          placeholder="Filter by species or common name"
+          placeholder="Filter by a family, species, or common name"
         />
         <button
           id="clear-search"
@@ -117,9 +121,19 @@ if (taxa.length === 0) {
         </button>
       </label>
     </div><PageDivider />
+    <div id="info" class="text-spectra-800 dark:text-spectra-200 mb-4">
+      <p class="font-semibold text-sm">Info:</p>
+      <p class="text-sm">
+        Click on an order to reveal the species list within it. To filter the
+        list, use the search bar above. Query matching is case-insensitive and
+        will match any part of relevant text. For more advanced search, use the
+        <Link url="/search" openInTab={false} label="search page" />.
+      </p>
+    </div>
     <p id="no-results" class="hidden text-center text-lg font-medium my-4">
       No results found.
     </p>
+
     {
       Object.entries(taxonByOrder).map(([order, taxa]) => (
         <div id="taxon-list">
@@ -130,23 +144,27 @@ if (taxa.length === 0) {
             <input type="checkbox" />
             <div class="collapse-title text-xl font-medium">{order}</div>
             <div class="collapse-content">
-              {/* <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p> */}
+              <p id="taxon-counts" class="text-sm mb-2">
+                Taxon counts: {taxa.length} species
+              </p>
               {taxa.map((taxon) => (
                 <a href={`/taxon/${taxon.id}`}>
                   <div
                     id="taxon-container"
                     class="mb-2 bg-spectra-100 dark:bg-spectra-800 p-2 rounded-lg"
                   >
-                    <p id="taxa" class="text-lg">
-                      <span class="italic">
-                        {taxon.genus} {taxon.specificEpithet}
-                      </span>{" "}
-                      {taxon.authorityYear}
-                    </p>
-                    <p class="text-sm">
-                      MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
-                      <span id="taxa">{taxon.commonName}</span>
-                    </p>
+                    <div id="taxa">
+                      <p class="text-lg">
+                        <span class="italic">
+                          {taxon.genus} {taxon.specificEpithet}
+                        </span>{" "}
+                        {taxon.authorityYear}
+                      </p>
+                      <p class="text-sm">
+                        MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
+                        {taxon.commonName}
+                      </p>
+                    </div>
                     {taxon.synonyms.length > 0 && (
                       <>
                         <p class="text-sm mt-2">Synonyms:</p>
@@ -164,65 +182,77 @@ if (taxa.length === 0) {
       ))
     }
   </MainPage>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById(
+        "search-input"
+      ) as HTMLInputElement;
+      const resetBtn = document.getElementById(
+        "clear-search"
+      ) as HTMLButtonElement;
+      const noResults = document.getElementById("no-results") as HTMLElement;
+      const taxonList = document.querySelectorAll<HTMLElement>("#taxon-list");
+
+      function searchQuery() {
+        const query = searchInput.value.trim().toLowerCase();
+        let hasAnyMatch = false;
+
+        taxonList.forEach((list: HTMLElement) => {
+          const taxa = list.querySelectorAll<HTMLElement>("#taxon-container");
+          let listHasMatch = false;
+
+          taxa.forEach((taxon: HTMLElement) => {
+            const taxonNames = taxon.querySelector<HTMLElement>("#taxa");
+            const match = !!(
+              taxonNames &&
+              taxonNames.textContent &&
+              taxonNames.textContent.toLowerCase().includes(query)
+            );
+            taxon.classList.toggle("hidden", !match);
+            listHasMatch = listHasMatch || match;
+          });
+          list.classList.toggle("hidden", !listHasMatch);
+          hasAnyMatch = hasAnyMatch || listHasMatch;
+        });
+
+        if (noResults) {
+          noResults.classList.toggle("hidden", hasAnyMatch);
+        }
+        if (resetBtn) {
+          resetBtn.classList.toggle("hidden", query === "");
+        }
+      }
+
+      let debounceTimeout: number;
+      function debounceSearchQuery() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = window.setTimeout(searchQuery, 300);
+      }
+
+      searchInput.addEventListener("input", debounceSearchQuery);
+
+      function resetSearch() {
+        searchInput.value = "";
+        taxonList.forEach((list: HTMLElement) => {
+          list.classList.remove("hidden");
+          list
+            .querySelectorAll<HTMLElement>("#taxon-container")
+            .forEach((taxon: HTMLElement) => {
+              taxon.classList.remove("hidden");
+            });
+        });
+        if (noResults) {
+          noResults.classList.add("hidden");
+        }
+        if (resetBtn) {
+          resetBtn.classList.add("hidden");
+        }
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener("click", resetSearch);
+      }
+    });
+  </script>
 </Page>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.getElementById(
-      "search-input"
-    ) as HTMLInputElement;
-    const resetBtn = document.getElementById("clear-search");
-    const noResults = document.getElementById("no-results");
-    const taxonList = document.querySelectorAll("#taxon-list");
-
-    function searchQuery() {
-      const query = searchInput.value.trim().toLowerCase();
-      let hasAnyMatch = false;
-
-      taxonList.forEach((list) => {
-        const taxa = list.querySelectorAll("#taxon-container");
-        let listHasMatch = false;
-
-        taxa.forEach((taxon) => {
-          const taxonNames = Array.from(taxon.querySelectorAll("#taxa"))
-            .map((element) => element.textContent?.toLowerCase() || "")
-            .join(" ");
-          const match = taxonNames.includes(query);
-          taxon.classList.toggle("hidden", !match);
-          listHasMatch = listHasMatch || match;
-        });
-
-        list.classList.toggle("hidden", !listHasMatch);
-        hasAnyMatch = hasAnyMatch || listHasMatch;
-      });
-
-      if (noResults) {
-        noResults.classList.toggle("hidden", hasAnyMatch);
-      }
-      if (resetBtn) {
-        resetBtn.classList.toggle("hidden", query === "");
-      }
-    }
-
-    function resetSearch() {
-      searchInput.value = "";
-      taxonList.forEach((list) => {
-        list.classList.remove("hidden");
-        list.querySelectorAll("#taxon-container").forEach((taxon) => {
-          taxon.classList.remove("hidden");
-        });
-      });
-      if (noResults) {
-        noResults.classList.add("hidden");
-      }
-      if (resetBtn) {
-        resetBtn.classList.add("hidden");
-      }
-    }
-
-    searchInput.addEventListener("input", searchQuery);
-    if (resetBtn) {
-      resetBtn.addEventListener("click", resetSearch);
-    }
-  });
-</script>
