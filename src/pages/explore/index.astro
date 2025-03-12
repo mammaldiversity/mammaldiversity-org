@@ -1,10 +1,10 @@
 ---
-import Title from "../components/Title.astro";
-import MainPage from "../layouts/MainPage.astro";
-import { getSpeciesData } from "../../db/mdd";
-import Page from "../layouts/Page.astro";
-import PageDivider from "../components/PageDivider.astro";
-import { createSynonymName } from "../scripts/taxon";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import { getSpeciesData } from "../../../db/mdd";
+import Page from "../../layouts/Page.astro";
+import PageDivider from "../../components/PageDivider.astro";
+import { createSynonymName } from "../../scripts/taxon";
 
 const taxa = getSpeciesData();
 
@@ -64,9 +64,20 @@ if (taxa.length === 0) {
 <Page title="Explore Database">
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
-      <Title>Explore Database</Title>
+      <Title>Explore Taxonomy</Title>
     </div>
-    <div class="mb-4">
+    <div class="text-md text-center mt-4 mb-2 md:mt-8 max-w-4xl mx-auto">
+      <p>
+        The species are grouped by taxonomic order and sorted according to their
+        phylogenetic hierarchy, following the Checklist of the Mammals of the
+        World (2020). Click on an order to reveal the species list within it.
+      </p>
+      <p class="text-sm mt-2">
+        Notes: the original explore table is currently under development.
+      </p>
+    </div>
+
+    <div class="mb-2 mt-8">
       <label
         class="input input-bordered flex items-center gap-2 w-full max-w-md"
       >
@@ -85,7 +96,7 @@ if (taxa.length === 0) {
           id="search-input"
           type="text"
           class="grow"
-          placeholder="Filter by species, family, synonyms, or common name"
+          placeholder="Filter by a family, species, or common name"
         />
         <button
           id="clear-search"
@@ -107,8 +118,7 @@ if (taxa.length === 0) {
           </svg>
         </button>
       </label>
-    </div>
-    <PageDivider />
+    </div><PageDivider />
     <p id="no-results" class="hidden text-center text-lg font-medium my-4">
       No results found.
     </p>
@@ -122,28 +132,30 @@ if (taxa.length === 0) {
             <input type="checkbox" />
             <div class="collapse-title text-xl font-medium">{order}</div>
             <div class="collapse-content">
-              <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p>
+              {/* <p class="text-sm mb-2">Taxon counts: {taxa.length} species</p> */}
               {taxa.map((taxon) => (
                 <a href={`/taxon/${taxon.id}`}>
                   <div
-                    id="taxa"
+                    id="taxon-container"
                     class="mb-2 bg-spectra-100 dark:bg-spectra-800 p-2 rounded-lg"
                   >
-                    <p class="text-lg">
-                      <span class="italic">
-                        {taxon.genus} {taxon.specificEpithet}
-                      </span>{" "}
-                      {taxon.authorityYear}
-                    </p>
-                    <p class="text-sm">
-                      MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
-                      {taxon.commonName}
-                    </p>
+                    <div id="taxa">
+                      <p class="text-lg">
+                        <span class="italic">
+                          {taxon.genus} {taxon.specificEpithet}
+                        </span>{" "}
+                        {taxon.authorityYear}
+                      </p>
+                      <p class="text-sm">
+                        MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
+                        {taxon.commonName}
+                      </p>
+                    </div>
                     {taxon.synonyms.length > 0 && (
                       <>
                         <p class="text-sm mt-2">Synonyms:</p>
                         <p class="text-sm italic">
-                          {taxon.synonyms.join(" • ")}
+                          {taxon.synonyms.join(" · ")}
                         </p>
                       </>
                     )}
@@ -156,87 +168,77 @@ if (taxa.length === 0) {
       ))
     }
   </MainPage>
-</Page>
 
-<script>
-  function searchQuery() {
-    const searchInput = document.getElementById("search-input");
-    if (!searchInput) return;
-    const query = (searchInput as HTMLInputElement).value;
-    const taxonList = document.querySelectorAll("#taxon-list");
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById(
+        "search-input"
+      ) as HTMLInputElement;
+      const resetBtn = document.getElementById(
+        "clear-search"
+      ) as HTMLButtonElement;
+      const noResults = document.getElementById("no-results") as HTMLElement;
+      const taxonList = document.querySelectorAll<HTMLElement>("#taxon-list");
 
-    // Filter elements with id="taxa" based on query
-    taxonList.forEach((list) => {
-      const taxa = list.querySelectorAll("#taxa");
-      let hasMatch = false;
-      taxa.forEach((taxon) => {
-        if (
-          taxon.textContent &&
-          taxon.textContent.toLowerCase().includes(query.toLowerCase())
-        ) {
-          (taxon as HTMLElement).classList.remove("hidden");
-          hasMatch = true;
-        } else {
-          (taxon as HTMLElement).classList.add("hidden");
-        }
-      });
-      (list as HTMLElement).classList.toggle("hidden", !hasMatch);
-    });
+      function searchQuery() {
+        const query = searchInput.value.trim().toLowerCase();
+        let hasAnyMatch = false;
 
-    const noResults = document.getElementById("no-results");
-    if (noResults) {
-      const hasAnyMatch = Array.from(taxonList).some(
-        (list) => !list.classList.contains("hidden")
-      );
-      noResults.classList.toggle("hidden", hasAnyMatch);
-    }
+        taxonList.forEach((list: HTMLElement) => {
+          const taxa = list.querySelectorAll<HTMLElement>("#taxon-container");
+          let listHasMatch = false;
 
-    const resetBtn = document.getElementById("clear-search");
-    if (resetBtn) {
-      resetBtn.classList.remove("hidden");
-    }
-  }
-
-  const resetBtn = document.getElementById("clear-search");
-  function reset() {
-    if (resetBtn) {
-      resetBtn.addEventListener("click", () => {
-        const taxonList = document.querySelectorAll("#taxon-list");
-        taxonList.forEach((list) => {
-          const taxa = list.querySelectorAll("#taxa");
-          (list as HTMLElement).classList.remove("hidden");
-          taxa.forEach((taxon) => {
-            (taxon as HTMLElement).classList.remove("hidden");
+          taxa.forEach((taxon: HTMLElement) => {
+            const taxonNames = taxon.querySelector<HTMLElement>("#taxa");
+            const match = !!(
+              taxonNames &&
+              taxonNames.textContent &&
+              taxonNames.textContent.toLowerCase().includes(query)
+            );
+            taxon.classList.toggle("hidden", !match);
+            listHasMatch = listHasMatch || match;
           });
+          list.classList.toggle("hidden", !listHasMatch);
+          hasAnyMatch = hasAnyMatch || listHasMatch;
         });
 
-        resetBtn.classList.add("hidden");
-        // Clear search input
-        const searchInput = document.getElementById("search-input");
-        if (searchInput) {
-          (searchInput as HTMLInputElement).value = "";
+        if (noResults) {
+          noResults.classList.toggle("hidden", hasAnyMatch);
         }
-        // Hide no results message
-        const noResults = document.getElementById("no-results");
+        if (resetBtn) {
+          resetBtn.classList.toggle("hidden", query === "");
+        }
+      }
+
+      let debounceTimeout: number;
+      function debounceSearchQuery() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = window.setTimeout(searchQuery, 300);
+      }
+
+      searchInput.addEventListener("input", debounceSearchQuery);
+
+      function resetSearch() {
+        searchInput.value = "";
+        taxonList.forEach((list: HTMLElement) => {
+          list.classList.remove("hidden");
+          list
+            .querySelectorAll<HTMLElement>("#taxon-container")
+            .forEach((taxon: HTMLElement) => {
+              taxon.classList.remove("hidden");
+            });
+        });
         if (noResults) {
           noResults.classList.add("hidden");
         }
-      });
-    }
-  }
-
-  const searchInput = document.getElementById("search-input");
-  if (searchInput) {
-    searchInput.addEventListener("input", () => {
-      if ((searchInput as HTMLInputElement).value.trim() !== "") {
-        searchQuery();
-        reset();
-      }
-      if ((searchInput as HTMLInputElement).value.trim() === "") {
         if (resetBtn) {
           resetBtn.classList.add("hidden");
         }
       }
+
+      if (resetBtn) {
+        resetBtn.addEventListener("click", resetSearch);
+      }
     });
-  }
-</script>
+  </script>
+</Page>
