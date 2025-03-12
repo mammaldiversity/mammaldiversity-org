@@ -144,9 +144,6 @@ if (taxa.length === 0) {
             <input type="checkbox" />
             <div class="collapse-title text-xl font-medium">{order}</div>
             <div class="collapse-content">
-              <p id="taxon-counts" class="text-sm mb-2">
-                Taxon counts: {taxa.length} species
-              </p>
               {taxa.map((taxon) => (
                 <a href={`/taxon/${taxon.id}`}>
                   <div

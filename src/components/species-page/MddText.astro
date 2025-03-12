@@ -1,4 +1,6 @@
 ---
+import { isItalic } from "../../scripts/utils";
+
 // Text span with _italic_ formatting awareness
 
 interface Props {
@@ -12,10 +14,6 @@ const { text } = Astro.props as Props;
   text
     .split(/(_[^_]*?_)/g)
     .map((part) =>
-      /^_[a-zA-Z0-9]+_$/.test(part) ? (
-        <span class="italic">{part.slice(1, -1)}</span>
-      ) : (
-        part
-      )
+      isItalic(part) ? <span class="italic">{part.slice(1, -1)}</span> : part
     )
 }
