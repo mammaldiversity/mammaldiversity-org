@@ -107,6 +107,15 @@ const sectionTitleClass = cntl`
   mb-4
 `;
 
+const secondaryTitleClass = cntl`
+  font-serif
+  text-2xl
+  lg:text-3xl
+  font-semibold
+  mt-4
+  mb-4
+`;
+
 const highlightedContainerClasses = cntl`
   py-4
   px-2
@@ -149,13 +158,13 @@ const highlightedContainerClasses = cntl`
         />
       </div>
     </div>
-    <div id="content" class="mx-8">
+    <div id="content" class="mx-4">
       <div
         id="what-new"
-        class="py-4 px-8 text-center mt-12 max-w-4xl mx-auto rounded-xl bg-spectra-200 dark:bg-spectra-800 p-4"
+        class="py-4 px-8 text-center mt-12 max-w-4xl mx-auto rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
       >
-        <h2 class={sectionTitleClass}>What's New in the MDD2</h2>
-        <ul class="text-left text-lg ml-4 list-disc list-outside mb-4">
+        <h2 class={secondaryTitleClass}>What's New in the MDD2</h2>
+        <ul class="text-left text-md ml-4 list-disc list-outside mb-4">
           <li>
             Codings of US state, country, continent, and biogeographic realm
             geographic categories for each species
@@ -187,7 +196,7 @@ const highlightedContainerClasses = cntl`
       <div id="
               goal-content" class="py-4 px-2 text-center">
         <h2 class={sectionTitleClass}>Our Goals</h2>
-        <p class="text-lg max-w-4xl mx-auto">
+        <p class="text-lg max-w-5xl mx-auto">
           We are curating the taxonomic implications of new research
           publications in real time — with the goal of promoting rigorous study
           of mammal biodiversity worldwide. The initial objective has been to
