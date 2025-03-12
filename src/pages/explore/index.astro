@@ -64,13 +64,17 @@ if (taxa.length === 0) {
 <Page title="Explore Database">
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
-      <Title>Explore Database</Title>
+      <Title>Explore Taxonomy</Title>
     </div>
     <div class="text-md text-center mt-4 mb-2 md:mt-8 max-w-4xl mx-auto">
       <p>
-        Explore species in the database, organized by phylogeny. Click on an
-        order to reveal the species list within it. The original explore table
-        is currently under development.
+        The species are grouped by taxonomic order and sorted according to their
+        phylogenic hierarchy, following the Checklist of the Mammals of the
+        World (2020).
+      </p>
+      <p class="text-sm mt-2">
+        Notes: click on an order to reveal the species list within it. The
+        original explore table is currently under development.
       </p>
     </div>
 
@@ -165,70 +169,77 @@ if (taxa.length === 0) {
       ))
     }
   </MainPage>
-</Page>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.getElementById(
-      "search-input"
-    ) as HTMLInputElement;
-    const resetBtn = document.getElementById(
-      "clear-search"
-    ) as HTMLButtonElement;
-    const noResults = document.getElementById("no-results") as HTMLElement;
-    const taxonList = document.querySelectorAll<HTMLElement>("#taxon-list");
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById(
+        "search-input"
+      ) as HTMLInputElement;
+      const resetBtn = document.getElementById(
+        "clear-search"
+      ) as HTMLButtonElement;
+      const noResults = document.getElementById("no-results") as HTMLElement;
+      const taxonList = document.querySelectorAll<HTMLElement>("#taxon-list");
 
-    function searchQuery() {
-      const query = searchInput.value.trim().toLowerCase();
-      let hasAnyMatch = false;
+      function searchQuery() {
+        const query = searchInput.value.trim().toLowerCase();
+        let hasAnyMatch = false;
 
-      taxonList.forEach((list) => {
-        const taxa = list.querySelectorAll<HTMLElement>("#taxon-container");
-        let listHasMatch = false;
+        taxonList.forEach((list: HTMLElement) => {
+          const taxa = list.querySelectorAll<HTMLElement>("#taxon-container");
+          let listHasMatch = false;
 
-        taxa.forEach((taxon) => {
-          const taxonNames = taxon.querySelector<HTMLElement>("#taxa");
-          const match = !!(
-            taxonNames &&
-            taxonNames.textContent &&
-            taxonNames.textContent.toLowerCase().includes(query)
-          );
-          taxon.classList.toggle("hidden", !match);
-          listHasMatch = listHasMatch || match;
-        });
-        list.classList.toggle("hidden", !listHasMatch);
-        hasAnyMatch = hasAnyMatch || listHasMatch;
-      });
-
-      if (noResults) {
-        noResults.classList.toggle("hidden", hasAnyMatch);
-      }
-      if (resetBtn) {
-        resetBtn.classList.toggle("hidden", query === "");
-      }
-    }
-
-    function resetSearch() {
-      searchInput.value = "";
-      taxonList.forEach((list) => {
-        list.classList.remove("hidden");
-        list
-          .querySelectorAll<HTMLElement>("#taxon-container")
-          .forEach((taxon) => {
-            taxon.classList.remove("hidden");
+          taxa.forEach((taxon: HTMLElement) => {
+            const taxonNames = taxon.querySelector<HTMLElement>("#taxa");
+            const match = !!(
+              taxonNames &&
+              taxonNames.textContent &&
+              taxonNames.textContent.toLowerCase().includes(query)
+            );
+            taxon.classList.toggle("hidden", !match);
+            listHasMatch = listHasMatch || match;
           });
-      });
-      if (noResults) {
-        noResults.classList.add("hidden");
-      }
-      if (resetBtn) {
-        resetBtn.classList.add("hidden");
-      }
-    }
+          list.classList.toggle("hidden", !listHasMatch);
+          hasAnyMatch = hasAnyMatch || listHasMatch;
+        });
 
-    searchInput.addEventListener("input", searchQuery);
-    if (resetBtn) {
-      resetBtn.addEventListener("click", resetSearch);
-    }
-  });
-</script>
+        if (noResults) {
+          noResults.classList.toggle("hidden", hasAnyMatch);
+        }
+        if (resetBtn) {
+          resetBtn.classList.toggle("hidden", query === "");
+        }
+      }
+
+      let debounceTimeout: number;
+      function debounceSearchQuery() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = window.setTimeout(searchQuery, 300);
+      }
+
+      searchInput.addEventListener("input", debounceSearchQuery);
+
+      function resetSearch() {
+        searchInput.value = "";
+        taxonList.forEach((list: HTMLElement) => {
+          list.classList.remove("hidden");
+          list
+            .querySelectorAll<HTMLElement>("#taxon-container")
+            .forEach((taxon: HTMLElement) => {
+              taxon.classList.remove("hidden");
+            });
+        });
+        if (noResults) {
+          noResults.classList.add("hidden");
+        }
+        if (resetBtn) {
+          resetBtn.classList.add("hidden");
+        }
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener("click", resetSearch);
+      }
+    });
+  </script>
+</Page>
