@@ -30,7 +30,7 @@ const mddDownloadLink =
   "https://github.com/mammaldiversity/mammaldiversity.github.io/raw/refs/heads/master/assets/data/MDD.zip";
 
 // Define version description
-const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
+const versionDescription = `Current version: v${currentVersion}, released 12 Mar 2025 (cutoff: 15 Aug 2024)`;
 
 const allImages = [
   {
@@ -42,8 +42,8 @@ const allImages = [
     alt: "A golden mouse. Courtesy of the ASM’s MIL",
   },
   {
-    src: selenodon,
-    alt: "A hispaniolan selenodon. Courtesy of the ASM’s MIL",
+    src: solenodon,
+    alt: "A hispaniolan solenodon. Courtesy of the ASM’s MIL",
   },
   {
     src: duiker,
@@ -253,8 +253,8 @@ const highlightedContainerClasses = cntl`
           <Zenodo
             authors={["Mammal Diversity Database"]}
             year={currentYear}
-            title="Mammal Diversity Database (Version 1.13) [Data set]"
-            doi="https://doi.org/10.5281/zenodo.10595931"
+            title="Mammal Diversity Database (Version 2.0) [Data set]"
+            doi="https://doi.org/10.5281/zenodo.15007505"
           />
           <p>
             A specific entry: Each entry has a citation string at the end. For
@@ -265,6 +265,26 @@ const highlightedContainerClasses = cntl`
             mddID="1001892"
             date={currentDate}
             year={currentYear}
+          />
+          <p>Describing the MDD v2.0 taxonomy:</p>
+          <Journal
+            authors={[
+              "Burgin, C. J.",
+              "Zijlstra, J. S.",
+              "Becker, M. A.",
+              "Handika, H.",
+              "Alston, J. M.",
+              "Widness, J.",
+              "Liphardt, S.",
+              "Huckaby, D. G.",
+              "Upham, N. S",
+              ]}
+            year={2025}
+            title="How many mammal species are there now? Updates and trends in taxonomic, nomenclatural, and geographic knowledge"
+            journal="Journal of Mammalogy"
+            volume="in revision"
+            pages="TBD"
+            doi="https://doi.org/10.1101/2025.02.27.640393"
           />
           <p>Describing the MDD v1.0 taxonomy:</p>
           <Journal
