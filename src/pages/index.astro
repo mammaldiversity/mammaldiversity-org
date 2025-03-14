@@ -50,7 +50,8 @@ const allImages = [
     alt: "An Abbott's duiker. Courtesy of the ASM’s MIL",
   },
 ];
-const mammalImg = allImages[Math.floor(Math.random() * allImages.length)];
+
+// const mammalImg = allImages[Math.floor(Math.random() * allImages.length)];
 
 const currentYear = new Date().getFullYear();
 const currentDate = new Date().toLocaleDateString("en-US", {
@@ -153,18 +154,24 @@ const highlightedContainerClasses = cntl`
         />
       </div>
       <div class="justify-items-center order-first lg:order-last">
-        <Image
-          class="-z-10 mx-auto rounded-3xl"
-          height="360"
-          src={mammalImg.src}
-          alt={mammalImg.alt}
-        />
+        {
+          allImages.map((image, index) => (
+            <Image
+              id="dynamic-image"
+              class="rounded-xl shadow-lg"
+              src={image.src}
+              alt={image.alt}
+              width="600"
+              height="600"
+            />
+          ))
+        }
       </div>
     </div>
     <div id="content" class="mx-4">
       <div
         id="what-new"
-        class="py-4 px-8 text-center mt-12 max-w-4xl mx-auto rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
+        class="py-4 px-8 text-center mt-4 md:mt-8 max-w-4xl mx-auto rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
       >
         <h2 class={secondaryTitleClass}>What's New in the MDD2</h2>
         <ul class="text-left text-md ml-4 list-disc list-outside mb-4">
@@ -306,3 +313,20 @@ const highlightedContainerClasses = cntl`
     </div>
   </MainPage>
 </FrontPage>
+
+<script>
+  let images = document.querySelectorAll("#dynamic-image");
+  let currentImageIndex = 0;
+  images.forEach((image, index) => {
+    if (index !== 0) {
+      image.classList.add("hidden");
+    }
+  });
+
+  const changeImage = () => {
+    images[currentImageIndex].classList.add("hidden");
+    currentImageIndex = (currentImageIndex + 1) % images.length;
+    images[currentImageIndex].classList.remove("hidden");
+  };
+  setInterval(changeImage, 10000); // Change image every 10 seconds
+</script>
