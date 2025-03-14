@@ -21,9 +21,12 @@ const { searchURI, downloadURI, previousVersionsURI, versionDescription } =
     <ActionButton label="Search database" uri={searchURI} isPrimary />
   </div>
 </div>
-<div>
-  <p class="text-left text-xs mt-2">
-    {versionDescription}. Previous versions are available on <Link
+<div class="text-left text-xs mt-2">
+  <p>
+    {versionDescription}.
+  </p>
+  <p>
+    Previous versions are available on <Link
       url={previousVersionsURI}
       label="Zenodo"
     />.
