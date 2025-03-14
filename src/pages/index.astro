@@ -26,10 +26,11 @@ const releaseDate = new Date(meta.releaseDate).toLocaleDateString("en-US", {
 });
 
 const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
-const mddDownloadLink = "https://www.mammaldiversity.org/assets/data/MDD.zip";
+const mddDownloadLink =
+  "https://github.com/mammaldiversity/mammaldiversity.github.io/raw/refs/heads/master/assets/data/MDD.zip";
 
 // Define version description
-const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
+const versionDescription = `Current version: v${currentVersion}, released 12 Mar 2025 (cutoff: 15 Aug 2024)`;
 
 const allImages = [
   {
@@ -41,15 +42,16 @@ const allImages = [
     alt: "A golden mouse. Courtesy of the ASM’s MIL",
   },
   {
-    src: selenodon,
-    alt: "A hispaniolan selenodon. Courtesy of the ASM’s MIL",
+    src: solenodon,
+    alt: "A hispaniolan solenodon. Courtesy of the ASM’s MIL",
   },
   {
     src: duiker,
     alt: "An Abbott's duiker. Courtesy of the ASM’s MIL",
   },
 ];
-const mammalImg = allImages[Math.floor(Math.random() * allImages.length)];
+
+// const mammalImg = allImages[Math.floor(Math.random() * allImages.length)];
 
 const currentYear = new Date().getFullYear();
 const currentDate = new Date().toLocaleDateString("en-US", {
@@ -93,8 +95,10 @@ const heroClasses = cntl`
   to-spicy-mix-100
   dark:from-spectra-900
   dark:to-spicy-mix-900
+  lg:max-w-7xl
   rounded-xl
-  lg:mx-8
+  lg:mx-2
+  xl:mx-auto
   mx-4
 `;
 
@@ -150,18 +154,24 @@ const highlightedContainerClasses = cntl`
         />
       </div>
       <div class="justify-items-center order-first lg:order-last">
-        <Image
-          class="-z-10 mx-auto rounded-3xl"
-          height="360"
-          src={mammalImg.src}
-          alt={mammalImg.alt}
-        />
+        {
+          allImages.map((image, index) => (
+            <Image
+              id="dynamic-image"
+              class="rounded-xl shadow-lg"
+              src={image.src}
+              alt={image.alt}
+              width="600"
+              height="600"
+            />
+          ))
+        }
       </div>
     </div>
     <div id="content" class="mx-4">
       <div
         id="what-new"
-        class="py-4 px-8 text-center mt-12 max-w-4xl mx-auto rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
+        class="py-4 px-8 text-center mt-4 md:mt-8 max-w-4xl mx-auto rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
       >
         <h2 class={secondaryTitleClass}>What's New in the MDD2</h2>
         <ul class="text-left text-md ml-4 list-disc list-outside mb-4">
@@ -250,8 +260,8 @@ const highlightedContainerClasses = cntl`
           <Zenodo
             authors={["Mammal Diversity Database"]}
             year={currentYear}
-            title="Mammal Diversity Database (Version 1.13) [Data set]"
-            doi="https://doi.org/10.5281/zenodo.10595931"
+            title="Mammal Diversity Database (Version 2.0) [Data set]"
+            doi="https://doi.org/10.5281/zenodo.15007505"
           />
           <p>
             A specific entry: Each entry has a citation string at the end. For
@@ -262,6 +272,26 @@ const highlightedContainerClasses = cntl`
             mddID="1001892"
             date={currentDate}
             year={currentYear}
+          />
+          <p>Describing the MDD v2.0 taxonomy:</p>
+          <Journal
+            authors={[
+              "Burgin, C. J.",
+              "Zijlstra, J. S.",
+              "Becker, M. A.",
+              "Handika, H.",
+              "Alston, J. M.",
+              "Widness, J.",
+              "Liphardt, S.",
+              "Huckaby, D. G.",
+              "Upham, N. S",
+              ]}
+            year={2025}
+            title="How many mammal species are there now? Updates and trends in taxonomic, nomenclatural, and geographic knowledge"
+            journal="Journal of Mammalogy"
+            volume="in revision"
+            pages="TBD"
+            doi="https://doi.org/10.1101/2025.02.27.640393"
           />
           <p>Describing the MDD v1.0 taxonomy:</p>
           <Journal
@@ -283,3 +313,20 @@ const highlightedContainerClasses = cntl`
     </div>
   </MainPage>
 </FrontPage>
+
+<script>
+  let images = document.querySelectorAll("#dynamic-image");
+  let currentImageIndex = 0;
+  images.forEach((image, index) => {
+    if (index !== 0) {
+      image.classList.add("hidden");
+    }
+  });
+
+  const changeImage = () => {
+    images[currentImageIndex].classList.add("hidden");
+    currentImageIndex = (currentImageIndex + 1) % images.length;
+    images[currentImageIndex].classList.remove("hidden");
+  };
+  setInterval(changeImage, 10000); // Change image every 10 seconds
+</script>
