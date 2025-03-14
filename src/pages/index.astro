@@ -2,7 +2,7 @@
 import MainPage from "../layouts/MainPage.astro";
 import shrewImg from "../assets/images/mammal_images/1004046.jpg";
 import goldenMouse from "../assets/images/mammal_images/1002250.jpg";
-import selenodon from "../assets/images/mammal_images/1003840.jpg";
+import solenodon from "../assets/images/mammal_images/1003840.jpg";
 import duiker from "../assets/images/mammal_images/1006226.jpg";
 import cntl from "cntl";
 import MainActionButtons from "../components/MainActionButtons.astro";
@@ -19,11 +19,11 @@ import { getMetadata } from "../../db/mdd";
 
 const meta = getMetadata();
 const currentVersion = meta.version;
-const releaseDate = new Date(meta.releaseDate).toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
+// const releaseDate = new Date(meta.releaseDate).toLocaleDateString("en-US", {
+//   year: "numeric",
+//   month: "long",
+//   day: "numeric",
+// });
 
 const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
 const mddDownloadLink =
@@ -285,7 +285,7 @@ const highlightedContainerClasses = cntl`
               "Liphardt, S.",
               "Huckaby, D. G.",
               "Upham, N. S",
-              ]}
+            ]}
             year={2025}
             title="How many mammal species are there now? Updates and trends in taxonomic, nomenclatural, and geographic knowledge"
             journal="Journal of Mammalogy"
