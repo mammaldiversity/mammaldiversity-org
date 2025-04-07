@@ -19,18 +19,18 @@ import { getMetadata } from "../../db/mdd";
 
 const meta = getMetadata();
 const currentVersion = meta.version;
-// const releaseDate = new Date(meta.releaseDate).toLocaleDateString("en-US", {
-//   year: "numeric",
-//   month: "long",
-//   day: "numeric",
-// });
+const releaseDate = new Date(meta.releaseDate).toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
 
 const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
 const mddDownloadLink =
   "https://github.com/mammaldiversity/mammaldiversity.github.io/raw/refs/heads/master/assets/data/MDD.zip";
 
 // Define version description
-const versionDescription = `Current version: v${currentVersion}, released 12 Mar 2025 (cutoff: 15 Aug 2024)`;
+const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
 
 const allImages = [
   {
