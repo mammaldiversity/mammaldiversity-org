@@ -25,10 +25,19 @@ jobs:
       #     touch .env
       #     echo "ASTRO_DB_REMOTE_URL=${{secrets.TURSO_DB}}" >> .env
       #     echo "ASTRO_DB_APP_TOKEN=${{secrets.TURSO_API_TOKEN}}" >> .env
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+      - name: Install MDD CLI
+        run: cargo install mdd_api
       - name: Extract MDD data
         working-directory: db/data
         run: |
-          gunzip mdd.json.gz
+          cd db/data
+          curl -L -o MDD.zip https://github.com/mammaldiversity/mammaldiversity.github.io/blob/master/assets/data/MDD.zip
+          unzip MDD.zip
+          mdd json -i MDD/MDD_v2.1_6801species.csv -s MDD/Species_Syn_v2.1.csv -o . --prefix mdd --plain-text --mdd="v2.1" --date "2025-4-6"
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         # with:
