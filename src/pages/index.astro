@@ -18,7 +18,9 @@ import InstallButton from "../components/buttons/InstallButton.astro";
 import { getMetadata } from "../../db/mdd";
 
 const meta = getMetadata();
-const currentVersion = meta.version;
+const currentVersion = meta.version.startsWith("v")
+  ? meta.version.slice(1)
+  : meta.version;
 const releaseDate = new Date(meta.releaseDate).toLocaleDateString("en-US", {
   year: "numeric",
   month: "long",
@@ -194,9 +196,9 @@ const highlightedContainerClasses = cntl`
             comes with a new search feature, better scalability, enhanced data
             visualization, and other features. The original version is available
             at <Link
-              url="https://classic.mammaldiversity.org"
+              url="http://classic.mammaldiversity.org"
               label="classic.mammaldiversity.org"
-            /> (setup in progress).
+            />.
           </li>
           <li>
             A new cross-platform app (currently in beta) offering offline access

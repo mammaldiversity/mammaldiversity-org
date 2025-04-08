@@ -5,6 +5,15 @@ import {
   jsonToCountryList,
 } from "../src/scripts/map";
 
+test("splitCountryDistribution with NA", () => {
+  expect(splitCountryDistribution("NA")).toEqual(
+    expect.objectContaining({
+      known: [],
+      predicted: [],
+    })
+  );
+});
+
 test("splitCountryDistribution", () => {
   expect(splitCountryDistribution("Indonesia|USA")).toEqual(
     expect.objectContaining({

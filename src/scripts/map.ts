@@ -6,6 +6,12 @@ interface CountryDistribution {
 function splitCountryDistribution(
   countryDistribution: string
 ): CountryDistribution {
+  // If countryDistribution is NA.
+  // Return empty known and predicted lists.
+  if (countryDistribution === "NA") {
+    return { known: [], predicted: [] };
+  }
+
   let countryList = countryDistribution.split("|");
   // If ends with "?", it is a predicted distribution
   let known = countryList.filter((country: string) => !country.endsWith("?"));
