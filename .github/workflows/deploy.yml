@@ -34,7 +34,6 @@ jobs:
       - name: Extract MDD data
         working-directory: db/data
         run: |
-          cd db/data
           curl -L -o MDD.zip https://github.com/mammaldiversity/mammaldiversity.github.io/blob/master/assets/data/MDD.zip
           unzip MDD.zip
           mdd json -i MDD/MDD_v2.1_6801species.csv -s MDD/Species_Syn_v2.1.csv -o . --prefix mdd --plain-text --mdd="v2.1" --date "2025-4-6"
