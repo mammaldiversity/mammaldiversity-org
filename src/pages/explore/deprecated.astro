@@ -1,22 +1,46 @@
 ---
+import Image from "astro/components/Image.astro";
 import Link from "../../components/Link.astro";
+import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import Page from "../../layouts/Page.astro";
+import brokeLinkImg from "../../assets/svg/broken-link.svg";
 ---
 
 <Page title="Explore Database">
   <MainPage>
-    <h1>Deprecated Link</h1>
-    <p>
-      This page is deprecated. Please visit the new <Link
-        url="/explore"
-        text="Explore"
-      /> page for the latest information.
-    </p>
-    <div id="species"></div>
+    <div class="text-center item-center mt-8 md:mt-24">
+      <Image
+        src={brokeLinkImg}
+        alt="Broken link"
+        width={200}
+        height={200}
+        class="mx-auto mb-8"
+      />
+      <Title>Ups. You are accessing a deprecated link 😢</Title>
+      <p>
+        If you are looking to explore the species list, please visit the new <Link
+          url="/explore"
+          label="Explore"
+        /> page. You can also query the database quickly using the <Link
+          url="/search"
+          label="Search"
+        /> page.
+      </p>
+      <p class="mt-4">
+        For taxon specific permanent links, you can use this format:
+        <em class="font-semibold"
+          >https://www.mammaldiversity.org/taxon/[mdd-ID]</em
+        >. For example, to view <i>Ornithorhynchus anatinus</i> (platypus) species
+        page, you can use the link: <Link
+          url="https://www.mammaldiversity.org/taxon/1000001/."
+        />
+        <div id="species"></div>
+      </p>
+    </div>
   </MainPage>
-</Page>
 
+  <!-- 
 <script>
   if (typeof window !== "undefined") {
     const hash = window.location.hash;
@@ -29,4 +53,5 @@ import Page from "../../layouts/Page.astro";
       }
     }
   }
-</script>
+</script> -->
+</Page>
