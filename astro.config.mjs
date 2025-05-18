@@ -17,4 +17,9 @@ export default defineConfig({
       },
     }),
   ],
+  redirects: {
+    "/about.html": "/about",
+    "/index.html": "/",
+    "/explore.html": "/explore/deprecated",
+  },
 });

@@ -1,0 +1,32 @@
+---
+import Link from "../../components/Link.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+---
+
+<Page title="Explore Database">
+  <MainPage>
+    <h1>Deprecated Link</h1>
+    <p>
+      This page is deprecated. Please visit the new <Link
+        url="/explore"
+        text="Explore"
+      /> page for the latest information.
+    </p>
+    <div id="species"></div>
+  </MainPage>
+</Page>
+
+<script>
+  if (typeof window !== "undefined") {
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.replace(/^#/, ""));
+    const id = params.get("id");
+    if (id) {
+      const speciesDiv = document.getElementById("species");
+      if (speciesDiv) {
+        speciesDiv.textContent = `Species ID: ${id}`;
+      }
+    }
+  }
+</script>
