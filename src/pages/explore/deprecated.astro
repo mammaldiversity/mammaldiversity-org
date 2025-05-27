@@ -1,0 +1,83 @@
+---
+import Image from "astro/components/Image.astro";
+import Link from "../../components/Link.astro";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import brokeLinkImg from "../../assets/svg/broken-link.svg";
+---
+
+<Page title="Explore Database">
+  <MainPage>
+    <div class="text-center item-center mt-8 md:mt-24">
+      <Image
+        src={brokeLinkImg}
+        alt="Broken link"
+        width={160}
+        height={160}
+        class="mx-auto mb-8"
+      />
+      <Title>Ups. You are accessing a deprecated link 😢</Title>
+      <p>
+        If you are looking to explore the species list, please visit the new <Link
+          url="/explore"
+          label="Explore"
+        /> page. You can also query the database quickly using the <Link
+          url="/search"
+          label="Search"
+        /> page.
+      </p>
+      <p class="mt-4">
+        For taxon specific permanent links, you can use this format:
+        <em class="font-semibold"
+          >https://www.mammaldiversity.org/taxon/[mdd-ID]</em
+        >. For example, to view <i>Ornithorhynchus anatinus</i> (platypus) species
+        page, you can use the link: <Link
+          url="https://www.mammaldiversity.org/taxon/1000001/."
+        />
+        <div id="species"></div>
+      </p>
+    </div>
+    <div
+      id="deprecation-notes"
+      class="py-4 px-8 text-center mt-4 md:mt-8 max-w-4xl mx-auto rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
+    >
+      <h2 class="text-lg font-semibold mb-2">
+        Notes on Accessing Species Pages
+      </h2>
+      <p>
+        Previously, species pages were accessible using a query string in the
+        URL. For example:
+        <em
+          >https://www.mammaldiversity.org/explore.html#genus=Myotis&species=lucifugus&id=1005432</em
+        >
+        would display the page for <i>Myotis lucifugus</i>. This method is now
+        deprecated and no longer supported. Please use the new format to access
+        species pages directly by their MDD ID:
+        <em><Link url="https://www.mammaldiversity.org/taxon/1005432/" /></em>.
+        For more information about this change, see the discussion <Link
+          url="https://github.com/mammaldiversity/mammaldiversity-org/issues/29"
+          label="here"
+        />.
+      </p>
+    </div>
+  </MainPage>
+</Page>
+
+<!-- 
+<script>
+  if (typeof window !== "
+          undefined")
+          {const hash = window.location.hash;
+    const params = new URLSearchParams(hash.replace(/^#/, ""));
+    const id = params.get("id");
+    if (id) {
+      const speciesDiv = document.getElementById("species");
+      if (speciesDiv) {
+        speciesDiv.textContent = `Species ID: ${id}`;
+      }
+    }}
+          <
+          script
+        >
+          -->
