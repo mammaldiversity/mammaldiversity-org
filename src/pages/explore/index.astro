@@ -6,6 +6,7 @@ import Page from "../../layouts/Page.astro";
 import PageDivider from "../../components/PageDivider.astro";
 import { createSynonymName } from "../../scripts/taxon";
 import Link from "../../components/Link.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
 
 const taxa = getSpeciesData();
 
@@ -64,24 +65,24 @@ if (taxa.length === 0) {
 
 <Page title="Explore Database">
   <MainPage>
-    <div class="text-center item-center mt-8 md:mt-16">
-      <Title>Explore Taxonomy</Title>
-    </div>
-    <div class="text-md text-center mt-4 mb-2 md:mt-8 max-w-4xl mx-auto">
-      <p>
-        Explore the taxonomy of species listed in the MDD. The list is grouped
-        by taxonomic order and is sorted according to their phylogenetic
-        hierarchy, following the Checklist of the Mammals of the World (2020).
-      </p>
-      <p class="text-sm mt-2">
-        Note: The original explore table is currently under development for this
-        website. In the meantime, you can access the table at the
-        <Link
-          url="http://www.classic.mammaldiversity.org/taxa.html"
-          label="classic version of MDD"
-        />.
-      </p>
-    </div>
+    <PageHeader>
+      <Title slot="title">Explore Taxonomy</Title>
+      <div slot="description">
+        <p class="text-md mb-4">
+          Explore the taxonomy of species listed in the MDD. The list is grouped
+          by taxonomic order and is sorted according to their phylogenetic
+          hierarchy, following the Checklist of the Mammals of the World (2020).
+        </p>
+        <p class="text-sm mt-2">
+          Note: The original explore table is currently under development for
+          this website. In the meantime, you can access the table at the
+          <Link
+            url="http://www.classic.mammaldiversity.org/taxa.html"
+            label="classic version of MDD"
+          />.
+        </p>
+      </div>
+    </PageHeader>
 
     <div class="mb-2 mt-8">
       <label

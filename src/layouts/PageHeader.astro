@@ -1,0 +1,27 @@
+---
+import cntl from "cntl";
+
+const titleContainerClass = cntl`
+  text-center
+  item-center
+  mt-8
+  md:mt-16
+`;
+
+const headerClasses = cntl`
+  text-md 
+  text-center 
+  mt-4 
+  mb-2 
+  md:mt-8 
+  max-w-4xl 
+  mx-auto
+`;
+---
+
+<div id="title-container" class={titleContainerClass}>
+  <slot name="title" />
+</div>
+<div id="header" class={headerClasses}>
+  <slot name="description" />
+</div>
