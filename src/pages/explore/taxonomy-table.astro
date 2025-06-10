@@ -43,6 +43,7 @@ const taxonTable = taxonTableInstance.getTaxonTable();
           {
             Object.values(taxonTable).map((row: OrderData) => (
               <>
+                {/* Order row */}
                 <tr>
                   <td class="py-2 px-4 border-b">{row.subclass}</td>
                   <td class="py-2 px-4 border-b">{row.infraclass}</td>
@@ -62,12 +63,14 @@ const taxonTable = taxonTableInstance.getTaxonTable();
                     {row.extinct_species_count}
                   </td>
                 </tr>
+                {/* Order expandable: only families */}
                 <tr id={`order-${row.order}`} class="hidden">
                   <td colspan="7" class="p-0 border-0">
                     <table class="table-auto w-full my-2">
                       <tbody>
                         {row.family_list.map((family) => (
                           <>
+                            {/* Family row */}
                             <tr>
                               <td class="py-2 px-4 border-b" />
                               <td class="py-2 px-4 border-b" />
@@ -91,93 +94,107 @@ const taxonTable = taxonTableInstance.getTaxonTable();
                                 {family.extinct_species_count}
                               </td>
                             </tr>
+                            {/* Family expandable: genera */}
                             <tr
                               id={`family-${row.order}-${family.family}`}
                               class="hidden"
                             >
-                              {family.genera.map((genus) => (
-                                <>
-                                  <tr>
-                                    <td class="py-2 px-4 border-b" />
-                                    <td class="py-2 px-4 border-b" />
-                                    <td class="py-2 px-4 border-b" />
-                                    <td class="py-2 px-4 border-b" />
-                                    <td class="py-2 px-4 border-b">
-                                      <button
-                                        type="button"
-                                        class="underline text-blue-600 hover:text-blue-800"
-                                        data-toggle={`genus-${row.order}-${family.family}-${genus.genus}`}
-                                      >
-                                        {genus.genus}
-                                      </button>
-                                    </td>
-                                    <td class="py-2 px-4 border-b">
-                                      {genus.living_species_count}
-                                    </td>
-                                    <td class="py-2 px-4 border-b">
-                                      {genus.extinct_species_count}
-                                    </td>
-                                  </tr>
-                                  {/* Living species */}
-                                  {genus.species.living_species.map(
-                                    (species: {
-                                      mdd_id: number;
-                                      epithet: string;
-                                    }) => (
-                                      <tr
-                                        id={`genus-${row.order}-${family.family}-${genus.genus}`}
-                                        class="hidden"
-                                      >
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b">
-                                          <a
-                                            href={`https://www.mammaldiversity.org/taxon/${species.mdd_id}`}
-                                            class="underline text-blue-600 hover:text-blue-800"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                          >
-                                            {species.epithet}
-                                          </a>
-                                        </td>
-                                        <td class="py-2 px-4 border-b" />
-                                      </tr>
-                                    )
-                                  )}
-                                  {/* Extinct species */}
-                                  {genus.species.extinct_species.map(
-                                    (species: {
-                                      mdd_id: number;
-                                      epithet: string;
-                                    }) => (
-                                      <tr
-                                        id={`genus-${row.order}-${family.family}-${genus.genus}`}
-                                        class="hidden"
-                                      >
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b" />
-                                        <td class="py-2 px-4 border-b">
-                                          <a
-                                            href={`https://www.mammaldiversity.org/taxon/${species.mdd_id}`}
-                                            class="underline text-blue-600 hover:text-blue-800"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                          >
-                                            {species.epithet}
-                                          </a>
-                                        </td>
-                                      </tr>
-                                    )
-                                  )}
-                                </>
-                              ))}
+                              <td colspan="7" class="p-0 border-0">
+                                <table class="table-auto w-full my-2">
+                                  <tbody>
+                                    {family.genera.map((genus) => (
+                                      <>
+                                        {/* Genus row */}
+                                        <tr>
+                                          <td class="py-2 px-4 border-b" />
+                                          <td class="py-2 px-4 border-b" />
+                                          <td class="py-2 px-4 border-b" />
+                                          <td class="py-2 px-4 border-b" />
+                                          <td class="py-2 px-4 border-b">
+                                            <button
+                                              type="button"
+                                              class="underline text-blue-600 hover:text-blue-800"
+                                              data-toggle={`genus-${row.order}-${family.family}-${genus.genus}`}
+                                            >
+                                              {genus.genus}
+                                            </button>
+                                          </td>
+                                          <td class="py-2 px-4 border-b">
+                                            {genus.living_species_count}
+                                          </td>
+                                          <td class="py-2 px-4 border-b">
+                                            {genus.extinct_species_count}
+                                          </td>
+                                        </tr>
+                                        {/* Genus expandable: living species */}
+                                        <tr
+                                          id={`genus-${row.order}-${family.family}-${genus.genus}`}
+                                          class="hidden"
+                                        >
+                                          <td colspan="7" class="p-0 border-0">
+                                            <table class="table-auto w-full my-2">
+                                              <tbody>
+                                                {/* Living species */}
+                                                {genus.species.living_species.map(
+                                                  (species: {
+                                                    mdd_id: number;
+                                                    epithet: string;
+                                                  }) => (
+                                                    <tr>
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b">
+                                                        <a
+                                                          href={`https://www.mammaldiversity.org/taxon/${species.mdd_id}`}
+                                                          class="underline text-blue-600 hover:text-blue-800"
+                                                          target="_blank"
+                                                          rel="noopener noreferrer"
+                                                        >
+                                                          {species.epithet}
+                                                        </a>
+                                                      </td>
+                                                      <td class="py-2 px-4 border-b" />
+                                                    </tr>
+                                                  )
+                                                )}
+                                                {/* Extinct species */}
+                                                {genus.species.extinct_species.map(
+                                                  (species: {
+                                                    mdd_id: number;
+                                                    epithet: string;
+                                                  }) => (
+                                                    <tr>
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b" />
+                                                      <td class="py-2 px-4 border-b">
+                                                        <a
+                                                          href={`https://www.mammaldiversity.org/taxon/${species.mdd_id}`}
+                                                          class="underline text-blue-600 hover:text-blue-800"
+                                                          target="_blank"
+                                                          rel="noopener noreferrer"
+                                                        >
+                                                          {species.epithet}
+                                                        </a>
+                                                      </td>
+                                                    </tr>
+                                                  )
+                                                )}
+                                              </tbody>
+                                            </table>
+                                          </td>
+                                        </tr>
+                                      </>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </td>
                             </tr>
                           </>
                         ))}
