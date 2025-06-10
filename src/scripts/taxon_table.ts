@@ -111,10 +111,11 @@ class ExploreTaxonTable {
         familyData.genera.push(genusData);
       }
 
+      // Always push the species, do not overwrite
       if (extinct === 1) {
         genusData.extinct_species_count += 1;
         genusData.species.extinct_species.push({
-          mdd_id: (taxon as any).mddId,
+          mdd_id: id,
           epithet: specificEpithet,
         });
         familyData.extinct_species_count += 1;
