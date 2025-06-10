@@ -1,48 +1,244 @@
 ---
-import { getSpeciesData } from "../../../db/mdd";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import Page from "../../layouts/Page.astro";
+import { taxonTableInstance } from "../../scripts/taxon_table.ts";
+import type { OrderData } from "../../scripts/taxon_table.ts";
 
-const taxa = getSpeciesData();
-
-interface Taxon {
-  id: number;
-  family: string;
-  genus: string;
-  specificEpithet: string;
-  authorityYear: string;
-  commonName: string;
-  synonyms: string[];
-}
-
-interface orderData {
-  subclass: string;
-  infraclass: string;
-  family: string[];
-}
-
-// const orderData: Record<string, Taxon[]> = {};
+const taxonTable = taxonTableInstance.getTaxonTable();
 ---
 
 <Page
   title="Taxonomy Table"
   description="A table to display taxonomy information."
-  ><MainPage>
+>
+  <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Taxonomy Table</Title>
-
-      <table class="table-auto w-full">
-        <thead>
+      <table class="table-auto lg:min-w-full my-4 mx-auto">
+        <thead class="bg-spectra-100 dark:bg-spectra-900">
           <tr>
-            <th class="px-4 py-2">Taxonomy</th>
-            <th class="px-4 py-2">Description</th>
+            <th class="py-2 px-4 border-b rounded-tl-xl">Subclass</th>
+            <th class="py-2 px-4 border-b">Infraclass</th>
+            <th class="py-2 px-4 border-b">Order</th>
+            <th class="py-2 px-4 border-b">Families</th>
+            <th class="py-2 px-4 border-b">Genera</th>
+            <th class="py-2 px-4 border-b">Living species</th>
+            <th class="py-2 px-4 border-b rounded-tr-xl"
+              >Extinct species (last 500 years)</th
+            >
           </tr>
         </thead>
         <tbody>
-          <slot />
+          {
+            Object.values(taxonTable).map((row: OrderData) => (
+              <>
+                <tr>
+                  <td class="py-2 px-4 border-b">{row.subclass}</td>
+                  <td class="py-2 px-4 border-b">{row.infraclass}</td>
+                  <td class="py-2 px-4 border-b">
+                    <button
+                      type="button"
+                      class="underline text-blue-600 hover:text-blue-800"
+                      data-toggle={`order-${row.order}`}
+                    >
+                      {row.order}
+                    </button>
+                  </td>
+                  <td class="py-2 px-4 border-b">{row.family_count}</td>
+                  <td class="py-2 px-4 border-b">{row.genus_count}</td>
+                  <td class="py-2 px-4 border-b">{row.living_species_count}</td>
+                  <td class="py-2 px-4 border-b">
+                    {row.extinct_species_count}
+                  </td>
+                </tr>
+                <tr id={`order-${row.order}`} class="hidden">
+                  <td colspan="7" class="p-0 border-0">
+                    <table class="table-auto w-full my-2">
+                      <tbody>
+                        {row.family_list.map((family) => (
+                          <>
+                            <tr>
+                              <td class="py-2 px-4 border-b" />
+                              <td class="py-2 px-4 border-b" />
+                              <td class="py-2 px-4 border-b" />
+                              <td class="py-2 border-b">
+                                <button
+                                  type="button"
+                                  class="underline text-blue-600 hover:text-blue-800"
+                                  data-toggle={`family-${row.order}-${family.family}`}
+                                >
+                                  {family.family}
+                                </button>
+                              </td>
+                              <td class="py-2 border-b">
+                                {family.genus_count}
+                              </td>
+                              <td class="py-2 px-4 border-b">
+                                {family.living_species_count}
+                              </td>
+                              <td class="py-2 px-4 border-b">
+                                {family.extinct_species_count}
+                              </td>
+                            </tr>
+                            <tr
+                              id={`family-${row.order}-${family.family}`}
+                              class="hidden"
+                            >
+                              <td colspan="7" class="p-0 border-0">
+                                <table class="table-auto w-full my-2">
+                                  <tbody>
+                                    {family.genera.map((genus) => (
+                                      <>
+                                        <tr>
+                                          <td class="py-2 px-4 border-b" />
+                                          <td class="py-2 px-4 border-b" />
+                                          <td class="py-2 px-4 border-b" />
+                                          <td class="py-2 px-4 border-b" />
+                                          <td class="py-2 px-4 border-b">
+                                            <button
+                                              type="button"
+                                              class="underline text-blue-600 hover:text-blue-800"
+                                              data-toggle={`genus-${row.order}-${family.family}-${genus.genus}`}
+                                            >
+                                              {genus.genus}
+                                            </button>
+                                          </td>
+                                          <td class="py-2 px-4 border-b">
+                                            {genus.living_species_count}
+                                          </td>
+                                          <td class="py-2 px-4 border-b">
+                                            {genus.extinct_species_count}
+                                          </td>
+                                        </tr>
+                                        {/* Living species */}
+                                        {genus.species.living_species.map(
+                                          (species: {
+                                            mdd_id: number;
+                                            epithet: string;
+                                          }) => (
+                                            <tr
+                                              id={`genus-${row.order}-${family.family}-${genus.genus}`}
+                                              class="hidden"
+                                            >
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b">
+                                                <a
+                                                  href={`https://www.mammaldiversity.org/taxon/${species.mdd_id}`}
+                                                  class="underline text-blue-600 hover:text-blue-800"
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                >
+                                                  {species.epithet}
+                                                </a>
+                                              </td>
+                                              <td class="py-2 px-4 border-b" />
+                                            </tr>
+                                          )
+                                        )}
+                                        {/* Extinct species */}
+                                        {genus.species.extinct_species.map(
+                                          (species: {
+                                            mdd_id: number;
+                                            epithet: string;
+                                          }) => (
+                                            <tr
+                                              id={`genus-${row.order}-${family.family}-${genus.genus}`}
+                                              class="hidden"
+                                            >
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b" />
+                                              <td class="py-2 px-4 border-b">
+                                                <a
+                                                  href={`https://www.mammaldiversity.org/taxon/${species.mdd_id}`}
+                                                  class="underline text-blue-600 hover:text-blue-800"
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                >
+                                                  {species.epithet}
+                                                </a>
+                                              </td>
+                                            </tr>
+                                          )
+                                        )}
+                                      </>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </>
+                        ))}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </>
+            ))
+          }
         </tbody>
       </table>
     </div>
-  </MainPage></Page
->
+  </MainPage>
+</Page>
+
+<script is:inline>
+  // Utility to set explicit column widths for both main and nested tables
+  function matchColumnWidths(mainRow, nestedTable) {
+    const mainCells = mainRow.querySelectorAll("td, th");
+    const nestedRows = nestedTable.querySelectorAll("tr");
+    if (!nestedRows.length) return;
+
+    // Get the first row of the nested table (header or first data row)
+    const nestedCells = nestedRows[0].querySelectorAll("td, th");
+    if (mainCells.length !== nestedCells.length) return;
+
+    // Measure and set explicit widths
+    const widths = Array.from(mainCells).map((cell) => {
+      // Use offsetWidth to get the rendered width
+      return cell.offsetWidth + "px";
+    });
+
+    mainCells.forEach((cell, i) => {
+      cell.style.width = widths[i];
+      cell.style.minWidth = widths[i];
+      cell.style.maxWidth = widths[i];
+    });
+    nestedCells.forEach((cell, i) => {
+      cell.style.width = widths[i];
+      cell.style.minWidth = widths[i];
+      cell.style.maxWidth = widths[i];
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("[data-toggle]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-toggle");
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.classList.toggle("hidden");
+
+          // If opening, match column widths
+          if (!target.classList.contains("hidden")) {
+            // Find the main row (the button's closest tr)
+            const mainRow = btn.closest("tr");
+            // Find the nested table inside the target row
+            const nestedTable = target.querySelector("table");
+            if (mainRow && nestedTable) {
+              matchColumnWidths(mainRow, nestedTable);
+            }
+          }
+        }
+      });
+    });
+  });
+</script>
