@@ -1,7 +1,7 @@
 // Parser for parsing the MDD json file
 import fs from "fs";
 
-import type { MddData, SpeciesData, Metadata } from "./model";
+import type { MddData, SpeciesData, Metadata } from "./mdd_model";
 
 const MDD_PATH = "./db/data/mdd.json";
 // const MDD_PATH = "./db/data/test.json";
