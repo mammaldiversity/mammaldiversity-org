@@ -132,7 +132,9 @@ const taxonTable = taxonTableInstance.getTaxonTable();
                                                 class="underline text-blue-600 hover:text-blue-800"
                                                 data-toggle={`genus-${row.order}-${family.family}-${genus.genus}`}
                                               >
-                                                {genus.genus}
+                                                <span class="italic">
+                                                  {genus.genus}
+                                                </span>
                                               </button>
                                             </td>
                                             <td class="py-2 px-4 border-b text-center">
@@ -172,7 +174,9 @@ const taxonTable = taxonTableInstance.getTaxonTable();
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                           >
-                                                            {species.epithet}
+                                                            <span class="italic">
+                                                              {species.epithet}
+                                                            </span>
                                                           </a>
                                                         </td>
                                                         <td class="py-2 px-4 border-b text-center" />
@@ -199,7 +203,9 @@ const taxonTable = taxonTableInstance.getTaxonTable();
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                           >
-                                                            {species.epithet}
+                                                            <span class="italic">
+                                                              {species.epithet}
+                                                            </span>
                                                           </a>
                                                         </td>
                                                       </tr>
