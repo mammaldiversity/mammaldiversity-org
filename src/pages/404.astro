@@ -1,43 +1,58 @@
 ---
-
+import MainPage from "../layouts/MainPage.astro";
+import Page from "../layouts/Page.astro";
+import img404 from "../assets/svg/error-404.svg";
+import { Image } from "astro:assets";
 ---
 
-<h1>404 - Page Not Found</h1>
-<p>Sorry, the page you are looking for does not exist.</p>
-<p>
-  If you were trying to access a specific taxon, please check the URL for
-  correctness or try searching for it.
-</p>
-<div
-  style="display: flex; flex-direction: column; align-items: center; margin-top: 2rem;"
->
-  <svg
-    width="48"
-    height="48"
-    viewBox="0 0 48 48"
-    style="margin-bottom: 1rem; animation: spin 1s linear infinite;"
-  >
-    <circle
-      cx="24"
-      cy="24"
-      r="20"
-      fill="none"
-      stroke="#1976d2"
-      stroke-width="4"
-      stroke-linecap="round"
-      stroke-dasharray="100"
-      stroke-dashoffset="60"></circle>
-  </svg>
-  <div style="font-size: 1.1rem; color: #555;">Trying to redirect…</div>
-</div>
-
-<style>
-  @keyframes spin {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-</style>
+<Page title="Page Not Found">
+  <MainPage>
+    <div class="text-center mt-8 md:mt-24">
+      <Image
+        src={img404}
+        alt="404 - Page Not Found"
+        width={240}
+        height={240}
+        class="mx-auto mb-8"
+      />
+      <h1 class="text-3xl md:text-5xl font-bold mb-4">404 - Page Not Found</h1>
+      <p class="text-lg mb-6">
+        The page you are looking for does not exist or has been moved.
+      </p>
+      <p class="mb-4">
+        If you are looking for a specific species, please use the new format:
+        <em class="font-semibold"
+          >https://www.mammaldiversity.org/taxon/[mdd-ID]</em
+        >. For example, to view the species page for <i
+          >Ornithorhynchus anatinus</i
+        >
+        (platypus), use:
+        <a href="/taxon/1000001/" class="text-blue-600 hover:underline">
+          https://www.mammaldiversity.org/taxon/1000001/
+        </a>.
+      </p>
+      <p class="mb-4">
+        You can also visit our
+        <a href="/explore" class="text-blue-600 hover:underline">Explore</a> page
+        or use the
+        <a href="/search" class="text-blue-600 hover:underline">Search</a> page to
+        find what you need.
+      </p>
+      <div
+        id="deprecation-notes"
+        class="py-4 px-8 text-center mt-4 md:mt-8 max-w-4xl mx-auto rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
+      >
+        <p>
+          If you believe you have reached this page in error, please let us know
+          by submitting an issue on our <a
+            href="https://github.com/mammaldiversity/mammaldiversity-org/issues"
+            class="text-blue-600 hover:underline">GitHub Issue page</a
+          >. We appreciate your feedback! 😊
+        </p>
+      </div>
+    </div>
+  </MainPage>
+</Page>
 
 <script>
   window.addEventListener("DOMContentLoaded", () => {
