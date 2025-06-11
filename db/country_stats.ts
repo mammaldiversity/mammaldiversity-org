@@ -1,9 +1,14 @@
 // Module to handle country statistic generation and retrieval
 import fs from "fs";
 
-import type { CountryMDDStats } from "./country_stats_model";
+import type {
+  CountryData,
+  CountryMDDStats,
+  CountryRegionCode,
+} from "./country_stats_model";
 
 const COUNTRY_STATS_PATH = "./db/data/country_stats.json";
+const COUNTRY_REGION_CODE_PATH = "./db/data/country_region_code.json";
 
 function parseCountryStatsJson(): CountryMDDStats {
   const rawData = fs.readFileSync(COUNTRY_STATS_PATH, "utf8");
@@ -11,4 +16,36 @@ function parseCountryStatsJson(): CountryMDDStats {
   return jsonData;
 }
 
-export { parseCountryStatsJson };
+function getCountryData(): Record<string, CountryData> {
+  const countryStats = parseCountryStatsJson();
+  return countryStats.countryData;
+}
+
+function getDataByCountryCode(code: string): CountryData {
+  const countryName = getCountryRegionName(code);
+  const countryData = getCountryData();
+  return countryData[countryName];
+}
+
+function parseCountryRegionCodeJson(): CountryRegionCode {
+  const rawData = fs.readFileSync(COUNTRY_REGION_CODE_PATH, "utf8");
+  const jsonData: CountryRegionCode = JSON.parse(rawData);
+  return jsonData;
+}
+
+function getCountryRegionCode(name: string): string {
+  const countryRegionCode = parseCountryRegionCodeJson();
+  return countryRegionCode.regionToCode[name] || name;
+}
+
+function getCountryRegionName(code: string): string {
+  const countryRegionCode = parseCountryRegionCodeJson();
+  return countryRegionCode.codeToRegion[code] || code;
+}
+
+export {
+  getCountryRegionCode,
+  getCountryRegionName,
+  getDataByCountryCode,
+  getCountryData,
+};
