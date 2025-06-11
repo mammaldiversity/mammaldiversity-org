@@ -6,22 +6,20 @@ import ToggleButton from "./ToggleButton.astro";
 import cntl from "cntl";
 
 interface Props {
-  taxonTable: Record<string, OrderData>;
+  data: Record<string, OrderData>;
 }
 
-const { taxonTable } = Astro.props;
+const { data } = Astro.props;
 
 const containerClasses = cntl`
   mt-4
   overflow-x-auto
   mx-auto
-  max-w-full
   max-h-lvh
 `;
 
 const tableClasses = cntl`
   table-auto
-  w-full
   my-4
   mx-auto
   border-collapse
@@ -30,7 +28,7 @@ const tableClasses = cntl`
 
 const tdClasses = cntl`
   py-2
-  px-4
+  px-2
   border-b
   text-center
 `;
@@ -41,7 +39,7 @@ const tdClasses = cntl`
     <TableHead />
     <tbody>
       {
-        Object.values(taxonTable).map((row: OrderData) => (
+        Object.values(data).map((row: OrderData) => (
           <>
             {/* Order row */}
             <tr>
@@ -61,7 +59,7 @@ const tdClasses = cntl`
             {/* Order expandable: only families */}
             <tr id={`order-${row.order}`} class="hidden">
               <td colspan="7" class="p-0 border-0">
-                <table class="table-auto w-full my-2">
+                <table class={tableClasses}>
                   <tbody>
                     {row.family_list.map((family) => (
                       <>
@@ -90,7 +88,7 @@ const tdClasses = cntl`
                           class="hidden"
                         >
                           <td colspan="7" class="p-0 border-0">
-                            <table class="table-auto w-full my-2">
+                            <table class={tableClasses}>
                               <tbody>
                                 {family.genera.map((genus) => (
                                   <>

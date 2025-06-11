@@ -193,7 +193,7 @@ function getTaxonTable(): Record<string, OrderData> {
   return buildTable(taxa);
 }
 
-function filterByMddIds(mddIds: number[]): Record<string, OrderData> {
+function getTaxonDataByMddIds(mddIds: number[]): Record<string, OrderData> {
   const taxonList = getSpeciesDataByIds(mddIds);
   if (!taxonList || taxonList.length === 0) {
     throw new Error(
@@ -212,4 +212,4 @@ export type {
   SpeciesIdData,
 };
 
-export { getTaxonTable, filterByMddIds };
+export { getTaxonTable, getTaxonDataByMddIds };
