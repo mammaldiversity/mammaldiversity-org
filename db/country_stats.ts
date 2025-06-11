@@ -37,6 +37,21 @@ function getDataByCountryCode(code: string): CountryData {
   );
 }
 
+// Parses the species list from a CountryData object
+// The predicted distribution suffix '?' is removed from species IDs
+// We keep records of predicted as true.
+function parseCountrySpeciesList(data: CountryData): Record<number, boolean> {
+  const speciesList: Record<string, boolean> = {};
+  if (!data.speciesList || data.speciesList.length === 0) {
+    return speciesList;
+  }
+  data.speciesList.forEach((speciesId) => {
+    const cleanId = speciesId.replace(/\?$/, ""); // Remove trailing '?'
+    speciesList[cleanId] = speciesId.endsWith("?"); // Record if it was predicted
+  });
+  return speciesList;
+}
+
 function parseCountryRegionCodeJson(): CountryRegionCode {
   const rawData = fs.readFileSync(COUNTRY_REGION_CODE_PATH, "utf8");
   const jsonData: CountryRegionCode = JSON.parse(rawData);
@@ -58,4 +73,5 @@ export {
   getCountryRegionName,
   getDataByCountryCode,
   getCountryData,
+  parseCountrySpeciesList,
 };

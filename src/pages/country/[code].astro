@@ -6,12 +6,16 @@ import {
   getCountryData,
   getDataByCountryCode,
   getCountryRegionName,
+  parseCountrySpeciesList,
 } from "../../../db/country_stats";
 import type { CountryData } from "../../../db/country_stats_model";
+import { getSpeciesDataByIds } from "../../../db/mdd";
+import TaxonTable from "../../components/taxon-table/TaxonTable.astro";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import Page from "../../layouts/Page.astro";
 import PageHeader from "../../layouts/PageHeader.astro";
+import { getTaxonDataByMddIds } from "../../scripts/taxon_table";
 
 export const getStaticPaths = async () => {
   const countryStats: Record<string, CountryData> = getCountryData();
@@ -43,8 +47,14 @@ export const getStaticPaths = async () => {
 
 const { code } = Astro.params;
 const countryData: CountryData = getDataByCountryCode(code);
-
 const countryName = getCountryRegionName(countryData.code);
+
+const speciesList = parseCountrySpeciesList(countryData);
+
+// Convert the keys of speciesList to an array of numbers
+const speciesIds = Object.keys(speciesList).map(Number);
+
+const speciesData = getTaxonDataByMddIds(speciesIds);
 ---
 
 <Page title=`${countryName} Mammal Diversity Statistics`>
@@ -59,35 +69,6 @@ const countryName = getCountryRegionName(countryData.code);
         </p>
       </div>
     </PageHeader>
-    <div>
-      <table class="table-auto my-4 mx-auto">
-        <thead class="bg-spectra-100 dark:bg-spectra-900 sticky top-0 z-10">
-          <tr>
-            <th class="py-2 px-4 border-b rounded-tl-xl text-center">Country</th
-            >
-            <th class="px-4 border-b py-2">Orders</th>
-            <th class="px-4 border-b py-2">Families</th>
-            <th class="px-4 border-b py-2">Genera</th>
-            <th class="px-4 border-b py-2">Living Species</th>
-            <th class="py-2 px-4 border-b rounded-tr-xl text-center"
-              >Extinct Species</th
-            >
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="px-4 py-2">
-              {countryName}
-            </td>
-            <td class="px-4 py-2 text-center">{countryData.totalOrders}</td>
-            <td class="px-4 py-2 text-center">{countryData.totalFamilies}</td>
-            <td class="px-4 py-2 text-center">{countryData.totalGenera}</td>
-            <td class="px-4 py-2 text-center"
-              >{countryData.totalExtinctSpecies}</td
-            >
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <TaxonTable data={speciesData} />
   </MainPage></Page
 >

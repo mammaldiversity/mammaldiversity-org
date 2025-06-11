@@ -1,0 +1,17 @@
+---
+interface Props {
+  data_toggle: string;
+  label: string;
+  italic?: boolean;
+}
+
+const { data_toggle, label, italic }: Props = Astro.props;
+---
+
+<button
+  type="button"
+  class="underline text-blue-600 hover:text-blue-800"
+  data-toggle={data_toggle}
+>
+  {italic ? <span class="italic">{label}</span> : label}
+</button>

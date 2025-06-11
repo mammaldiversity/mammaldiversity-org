@@ -1,0 +1,27 @@
+---
+import cntl from "cntl";
+
+const theadClasses = cntl`
+  bg-spectra-100 
+  dark:bg-spectra-900
+  sticky 
+  top-0 
+  z-10
+  text-center
+  border-b
+`;
+---
+
+<thead class={theadClasses}>
+  <tr>
+    <th class="py-2 px-4 border-b rounded-tl-xl text-center">Subclass</th>
+    <th class="py-2 px-4 border-b text-center">Infraclass</th>
+    <th class="py-2 px-4 border-b text-center">Order</th>
+    <th class="py-2 px-4 border-b text-center">Families</th>
+    <th class="py-2 px-4 border-b text-center">Genera</th>
+    <th class="py-2 px-4 border-b text-center">Living species</th>
+    <th class="py-2 px-4 border-b rounded-tr-xl text-center"
+      >Extinct species (last 500 years)</th
+    >
+  </tr>
+</thead>

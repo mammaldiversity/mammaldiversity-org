@@ -5,8 +5,40 @@ import Page from "../../layouts/Page.astro";
 import PageHeader from "../../layouts/PageHeader.astro";
 import { getCountryData } from "../../../db/country_stats";
 import type { CountryData } from "../../../db/country_stats_model";
+import cntl from "cntl";
 
 const countryStats: Record<string, CountryData> = getCountryData();
+
+const containerClasses = cntl`
+  mt-4
+  overflow-x-auto
+  mx-auto
+  max-w-6xl
+  max-h-lvh
+`;
+
+const tableClasses = cntl`
+  table-auto
+  my-4
+  mx-auto
+  border-collapse
+  border-spacing-0
+`;
+
+const theadClasses = cntl`
+  bg-spectra-100
+  dark:bg-spectra-900
+  sticky
+  top-0
+  z-10
+`;
+
+const contentTdClasses = cntl`
+  py-2
+  px-4
+  border-b
+  text-center
+`;
 ---
 
 <Page title="Country Mammal Diversity">
@@ -23,12 +55,9 @@ const countryStats: Record<string, CountryData> = getCountryData();
       </div>
     </PageHeader>
     <div id="country-stat-table" class="overflow-x-auto">
-      <div
-        id="taxonomy-table"
-        class="overflow-x-auto mx-auto max-w-full max-h-lvh"
-      >
-        <table class="table-auto my-4 mx-auto">
-          <thead class="bg-spectra-100 dark:bg-spectra-900 sticky top-0 z-10">
+      <div id="taxonomy-table" class={containerClasses}>
+        <table class={tableClasses}>
+          <thead class={theadClasses}>
             <tr>
               <th class="py-2 px-4 border-b rounded-tl-xl text-center"
                 >Country</th
@@ -54,19 +83,11 @@ const countryStats: Record<string, CountryData> = getCountryData();
                       {countryName}
                     </a>
                   </td>
-                  <td class="px-4 py-2 border-b text-center">
-                    {country.totalOrders}
-                  </td>
-                  <td class="px-4 py-2 border-b text-center">
-                    {country.totalFamilies}
-                  </td>
-                  <td class="px-4 py-2 border-b text-center">
-                    {country.totalGenera}
-                  </td>
-                  <td class="px-4 py-2 border-b text-center">
-                    {country.totalLivingSpecies}
-                  </td>
-                  <td class="px-4 py-2 border-b text-center">
+                  <td class={contentTdClasses}>{country.totalOrders}</td>
+                  <td class={contentTdClasses}>{country.totalFamilies}</td>
+                  <td class={contentTdClasses}>{country.totalGenera}</td>
+                  <td class={contentTdClasses}>{country.totalLivingSpecies}</td>
+                  <td class={contentTdClasses}>
                     {country.totalExtinctSpecies}
                   </td>
                 </tr>
