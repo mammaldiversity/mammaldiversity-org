@@ -1,0 +1,75 @@
+---
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
+import { getCountryData } from "../../../db/country_stats";
+import type { CountryData } from "../../../db/country_stats_model";
+import { Code } from "astro:components";
+
+const countryStats: Record<string, CountryData> = getCountryData();
+---
+
+<Page title="Country Mammal Diversity">
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">Mammal Diversity by Country and Region</Title>
+      <div slot="description">
+        <p>
+          Explore statistics on mammal diversity for each country listed in MDD,
+          including counts of orders, families, genera, extant species, and
+          extinct species. This list excludes widespread and domesticated
+          species. Click on a country to explore its mammal diversity.
+        </p>
+      </div>
+    </PageHeader>
+    <div id="country-stat-table" class="overflow-x-auto">
+      <div
+        id="taxonomy-table"
+        class="overflow-x-auto mx-auto max-w-full max-h-lvh"
+      >
+        <table class="table-auto my-4 mx-auto">
+          <thead class="bg-spectra-100 dark:bg-spectra-900 sticky top-0 z-10">
+            <tr>
+              <th class="py-2 px-4 border-b rounded-tl-xl text-center"
+                >Country</th
+              >
+              <th class="px-4 border-b py-2">Orders</th>
+              <th class="px-4 border-b py-2">Families</th>
+              <th class="px-4 border-b py-2">Genera</th>
+              <th class="px-4 border-b py-2">Living Species</th>
+              <th class="py-2 px-4 border-b rounded-tr-xl text-center"
+                >Extinct Species</th
+              >
+            </tr>
+          </thead>
+          <tbody>
+            {
+              Object.entries(countryStats).map(([countryName, country]) => (
+                <tr>
+                  <td class="px-4 py-2">
+                    <a
+                      href={`/country/${country.code}`}
+                      class="text-blue-600 hover:underline"
+                    >
+                      {countryName}
+                    </a>
+                  </td>
+                  <td class="px-4 py-2 text-center">{country.totalOrders}</td>
+                  <td class="px-4 py-2 text-center">{country.totalFamilies}</td>
+                  <td class="px-4 py-2 text-center">{country.totalGenera}</td>
+                  <td class="px-4 py-2 text-center">
+                    {country.totalLivingSpecies}
+                  </td>
+                  <td class="px-4 py-2 text-center">
+                    {country.totalExtinctSpecies}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </MainPage>
+</Page>

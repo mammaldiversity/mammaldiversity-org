@@ -1,0 +1,72 @@
+---
+// Page for displaying country-specific mammal diversity statistics
+// When available, the URL parameter use alpha-2 country code (e.g., "US" for United States).
+// Otherwise, it uses a three letter region code created from the region name (e.g., "AND" for Andaman Islands).
+import {
+  getCountryData,
+  getDataByCountryCode,
+  getCountryRegionName,
+} from "../../../db/country_stats";
+import type { CountryData } from "../../../db/country_stats_model";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
+
+export const getStaticPaths = async () => {
+  const countryStats: Record<string, CountryData> = getCountryData();
+  return Object.values(countryStats).map((countryData) => ({
+    params: { code: countryData.code },
+  }));
+};
+
+const { code } = Astro.params;
+const countryData: CountryData = getDataByCountryCode(code);
+
+const countryName = getCountryRegionName(countryData.code);
+---
+
+<Page title=`${countryName}`>
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">{countryName}</Title>
+      <div slot="description">
+        <p>
+          Mammal diversity statistics for {countryName}, including counts of
+          orders, families, genera, extant species, and extinct species. This
+          list excludes widespread and domesticated species.
+        </p>
+      </div>
+    </PageHeader>
+    <div>
+      <table class="table-auto my-4 mx-auto">
+        <thead class="bg-spectra-100 dark:bg-spectra-900 sticky top-0 z-10">
+          <tr>
+            <th class="py-2 px-4 border-b rounded-tl-xl text-center">Country</th
+            >
+            <th class="px-4 border-b py-2">Orders</th>
+            <th class="px-4 border-b py-2">Families</th>
+            <th class="px-4 border-b py-2">Genera</th>
+            <th class="px-4 border-b py-2">Living Species</th>
+            <th class="py-2 px-4 border-b rounded-tr-xl text-center"
+              >Extinct Species</th
+            >
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="px-4 py-2">
+              {countryName}
+            </td>
+            <td class="px-4 py-2 text-center">{countryData.totalOrders}</td>
+            <td class="px-4 py-2 text-center">{countryData.totalFamilies}</td>
+            <td class="px-4 py-2 text-center">{countryData.totalGenera}</td>
+            <td class="px-4 py-2 text-center"
+              >{countryData.totalExtinctSpecies}</td
+            >
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </MainPage></Page
+>
