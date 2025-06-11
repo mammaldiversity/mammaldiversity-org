@@ -66,31 +66,38 @@ import { Image } from "astro:assets";
     const hash = window.location.hash;
     const search = window.location.search;
 
-    // Try to find an id in the hash or search params
-    let idMatch = null;
-
-    // Check hash for id=number
-    if (hash) {
-      const hashParams = new URLSearchParams(hash.replace(/^#/, ""));
-      if (hashParams.has("id")) {
-        const hashId = hashParams.get("id");
-        idMatch = hashId && hashId.match(/^\d+$/) ? hashId : null;
+    function extractIdFromParams(params: URLSearchParams) {
+      if (params.has("id")) {
+        const id = params.get("id");
+        if (id && /^\d+$/.test(id)) return id;
       }
+      if (params.has("species-id")) {
+        const speciesId = params.get("species-id");
+        if (speciesId && /^\d+$/.test(speciesId)) return speciesId;
+      }
+      return null;
     }
 
-    // If not found in hash, check search params
-    if (!idMatch && search) {
-      const searchParams = new URLSearchParams(search);
-      if (searchParams.has("id")) {
-        const searchId = searchParams.get("id");
-        idMatch = searchId && searchId.match(/^\d+$/) ? searchId : null;
+    function findMddId() {
+      // Check hash
+      if (hash) {
+        const hashParams = new URLSearchParams(hash.replace(/^#/, ""));
+        const id = extractIdFromParams(hashParams);
+        if (id) return id;
       }
+      // Check search params
+      if (search) {
+        const searchParams = new URLSearchParams(search);
+        const id = extractIdFromParams(searchParams);
+        if (id) return id;
+      }
+      return null;
     }
 
-    // If a valid id is found, redirect
+    const idMatch = findMddId();
+
     if (idMatch) {
-      const resolvedUrl = `/taxon/${idMatch}`;
-      window.location.replace(resolvedUrl);
+      window.location.replace(`/taxon/${idMatch}`);
     }
   });
 </script>
