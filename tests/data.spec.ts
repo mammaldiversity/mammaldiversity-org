@@ -39,7 +39,7 @@ test("MDD data is valid JSON", () => {
 test("Country stats data is valid JSON", () => {
   const jsonData = parseCountryStatsJson();
   expect(jsonData).not.toBeNull();
-  expect(jsonData.totalCountries).toBe(240);
+  expect(jsonData.totalCountries).toBe(243);
   expect(jsonData.countryData).toBeDefined();
-  expect(Object.keys(jsonData.countryData).length).toBe(240);
+  expect(Object.keys(jsonData.countryData).length).toBe(243);
 });
