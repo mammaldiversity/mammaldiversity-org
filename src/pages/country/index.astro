@@ -5,7 +5,6 @@ import Page from "../../layouts/Page.astro";
 import PageHeader from "../../layouts/PageHeader.astro";
 import { getCountryData } from "../../../db/country_stats";
 import type { CountryData } from "../../../db/country_stats_model";
-import { Code } from "astro:components";
 
 const countryStats: Record<string, CountryData> = getCountryData();
 ---

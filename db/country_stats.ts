@@ -24,7 +24,17 @@ function getCountryData(): Record<string, CountryData> {
 function getDataByCountryCode(code: string): CountryData {
   const countryName = getCountryRegionName(code);
   const countryData = getCountryData();
-  return countryData[countryName];
+  return (
+    countryData[countryName] || {
+      code: code,
+      totalOrders: 0,
+      totalFamilies: 0,
+      totalGenera: 0,
+      totalLivingSpecies: 0,
+      totalExtinctSpecies: 0,
+      speciesList: [],
+    }
+  );
 }
 
 function parseCountryRegionCodeJson(): CountryRegionCode {
