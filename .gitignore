@@ -23,8 +23,9 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-
+# Test data
 mdd.json
+country_stats.json
 
 # Playwright
 /test-results/
