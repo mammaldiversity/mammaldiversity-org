@@ -1,0 +1,75 @@
+---
+
+---
+
+<h1>404 - Page Not Found</h1>
+<p>Sorry, the page you are looking for does not exist.</p>
+<p>
+  If you were trying to access a specific taxon, please check the URL for
+  correctness or try searching for it.
+</p>
+<div
+  style="display: flex; flex-direction: column; align-items: center; margin-top: 2rem;"
+>
+  <svg
+    width="48"
+    height="48"
+    viewBox="0 0 48 48"
+    style="margin-bottom: 1rem; animation: spin 1s linear infinite;"
+  >
+    <circle
+      cx="24"
+      cy="24"
+      r="20"
+      fill="none"
+      stroke="#1976d2"
+      stroke-width="4"
+      stroke-linecap="round"
+      stroke-dasharray="100"
+      stroke-dashoffset="60"></circle>
+  </svg>
+  <div style="font-size: 1.1rem; color: #555;">Trying to redirect…</div>
+</div>
+
+<style>
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    // Get the URL hash and search params
+    const hash = window.location.hash;
+    const search = window.location.search;
+
+    // Try to find an id in the hash or search params
+    let idMatch = null;
+
+    // Check hash for id=number
+    if (hash) {
+      const hashParams = new URLSearchParams(hash.replace(/^#/, ""));
+      if (hashParams.has("id")) {
+        const hashId = hashParams.get("id");
+        idMatch = hashId && hashId.match(/^\d+$/) ? hashId : null;
+      }
+    }
+
+    // If not found in hash, check search params
+    if (!idMatch && search) {
+      const searchParams = new URLSearchParams(search);
+      if (searchParams.has("id")) {
+        const searchId = searchParams.get("id");
+        idMatch = searchId && searchId.match(/^\d+$/) ? searchId : null;
+      }
+    }
+
+    // If a valid id is found, redirect
+    if (idMatch) {
+      const resolvedUrl = `/taxon/${idMatch}`;
+      window.location.replace(resolvedUrl);
+    }
+  });
+</script>
