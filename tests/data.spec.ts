@@ -5,7 +5,7 @@ import type { CountryMDDStats } from "../db/country_stats_model";
 
 const TEST_PATH = "./db/data/test.json";
 const MDD_PATH = "./db/data/mdd.json";
-const COUNTRY_STATS_PATH = "./db/data/country_stats.json";
+const COUNTRY_STATS_PATH = "./db/data/test_country_stats.json";
 
 function parseMDDJson(): MddData {
   const test_path = getSpeciesDataPath();
