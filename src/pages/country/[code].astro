@@ -15,8 +15,29 @@ import PageHeader from "../../layouts/PageHeader.astro";
 
 export const getStaticPaths = async () => {
   const countryStats: Record<string, CountryData> = getCountryData();
-  return Object.values(countryStats).map((countryData) => ({
-    params: { code: countryData.code },
+  // Check for country code errors
+  Object.entries(countryStats).forEach(([countryName, countryData]) => {
+    if (!countryData.code) {
+      console.error(
+        `Country data for ${countryName} is missing a code. Please check the database.`
+      );
+    }
+  });
+
+  // Check for duplicate country codes
+  const codes = new Set<string>();
+  Object.entries(countryStats).forEach(([countryName, countryData]) => {
+    if (codes.has(countryData.code)) {
+      console.error(
+        `Duplicate country code found for ${countryName}: ${countryData.code}. Please check the database.`
+      );
+    } else {
+      codes.add(countryData.code);
+    }
+  });
+  // Generate unique paths for codes
+  return Array.from(codes).map((code) => ({
+    params: { code },
   }));
 };
 
@@ -26,7 +47,7 @@ const countryData: CountryData = getDataByCountryCode(code);
 const countryName = getCountryRegionName(countryData.code);
 ---
 
-<Page title=`${countryName}`>
+<Page title=`${countryName} Mammal Diversity Statistics`>
   <MainPage>
     <PageHeader>
       <Title slot="title">{countryName}</Title>
