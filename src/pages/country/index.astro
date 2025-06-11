@@ -46,7 +46,7 @@ const countryStats: Record<string, CountryData> = getCountryData();
             {
               Object.entries(countryStats).map(([countryName, country]) => (
                 <tr>
-                  <td class="px-4 py-2">
+                  <td class="px-4 py-2 border-b">
                     <a
                       href={`/country/${country.code}`}
                       class="text-blue-600 hover:underline"
@@ -54,13 +54,19 @@ const countryStats: Record<string, CountryData> = getCountryData();
                       {countryName}
                     </a>
                   </td>
-                  <td class="px-4 py-2 text-center">{country.totalOrders}</td>
-                  <td class="px-4 py-2 text-center">{country.totalFamilies}</td>
-                  <td class="px-4 py-2 text-center">{country.totalGenera}</td>
-                  <td class="px-4 py-2 text-center">
+                  <td class="px-4 py-2 border-b text-center">
+                    {country.totalOrders}
+                  </td>
+                  <td class="px-4 py-2 border-b text-center">
+                    {country.totalFamilies}
+                  </td>
+                  <td class="px-4 py-2 border-b text-center">
+                    {country.totalGenera}
+                  </td>
+                  <td class="px-4 py-2 border-b text-center">
                     {country.totalLivingSpecies}
                   </td>
-                  <td class="px-4 py-2 text-center">
+                  <td class="px-4 py-2 border-b text-center">
                     {country.totalExtinctSpecies}
                   </td>
                 </tr>

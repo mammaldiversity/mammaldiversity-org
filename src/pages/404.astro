@@ -1,4 +1,10 @@
 ---
+// This page includes a workaround to identify whether the URL matches
+// any previously issued permanent links.
+// It will match any occurrence of the MDD ID.
+// If a match is found, it will redirect
+// the user to the valid species page.
+// If no match is found, the custom 404 page will be displayed
 import MainPage from "../layouts/MainPage.astro";
 import Page from "../layouts/Page.astro";
 import img404 from "../assets/svg/error-404.svg";
