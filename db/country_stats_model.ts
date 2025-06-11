@@ -1,5 +1,9 @@
 interface CountryData {
-  countryName: string;
+  /**
+   * ISO 3166-1 alpha-2 country code.
+   * Example: "US" for United States, "FR" for France.
+   */
+  code: string;
   totalOrders: number;
   totalFamilies: number;
   totalGenera: number;
@@ -23,4 +27,9 @@ interface CountryMDDStats {
   countryData: Record<string, CountryData>;
 }
 
-export type { CountryData, CountryMDDStats };
+interface CountryRegionCode {
+  regionToCode: Record<string, string>;
+  codeToRegion: Record<string, string>;
+}
+
+export type { CountryData, CountryMDDStats, CountryRegionCode };
