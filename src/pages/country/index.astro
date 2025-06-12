@@ -7,7 +7,14 @@ import { getCountryData } from "../../../db/country_stats";
 import type { CountryData } from "../../../db/country_stats_model";
 import cntl from "cntl";
 
-const countryStats: Record<string, CountryData> = getCountryData();
+const countryData: Record<string, CountryData> = getCountryData();
+
+// Some countries, like United Arab Emirates, have country codes that are AZ,
+// We reorder the stats based on the countryData.name
+// to ensure a consistent display order.
+const countryStats: Record<string, CountryData> = Object.fromEntries(
+  Object.entries(countryData).sort((a, b) => a[1].name.localeCompare(b[1].name))
+);
 
 const containerClasses = cntl`
   mt-4
@@ -73,14 +80,14 @@ const contentTdClasses = cntl`
           </thead>
           <tbody>
             {
-              Object.entries(countryStats).map(([countryName, country]) => (
+              Object.entries(countryStats).map(([code, country]) => (
                 <tr>
                   <td class="px-4 py-2 border-b">
                     <a
-                      href={`/country/${country.code}`}
+                      href={`/country/${code}`}
                       class="text-blue-600 hover:underline"
                     >
-                      {countryName}
+                      {country.name}
                     </a>
                   </td>
                   <td class={contentTdClasses}>{country.totalOrders}</td>

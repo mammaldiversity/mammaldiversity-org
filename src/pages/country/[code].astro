@@ -5,11 +5,9 @@
 import {
   getCountryData,
   getDataByCountryCode,
-  getCountryRegionName,
   parseCountrySpeciesList,
 } from "../../../db/country_stats";
 import type { CountryData } from "../../../db/country_stats_model";
-import { getSpeciesDataByIds } from "../../../db/mdd";
 import TaxonTable from "../../components/taxon-table/TaxonTable.astro";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
@@ -19,35 +17,15 @@ import { getTaxonDataByMddIds } from "../../scripts/taxon_table";
 
 export const getStaticPaths = async () => {
   const countryStats: Record<string, CountryData> = getCountryData();
-  // Check for country code errors
-  Object.entries(countryStats).forEach(([countryName, countryData]) => {
-    if (!countryData.code) {
-      console.error(
-        `Country data for ${countryName} is missing a code. Please check the database.`
-      );
-    }
-  });
 
-  // Check for duplicate country codes
-  const codes = new Set<string>();
-  Object.entries(countryStats).forEach(([countryName, countryData]) => {
-    if (codes.has(countryData.code)) {
-      console.error(
-        `Duplicate country code found for ${countryName}: ${countryData.code}. Please check the database.`
-      );
-    } else {
-      codes.add(countryData.code);
-    }
-  });
-  // Generate unique paths for codes
-  return Array.from(codes).map((code) => ({
+  // Use the keys of countryStats as the country codes for the paths
+  return Object.keys(countryStats).map((code) => ({
     params: { code },
   }));
 };
 
 const { code } = Astro.params;
 const countryData: CountryData = getDataByCountryCode(code);
-const countryName = getCountryRegionName(countryData.code);
 
 const speciesList = parseCountrySpeciesList(countryData);
 
@@ -57,14 +35,14 @@ const speciesIds = Object.keys(speciesList).map(Number);
 const speciesData = getTaxonDataByMddIds(speciesIds);
 ---
 
-<Page title=`${countryName} Mammal Diversity Statistics`>
+<Page title=`${countryData.name} Mammal Diversity Statistics`>
   <MainPage>
     <PageHeader>
-      <Title slot="title">{countryName}</Title>
+      <Title slot="title">{countryData.name}</Title>
       <div slot="description">
         <p>
-          Mammal diversity statistics for {countryName}, including counts of
-          orders, families, genera, extant species, and extinct species. This
+          Mammal diversity statistics for {countryData.name}, including counts
+          of orders, families, genera, extant species, and extinct species. This
           list excludes widespread and domesticated species.
         </p>
       </div>

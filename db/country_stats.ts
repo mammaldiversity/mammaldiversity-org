@@ -18,14 +18,13 @@ function parseCountryStatsJson(): CountryMDDStats {
 
 function getCountryData(): Record<string, CountryData> {
   const countryStats = parseCountryStatsJson();
-  return countryStats.countryData;
+  return countryStats.countryData || {};
 }
 
 function getDataByCountryCode(code: string): CountryData {
-  const countryName = getCountryRegionName(code);
   const countryData = getCountryData();
   return (
-    countryData[countryName] || {
+    countryData[code] || {
       code: code,
       totalOrders: 0,
       totalFamilies: 0,
@@ -46,7 +45,7 @@ function parseCountrySpeciesList(data: CountryData): Record<number, boolean> {
     return speciesList;
   }
   data.speciesList.forEach((speciesId) => {
-    const cleanId = speciesId.replace(/\?$/, ""); // Remove trailing '?'
+    const cleanId = speciesId.replace(/\?$/, "").replace(/ and /g, " & "); // Remove trailing '?' and replace ' and ' with ' & '
     speciesList[cleanId] = speciesId.endsWith("?"); // Record if it was predicted
   });
   return speciesList;
