@@ -1,0 +1,66 @@
+---
+import type { GenusData } from "../../scripts/taxon_table";
+import SpeciesCell from "./SpeciesCell.astro";
+import cntl from "cntl";
+
+interface Props {
+  id: string;
+  genus: GenusData;
+}
+
+const { genus, id }: Props = Astro.props;
+
+const tdClasses = cntl`
+  py-2
+  px-4
+  border-b
+  text-center
+`;
+---
+
+<tr id={id} class="hidden">
+  <td colspan="7" class="p-0 border-0">
+    <table class="table-auto w-full my-2">
+      <tbody>
+        {/* Living species */}
+        {
+          genus.species.living_species.map(
+            (species: { mdd_id: number; epithet: string }) => (
+              <tr>
+                <td class={tdClasses} />
+                <td class={tdClasses} />
+                <td class={tdClasses} />
+                <td class={tdClasses} />
+                <td class={tdClasses} />
+                <SpeciesCell
+                  mdd_id={species.mdd_id}
+                  epithet={species.epithet}
+                />
+                <td class={tdClasses} />
+              </tr>
+            )
+          )
+        }
+        {/* Extinct species */}
+        {
+          genus.species.extinct_species.map(
+            (species: { mdd_id: number; epithet: string }) => (
+              <tr>
+                <td class={tdClasses} />
+                <td class={tdClasses} />
+                <td class={tdClasses} />
+                <td class={tdClasses} />
+                <td class={tdClasses} />
+                <td class={tdClasses} />
+                <SpeciesCell
+                  mdd_id={species.mdd_id}
+                  epithet={species.epithet}
+                />
+              </tr>
+            )
+          )
+        }
+      </tbody>
+    </table>
+  </td>
+</tr>

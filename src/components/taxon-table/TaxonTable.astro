@@ -1,0 +1,232 @@
+---
+import type { OrderData } from "../../scripts/taxon_table.ts";
+import GenusTable from "./GenusTable.astro";
+import TableHead from "./TableHead.astro";
+import ToggleButton from "./ToggleButton.astro";
+import cntl from "cntl";
+
+interface Props {
+  data: Record<string, OrderData>;
+}
+
+const { data } = Astro.props;
+
+const containerClasses = cntl`
+  mt-4
+  overflow-x-auto
+  mx-auto
+  max-h-lvh
+`;
+
+const tableClasses = cntl`
+  table-auto
+  my-4
+  mx-auto
+  border-collapse
+  border-spacing-0
+`;
+
+const tdClasses = cntl`
+  py-2
+  px-2
+  border-b
+  text-center
+`;
+---
+
+<div id="taxonomy-table" class={containerClasses}>
+  <table class={tableClasses}>
+    <TableHead />
+    <tbody>
+      {
+        Object.values(data).map((row: OrderData) => (
+          <>
+            {/* Order row */}
+            <tr>
+              <td class={tdClasses}>{row.subclass}</td>
+              <td class={tdClasses}>{row.infraclass}</td>
+              <td class={tdClasses}>
+                <ToggleButton
+                  data_toggle={`order-${row.order}`}
+                  label={row.order}
+                />
+              </td>
+              <td class={tdClasses}>{row.family_count}</td>
+              <td class={tdClasses}>{row.genus_count}</td>
+              <td class={tdClasses}>{row.living_species_count}</td>
+              <td class={tdClasses}>{row.extinct_species_count}</td>
+            </tr>
+            {/* Order expandable: only families */}
+            <tr id={`order-${row.order}`} class="hidden">
+              <td colspan="7" class="p-0 border-0">
+                <table class={tableClasses}>
+                  <tbody>
+                    {row.family_list.map((family) => (
+                      <>
+                        {/* Family row */}
+                        <tr>
+                          <td class={tdClasses} />
+                          <td class={tdClasses} />
+                          <td class={tdClasses} />
+                          <td class={tdClasses}>
+                            <ToggleButton
+                              data_toggle={`family-${row.order}-${family.family}`}
+                              label={family.family}
+                            />
+                          </td>
+                          <td class={tdClasses}>{family.genus_count}</td>
+                          <td class={tdClasses}>
+                            {family.living_species_count}
+                          </td>
+                          <td class={tdClasses}>
+                            {family.extinct_species_count}
+                          </td>
+                        </tr>
+                        {/* Family expandable: genera */}
+                        <tr
+                          id={`family-${row.order}-${family.family}`}
+                          class="hidden"
+                        >
+                          <td colspan="7" class="p-0 border-0">
+                            <table class={tableClasses}>
+                              <tbody>
+                                {family.genera.map((genus) => (
+                                  <>
+                                    {/* Genus row */}
+                                    <tr>
+                                      <td class={tdClasses} />
+                                      <td class={tdClasses} />
+                                      <td class={tdClasses} />
+                                      <td class={tdClasses} />
+                                      <td class={tdClasses}>
+                                        <ToggleButton
+                                          data_toggle={`genus-${row.order}-${family.family}-${genus.genus}`}
+                                          label={genus.genus}
+                                          italic={true}
+                                        />
+                                      </td>
+                                      <td class={tdClasses}>
+                                        {genus.living_species_count}
+                                      </td>
+                                      <td class={tdClasses}>
+                                        {genus.extinct_species_count}
+                                      </td>
+                                    </tr>
+                                    <GenusTable
+                                      id={`genus-${row.order}-${family.family}-${genus.genus}`}
+                                      genus={genus}
+                                    />
+                                  </>
+                                ))}
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </>
+                    ))}
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </>
+        ))
+      }
+    </tbody>
+  </table>
+  <div class="flex justify-start gap-1 max-w-7xl mx-auto">
+    <button
+      type="button"
+      id="collapse-all"
+      class="text-md underline text-gray-700 hover:text-gray-900 bg-transparent px-2 -py-1 rounded"
+    >
+      Collapse all
+    </button>
+  </div>
+</div>
+
+<script>
+  // Utility to set explicit column widths for both main and nested tables
+  function matchColumnWidths(
+    mainRow: HTMLTableRowElement,
+    nestedTable: HTMLTableElement
+  ) {
+    const mainCells = mainRow.querySelectorAll("td, th");
+    const nestedRows = nestedTable.querySelectorAll("tr");
+    if (!nestedRows.length) return;
+
+    // Get the first row of the nested table (header or first data row)
+    const nestedCells = nestedRows[0].querySelectorAll("td, th");
+    if (mainCells.length !== nestedCells.length) return;
+
+    // Measure and set explicit widths
+    const widths = Array.from(mainCells).map((cell) => {
+      // Use offsetWidth to get the rendered width
+      return (cell as HTMLTableCellElement).offsetWidth + "px";
+    });
+
+    mainCells.forEach((cell, i) => {
+      const tableCell = cell as HTMLTableCellElement;
+      tableCell.style.width = widths[i];
+      tableCell.style.minWidth = widths[i];
+      tableCell.style.maxWidth = widths[i];
+    });
+    nestedCells.forEach((cell, i) => {
+      const tableCell = cell as HTMLTableCellElement;
+      tableCell.style.width = widths[i];
+      tableCell.style.minWidth = widths[i];
+      tableCell.style.maxWidth = widths[i];
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Toggle expand/collapse for individual rows
+    document.querySelectorAll("[data-toggle]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-toggle");
+        if (targetId) {
+          const targets = document.querySelectorAll(`#${CSS.escape(targetId)}`);
+          targets.forEach((target) => {
+            target.classList.toggle("hidden");
+            // If opening, match column widths
+            if (!target.classList.contains("hidden")) {
+              const mainRow = btn.closest("tr");
+              const nestedTable = target.querySelector("table");
+              if (mainRow && nestedTable) {
+                matchColumnWidths(mainRow, nestedTable);
+              }
+            }
+          });
+          updateCollapseAllVisibility();
+        }
+      });
+    });
+
+    const collapseAllBtn = document.getElementById("collapse-all");
+
+    function setAllCollapsed() {
+      document
+        .querySelectorAll("[id^='order-'],[id^='family-'],[id^='genus-']")
+        .forEach((row) => {
+          row.classList.add("hidden");
+        });
+      updateCollapseAllVisibility();
+    }
+
+    function updateCollapseAllVisibility() {
+      // Show collapse button only if at least one expandable row is open
+      const anyOpen = Array.from(
+        document.querySelectorAll(
+          "[id^='order-'],[id^='family-'],[id^='genus-']"
+        )
+      ).some((row) => !row.classList.contains("hidden"));
+      if (collapseAllBtn) {
+        collapseAllBtn.style.display = anyOpen ? "" : "none";
+      }
+    }
+
+    collapseAllBtn?.addEventListener("click", setAllCollapsed);
+
+    // Initial state: hide collapse button
+    updateCollapseAllVisibility();
+  });
+</script>

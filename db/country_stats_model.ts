@@ -3,7 +3,7 @@ interface CountryData {
    * ISO 3166-1 alpha-2 country code.
    * Example: "US" for United States, "FR" for France.
    */
-  code: string;
+  name: string;
   totalOrders: number;
   totalFamilies: number;
   totalGenera: number;

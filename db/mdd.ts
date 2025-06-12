@@ -24,6 +24,11 @@ function filterSpeciesId(data: SpeciesData[]): number[] {
   return data.map((species) => species.mddId);
 }
 
+function getSpeciesDataByIds(ids: number[]): SpeciesData[] {
+  const allSpeciesData = getSpeciesData();
+  return allSpeciesData.filter((species) => ids.includes(species.mddId));
+}
+
 // Parse the MDD json file and return the taxonomy data
 function getTaxonomyData(data: SpeciesData[], speciesId: number): SpeciesData {
   // Find the taxonomy data based on the speciesID
@@ -35,6 +40,7 @@ function getTaxonomyData(data: SpeciesData[], speciesId: number): SpeciesData {
 export {
   getSpeciesData,
   getTaxonomyData,
+  getSpeciesDataByIds,
   filterSpeciesId,
   getMetadata,
   parseMDDJson,
