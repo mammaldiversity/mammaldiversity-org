@@ -146,7 +146,9 @@ const cardTextClasses = cntl`
           document.getElementById("stats-map")
         );
 
-        // Add click event to redirect to /country/[code]
+        // This click even allows users to navigate to the country page
+        // Astro generate the page with the country code in the url
+        // e.g. /country/US
         google.visualization.events.addListener(
           chart,
           "regionClick",
