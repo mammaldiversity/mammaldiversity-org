@@ -1,5 +1,8 @@
 ---
-import { splitCountryDistribution, countryListToJson } from "../../scripts/map";
+import {
+  splitCountryDistribution,
+  countryListToJson,
+} from "../../scripts/species_map";
 import cntl from "cntl";
 
 const { countries, extendClass } = Astro.props;
@@ -84,7 +87,7 @@ const emptyTextClasses = cntl`
 <script>
   // Declare google as a global variable
   declare const google: any;
-  import { jsonToCountryList } from "../../scripts/map";
+  import { jsonToCountryList } from "../../scripts/species_map";
 
   class DistributionMap extends HTMLElement {
     lastWidth: number = 0;
