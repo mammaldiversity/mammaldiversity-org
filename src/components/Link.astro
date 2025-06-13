@@ -21,7 +21,7 @@ const linkClasses = cntl`
   underline
   text-spectra-700
   dark:text-spectra-300
-  break-all
+  ${label ? "break-word" : "break-all"}
   overflow-clip
   text-ellipsis
   ${extendClass}

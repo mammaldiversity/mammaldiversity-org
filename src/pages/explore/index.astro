@@ -1,260 +1,170 @@
 ---
+import Image from "astro/components/Image.astro";
+import ActionButton from "../../components/buttons/ActionButton.astro";
+import Link from "../../components/Link.astro";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
-import { getSpeciesData } from "../../../db/mdd";
 import Page from "../../layouts/Page.astro";
-import PageDivider from "../../components/PageDivider.astro";
-import { createSynonymName } from "../../scripts/taxon";
-import Link from "../../components/Link.astro";
 import PageHeader from "../../layouts/PageHeader.astro";
+import listImg from "../../assets/images/explore-cards/list.jpg";
+import tableImg from "../../assets/images/explore-cards/table.jpg";
+import { getCountryDiversityJson } from "../../scripts/diversity_map";
+import cntl from "cntl";
 
-const taxa = getSpeciesData();
+const countryDiversityStringify = getCountryDiversityJson();
 
-interface Taxon {
-  id: number;
-  family: string;
-  genus: string;
-  specificEpithet: string;
-  authorityYear: string;
-  commonName: string;
-  synonyms: string[];
-}
+const cardClasses = cntl`
+  card
+  card-bordered
+  w-full
+  border-2
+  border-spectra-200
+  dark:border-spectra-700
+`;
 
-// We create a map with order as key and an array of taxa as value
-const taxonByOrder: Record<string, Taxon[]> = {};
-
-function getAuthority(author: string, year: number, isParentheses: boolean) {
-  return isParentheses ? `(${author}, ${year})` : `${author}, ${year}`;
-}
-
-if (taxa.length === 0) {
-  console.error("No taxa data available.");
-} else {
-  taxa.forEach((taxon) => {
-    const taxonOrder = taxon.speciesData.taxonOrder ?? "Unknown";
-
-    if (!taxonByOrder[taxonOrder]) {
-      taxonByOrder[taxonOrder] = [];
-    }
-    const authority = getAuthority(
-      taxon.speciesData.authoritySpeciesAuthor ?? "Unknown",
-      taxon.speciesData.authoritySpeciesYear ?? 0,
-      taxon.speciesData.authorityParentheses === 1
-    );
-
-    const synonymNames: string[] = taxon.synonyms.map((synonym) => {
-      return createSynonymName(
-        synonym.rootName,
-        synonym.species,
-        synonym.originalCombination
-      );
-    });
-
-    taxonByOrder[taxonOrder].push({
-      id: taxon.speciesData.id,
-      family: taxon.speciesData.family ?? "Unknown",
-      genus: taxon.speciesData.genus ?? "Unknown",
-      specificEpithet: taxon.speciesData.specificEpithet ?? "unknown",
-      authorityYear: authority,
-      commonName: taxon.speciesData.mainCommonName ?? "Unknown",
-      synonyms: synonymNames,
-    });
-  });
-}
+const cardTextClasses = cntl`
+  text-md
+`;
 ---
 
 <Page title="Explore Database">
   <MainPage>
     <PageHeader>
-      <Title slot="title">Explore Taxonomy</Title>
+      <Title slot="title">Explore MDD</Title>
       <div slot="description">
         <p class="text-md mb-4">
-          Explore the taxonomy of species listed in the MDD. The list is grouped
-          by taxonomic order and is sorted according to their phylogenetic
-          hierarchy, following the Checklist of the Mammals of the World (2020).
-        </p>
-        <p class="text-sm mt-2">
-          Note: The original explore table is currently under development for
-          this website. In the meantime, you can access the table at the
-          <Link
-            url="http://www.classic.mammaldiversity.org/taxa.html"
-            label="classic version of MDD"
-          />.
+          Discover the Mammal Diversity Database (MDD) through multiple
+          interactive tools. Explore comprehensive taxonomic lists, detailed
+          tables, and country-level diversity data. Use this page to navigate
+          the rich taxonomy and species information curated by the MDD team.
         </p>
       </div>
     </PageHeader>
-
-    <div class="mb-2 mt-8">
-      <label
-        class="input input-bordered flex items-center gap-2 w-full max-w-md"
+    <div class="lg:max-w-full mx-auto">
+      <div
+        class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center py-2 px-4 gap-4"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-          class="h-4 w-4 opacity-70"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-            clip-rule="evenodd"></path>
-        </svg>
-        <input
-          id="search-input"
-          type="text"
-          class="grow"
-          placeholder="Filter by a family, species, or common name"
-        />
-        <button
-          id="clear-search"
-          class="btn btn-sm btn-circle btn-ghost hidden"
-          aria-label="Clear search"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="h-4 w-4"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </label>
-    </div><PageDivider />
-    <div id="info" class="text-spectra-800 dark:text-spectra-200 mb-4">
-      <p class="font-semibold text-sm">Info:</p>
-      <p class="text-sm">
-        Click on an order to reveal the species list within it. To filter the
-        list, use the search bar above. Query matching is case-insensitive and
-        will match any part of relevant text. For more advanced search, use the
-        <Link url="/search" openInTab={false} label="search page" />.
-      </p>
-    </div>
-    <p id="no-results" class="hidden text-center text-lg font-medium my-4">
-      No results found.
-    </p>
-
-    {
-      Object.entries(taxonByOrder).map(([order, taxa]) => (
-        <div id="taxon-list">
-          <div
-            tabindex="0"
-            class="collapse collapse-arrow border-base-300 bg-base-200 border my-2"
-          >
-            <input type="checkbox" />
-            <div class="collapse-title text-xl font-medium">{order}</div>
-            <div class="collapse-content">
-              {taxa.map((taxon) => (
-                <a href={`/taxon/${taxon.id}`}>
-                  <div
-                    id="taxon-container"
-                    class="mb-2 bg-spectra-100 dark:bg-spectra-800 p-2 rounded-lg"
-                  >
-                    <div id="taxa">
-                      <p class="text-lg">
-                        <span class="italic">
-                          {taxon.genus} {taxon.specificEpithet}
-                        </span>{" "}
-                        {taxon.authorityYear}
-                      </p>
-                      <p class="text-sm">
-                        MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
-                        {taxon.commonName}
-                      </p>
-                    </div>
-                    {taxon.synonyms.length > 0 && (
-                      <>
-                        <p class="text-sm mt-2">Synonyms:</p>
-                        <p class="text-sm italic">
-                          {taxon.synonyms.join(" · ")}
-                        </p>
-                      </>
-                    )}
-                  </div>
-                </a>
-              ))}
-            </div>
+        <div class={cardClasses}>
+          <figure>
+            <Image
+              src={listImg}
+              alt="Taxon List"
+              width={600}
+              height={400}
+              class="w-full h-auto object-cover"
+            />
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title">Taxon List</h2>
+            <p class={cardTextClasses}>
+              Explore the taxonomy of species listed in the MDD, grouped by
+              taxonomic order and sorted according to their phylogenetic
+              hierarchy.
+            </p>
+            <ActionButton label="Explore List" uri="/explore/taxon-list" />
           </div>
         </div>
-      ))
-    }
+        <div class={cardClasses}>
+          <figure>
+            <Image
+              src={tableImg}
+              alt="Taxonomy Table"
+              width={600}
+              height={400}
+              class="w-full h-auto object-cover"
+            />
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title">Taxonomy Table</h2>
+            <p class={cardTextClasses}>
+              Explore current mammalian taxonomy in an expandable table format,
+              including counts of orders, families, genera, and species. This
+              table is similar to the <Link
+                url="http://www.classic.mammaldiversity.org/taxa.html"
+                label="higher taxonomy table"
+              /> in the MDD v1.
+            </p>
+            <ActionButton label="Explore Table" uri="/explore/taxonomy-table" />
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 text-center">
+        <div
+          class="max-w-4xl mx-auto border-2 border-spectra-200 dark:border-spectra-700 p-8 rounded-2xl"
+        >
+          <h2 class="text-3xl font-semibold mb-4">
+            Mammal Diversity by Country and Region
+          </h2>
+          <p class="text-sm mb-4 max-w-4xl mx-auto">
+            The interactive map below offers an overview of mammal diversity by
+            country. Hover over a country to view its name and species count.
+            Click on a country to see its species list, or use the "Explore by
+            Country" button for more detailed country-level mammalian diversity.
+          </p>
+          <div class="mb-4">
+            <diversity-map data-stats={countryDiversityStringify}>
+              <div id="stats-map"></div>
+            </diversity-map>
+          </div>
+          <ActionButton label="Explore by Country" uri="/country" />
+        </div>
+      </div>
+    </div>
   </MainPage>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const searchInput = document.getElementById(
-        "search-input"
-      ) as HTMLInputElement;
-      const resetBtn = document.getElementById(
-        "clear-search"
-      ) as HTMLButtonElement;
-      const noResults = document.getElementById("no-results") as HTMLElement;
-      const taxonList = document.querySelectorAll<HTMLElement>("#taxon-list");
-
-      function searchQuery() {
-        const query = searchInput.value.trim().toLowerCase();
-        let hasAnyMatch = false;
-
-        taxonList.forEach((list: HTMLElement) => {
-          const taxa = list.querySelectorAll<HTMLElement>("#taxon-container");
-          let listHasMatch = false;
-
-          taxa.forEach((taxon: HTMLElement) => {
-            const taxonNames = taxon.querySelector<HTMLElement>("#taxa");
-            const match = !!(
-              taxonNames &&
-              taxonNames.textContent &&
-              taxonNames.textContent.toLowerCase().includes(query)
-            );
-            taxon.classList.toggle("hidden", !match);
-            listHasMatch = listHasMatch || match;
-          });
-          list.classList.toggle("hidden", !listHasMatch);
-          hasAnyMatch = hasAnyMatch || listHasMatch;
-        });
-
-        if (noResults) {
-          noResults.classList.toggle("hidden", hasAnyMatch);
-        }
-        if (resetBtn) {
-          resetBtn.classList.toggle("hidden", query === "");
-        }
-      }
-
-      let debounceTimeout: number;
-      function debounceSearchQuery() {
-        clearTimeout(debounceTimeout);
-        debounceTimeout = window.setTimeout(searchQuery, 300);
-      }
-
-      searchInput.addEventListener("input", debounceSearchQuery);
-
-      function resetSearch() {
-        searchInput.value = "";
-        taxonList.forEach((list: HTMLElement) => {
-          list.classList.remove("hidden");
-          list
-            .querySelectorAll<HTMLElement>("#taxon-container")
-            .forEach((taxon: HTMLElement) => {
-              taxon.classList.remove("hidden");
-            });
-        });
-        if (noResults) {
-          noResults.classList.add("hidden");
-        }
-        if (resetBtn) {
-          resetBtn.classList.add("hidden");
-        }
-      }
-
-      if (resetBtn) {
-        resetBtn.addEventListener("click", resetSearch);
-      }
-    });
-  </script>
 </Page>
+
+<script
+  is:inline
+  type="text/javascript"
+  src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+  import { jsonToCountryDiversityMap } from "../../scripts/diversity_map";
+  declare const google: any;
+
+  class DistributionMap extends HTMLElement {
+    connectedCallback() {
+      const countryDiversity = this.dataset.stats;
+      const countryStats = jsonToCountryDiversityMap(countryDiversity ?? "");
+
+      google.charts.load("current", {
+        packages: ["geochart"],
+      });
+      google.charts.setOnLoadCallback(drawRegionsMap);
+
+      async function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable([
+          ["Country", "Species count"],
+          ...Object.entries(countryStats).map(([country, count]) => [
+            country,
+            count,
+          ]),
+        ]);
+
+        var options = {
+          colorAxis: { colors: ["#FFEB00", "#117554"] },
+        };
+
+        var chart = new google.visualization.GeoChart(
+          document.getElementById("stats-map")
+        );
+
+        // Add click event to redirect to /country/[code]
+        google.visualization.events.addListener(
+          chart,
+          "regionClick",
+          function (e: any) {
+            if (e.region) {
+              window.location.href = `/country/${e.region}`;
+            }
+          }
+        );
+
+        chart.draw(data, options);
+      }
+    }
+  }
+
+  if (!customElements.get("diversity-map")) {
+    customElements.define("diversity-map", DistributionMap);
+  }
+</script>

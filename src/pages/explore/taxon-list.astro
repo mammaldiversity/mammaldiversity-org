@@ -1,0 +1,275 @@
+---
+/**
+ * @file Taxon List Page (taxon-list.astro)
+ *
+ * This page displays a list of mammal taxa grouped by taxonomic order,
+ * allowing users to explore species taxonomy from the Mammal Diversity Database (MDD).
+ *
+ * Features:
+ * - Fetches species data from the database and organizes it by order.
+ * - Displays each order as a collapsible section containing its species.
+ * - Shows genus, species, authority, family, common name, and synonyms for each taxon.
+ * - Includes a search bar to filter taxa by family, species, or common name.
+ * - Provides user guidance and links to the classic MDD table and advanced search.
+ *
+ * Components and Layouts Used:
+ * - Title, MainPage, Page, PageDivider, Link, PageHeader
+ *
+ * Scripts:
+ * - Uses a client-side script for filtering taxa based on user input.
+ *
+ * Data Structures:
+ * - Taxon interface defines the structure for each taxon entry.
+ * - taxonByOrder: Record<string, Taxon[]> groups taxa by their order.
+ */
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import { getSpeciesData } from "../../../db/mdd";
+import Page from "../../layouts/Page.astro";
+import PageDivider from "../../components/PageDivider.astro";
+import { createSynonymName } from "../../scripts/taxon";
+import Link from "../../components/Link.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
+
+const taxa = getSpeciesData();
+
+interface Taxon {
+  id: number;
+  family: string;
+  genus: string;
+  specificEpithet: string;
+  authorityYear: string;
+  commonName: string;
+  synonyms: string[];
+}
+
+// We create a map with order as key and an array of taxa as value
+const taxonByOrder: Record<string, Taxon[]> = {};
+
+function getAuthority(author: string, year: number, isParentheses: boolean) {
+  return isParentheses ? `(${author}, ${year})` : `${author}, ${year}`;
+}
+
+if (taxa.length === 0) {
+  console.error("No taxa data available.");
+} else {
+  taxa.forEach((taxon) => {
+    const taxonOrder = taxon.speciesData.taxonOrder ?? "Unknown";
+
+    if (!taxonByOrder[taxonOrder]) {
+      taxonByOrder[taxonOrder] = [];
+    }
+    const authority = getAuthority(
+      taxon.speciesData.authoritySpeciesAuthor ?? "Unknown",
+      taxon.speciesData.authoritySpeciesYear ?? 0,
+      taxon.speciesData.authorityParentheses === 1
+    );
+
+    const synonymNames: string[] = taxon.synonyms.map((synonym) => {
+      return createSynonymName(
+        synonym.rootName,
+        synonym.species,
+        synonym.originalCombination
+      );
+    });
+
+    taxonByOrder[taxonOrder].push({
+      id: taxon.speciesData.id,
+      family: taxon.speciesData.family ?? "Unknown",
+      genus: taxon.speciesData.genus ?? "Unknown",
+      specificEpithet: taxon.speciesData.specificEpithet ?? "unknown",
+      authorityYear: authority,
+      commonName: taxon.speciesData.mainCommonName ?? "Unknown",
+      synonyms: synonymNames,
+    });
+  });
+}
+---
+
+<Page title="Explore Database">
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">Explore Taxonomy</Title>
+      <div slot="description">
+        <p class="text-md mb-4">
+          Explore the taxonomy of species listed in the MDD. The list is grouped
+          by taxonomic order and is sorted according to their phylogenetic
+          hierarchy, following the Checklist of the Mammals of the World (2020).
+        </p>
+      </div>
+    </PageHeader>
+
+    <div class="mb-2 mt-8">
+      <label
+        class="input input-bordered flex items-center gap-2 w-full max-w-md"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="h-4 w-4 opacity-70"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+            clip-rule="evenodd"></path>
+        </svg>
+        <input
+          id="search-input"
+          type="text"
+          class="grow"
+          placeholder="Filter by a family, species, or common name"
+        />
+        <button
+          id="clear-search"
+          class="btn btn-sm btn-circle btn-ghost hidden"
+          aria-label="Clear search"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="h-4 w-4"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </label>
+    </div><PageDivider />
+    <div id="info" class="text-spectra-800 dark:text-spectra-200 mb-4">
+      <p class="font-semibold text-sm">Info:</p>
+      <p class="text-sm">
+        Click on an order to reveal the species list within it. To filter the
+        list, use the search bar above. Query matching is case-insensitive and
+        will match any part of relevant text. For more advanced search, use the
+        <Link url="/search" openInTab={false} label="search page" />.
+      </p>
+    </div>
+    <p id="no-results" class="hidden text-center text-lg font-medium my-4">
+      No results found.
+    </p>
+
+    {
+      Object.entries(taxonByOrder).map(([order, taxa]) => (
+        <div id="taxon-list">
+          <div
+            tabindex="0"
+            class="collapse collapse-arrow border-base-300 bg-base-200 border my-2"
+          >
+            <input type="checkbox" />
+            <div class="collapse-title text-xl font-medium">{order}</div>
+            <div class="collapse-content">
+              {taxa.map((taxon) => (
+                <a href={`/taxon/${taxon.id}`}>
+                  <div
+                    id="taxon-container"
+                    class="mb-2 bg-spectra-100 dark:bg-spectra-800 p-2 rounded-lg"
+                  >
+                    <div id="taxa">
+                      <p class="text-lg">
+                        <span class="italic">
+                          {taxon.genus} {taxon.specificEpithet}
+                        </span>{" "}
+                        {taxon.authorityYear}
+                      </p>
+                      <p class="text-sm">
+                        MDD ID {taxon.id} &middot; {taxon.family} &middot;{" "}
+                        {taxon.commonName}
+                      </p>
+                    </div>
+                    {taxon.synonyms.length > 0 && (
+                      <>
+                        <p class="text-sm mt-2">Synonyms:</p>
+                        <p class="text-sm italic">
+                          {taxon.synonyms.join(" · ")}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </MainPage>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById(
+        "search-input"
+      ) as HTMLInputElement;
+      const resetBtn = document.getElementById(
+        "clear-search"
+      ) as HTMLButtonElement;
+      const noResults = document.getElementById("no-results") as HTMLElement;
+      const taxonList = document.querySelectorAll<HTMLElement>("#taxon-list");
+
+      function searchQuery() {
+        const query = searchInput.value.trim().toLowerCase();
+        let hasAnyMatch = false;
+
+        taxonList.forEach((list: HTMLElement) => {
+          const taxa = list.querySelectorAll<HTMLElement>("#taxon-container");
+          let listHasMatch = false;
+
+          taxa.forEach((taxon: HTMLElement) => {
+            const taxonNames = taxon.querySelector<HTMLElement>("#taxa");
+            const match = !!(
+              taxonNames &&
+              taxonNames.textContent &&
+              taxonNames.textContent.toLowerCase().includes(query)
+            );
+            taxon.classList.toggle("hidden", !match);
+            listHasMatch = listHasMatch || match;
+          });
+          list.classList.toggle("hidden", !listHasMatch);
+          hasAnyMatch = hasAnyMatch || listHasMatch;
+        });
+
+        if (noResults) {
+          noResults.classList.toggle("hidden", hasAnyMatch);
+        }
+        if (resetBtn) {
+          resetBtn.classList.toggle("hidden", query === "");
+        }
+      }
+
+      let debounceTimeout: number;
+      function debounceSearchQuery() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = window.setTimeout(searchQuery, 300);
+      }
+
+      searchInput.addEventListener("input", debounceSearchQuery);
+
+      function resetSearch() {
+        searchInput.value = "";
+        taxonList.forEach((list: HTMLElement) => {
+          list.classList.remove("hidden");
+          list
+            .querySelectorAll<HTMLElement>("#taxon-container")
+            .forEach((taxon: HTMLElement) => {
+              taxon.classList.remove("hidden");
+            });
+        });
+        if (noResults) {
+          noResults.classList.add("hidden");
+        }
+        if (resetBtn) {
+          resetBtn.classList.add("hidden");
+        }
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener("click", resetSearch);
+      }
+    });
+  </script>
+</Page>
