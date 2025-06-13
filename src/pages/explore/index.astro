@@ -33,17 +33,15 @@ const cardTextClasses = cntl`
       <Title slot="title">Explore MDD</Title>
       <div slot="description">
         <p class="text-md mb-4">
-          Discover the Mammal Diversity Database (MDD) through multiple
-          interactive tools. Explore comprehensive taxonomic lists, detailed
-          tables, and country-level diversity data. Use this page to navigate
-          the rich taxonomy and species information curated by the MDD team.
+          Explore the Mammal Diversity Database (MDD) through interactive tools
+          and visualizations. View the data as a list ordered by taxonomic
+          hierarchy or as a table, and discover mammalian diversity by country
+          and region.
         </p>
       </div>
     </PageHeader>
     <div class="lg:max-w-full mx-auto">
-      <div
-        class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center py-2 px-4 gap-4"
-      >
+      <div class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4">
         <div class={cardClasses}>
           <figure>
             <Image
@@ -97,9 +95,9 @@ const cardTextClasses = cntl`
           </h2>
           <p class="text-sm mb-4 max-w-4xl mx-auto">
             The interactive map below offers an overview of mammal diversity by
-            country. Hover over a country to view its name and species count.
-            Click on a country to see its species list, or use the "Explore by
-            Country" button for more detailed country-level mammalian diversity.
+            country. Hover over a country to view the species count. Click on a
+            country to see its species list, or use the "Explore by Country"
+            button for more detailed country-level mammalian diversity.
           </p>
           <div class="mb-4">
             <diversity-map data-stats={countryDiversityStringify}>
@@ -148,7 +146,9 @@ const cardTextClasses = cntl`
           document.getElementById("stats-map")
         );
 
-        // Add click event to redirect to /country/[code]
+        // This click even allows users to navigate to the country page
+        // Astro generate the page with the country code in the url
+        // e.g. /country/US
         google.visualization.events.addListener(
           chart,
           "regionClick",
