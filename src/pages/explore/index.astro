@@ -9,8 +9,22 @@ import PageHeader from "../../layouts/PageHeader.astro";
 import listImg from "../../assets/images/explore-cards/list.jpg";
 import tableImg from "../../assets/images/explore-cards/table.jpg";
 import { getCountryDiversityJson } from "../../scripts/diversity_map";
+import cntl from "cntl";
 
 const countryDiversityStringify = getCountryDiversityJson();
+
+const cardClasses = cntl`
+  card
+  card-bordered
+  w-full
+  border-2
+  border-spectra-200
+  dark:border-spectra-700
+`;
+
+const cardTextClasses = cntl`
+  text-md
+`;
 ---
 
 <Page title="Explore Database">
@@ -30,7 +44,7 @@ const countryDiversityStringify = getCountryDiversityJson();
       <div
         class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center py-2 px-4 gap-4"
       >
-        <div class="card card-bordered w-full">
+        <div class={cardClasses}>
           <figure>
             <Image
               src={listImg}
@@ -42,7 +56,7 @@ const countryDiversityStringify = getCountryDiversityJson();
           </figure>
           <div class="card-body">
             <h2 class="card-title">Taxon List</h2>
-            <p>
+            <p class={cardTextClasses}>
               Explore the taxonomy of species listed in the MDD, grouped by
               taxonomic order and sorted according to their phylogenetic
               hierarchy.
@@ -50,7 +64,7 @@ const countryDiversityStringify = getCountryDiversityJson();
             <ActionButton label="Explore List" uri="/explore/taxon-list" />
           </div>
         </div>
-        <div class="card card-bordered w-full">
+        <div class={cardClasses}>
           <figure>
             <Image
               src={tableImg}
@@ -62,7 +76,7 @@ const countryDiversityStringify = getCountryDiversityJson();
           </figure>
           <div class="card-body">
             <h2 class="card-title">Taxonomy Table</h2>
-            <p>
+            <p class={cardTextClasses}>
               Explore current mammalian taxonomy in an expandable table format,
               including counts of orders, families, genera, and species. This
               table is similar to the <Link
@@ -74,32 +88,43 @@ const countryDiversityStringify = getCountryDiversityJson();
           </div>
         </div>
       </div>
-      <div class="mt-8 text-center">
-        <h2 class="text-3xl font-semibold mb-4">
-          Mammal Diversity by Country and Region
-        </h2>
-        <distribution-map data-countries={countryDiversityStringify}>
-          <div id="diversity-map"></div>
-        </distribution-map>
-        <ActionButton label="Explore by Country" uri="/country" />
+      <div class="mt-4 text-center">
+        <div
+          class="max-w-4xl mx-auto border-2 border-spectra-200 dark:border-spectra-700 p-8 rounded-2xl"
+        >
+          <h2 class="text-3xl font-semibold mb-4">
+            Mammal Diversity by Country and Region
+          </h2>
+          <p class="text-sm mb-4 max-w-4xl mx-auto">
+            The interactive map below offers an overview of mammal diversity by
+            country. Hover over a country to view its name and species count.
+            Click on a country to see its species list, or use the "Explore by
+            Country" button for more detailed country-level mammalian diversity.
+          </p>
+          <div class="mb-4">
+            <diversity-map data-stats={countryDiversityStringify}>
+              <div id="stats-map"></div>
+            </diversity-map>
+          </div>
+          <ActionButton label="Explore by Country" uri="/country" />
+        </div>
       </div>
     </div>
   </MainPage>
 </Page>
 
-<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script
+  is:inline
+  type="text/javascript"
+  src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
-  // Declare google as a global variable
+  import { jsonToCountryDiversityMap } from "../../scripts/diversity_map";
   declare const google: any;
-  import { jsonToCountryDiversityMap } from "../../scripts/diversity_map.ts";
 
   class DistributionMap extends HTMLElement {
-    lastWidth: number = 0;
-
     connectedCallback() {
-      // Read the message from the data attribute.
-      const countryDiversity = this.dataset.countries;
-      const countries = jsonToCountryDiversityMap(countryDiversity ?? "");
+      const countryDiversity = this.dataset.stats;
+      const countryStats = jsonToCountryDiversityMap(countryDiversity ?? "");
 
       google.charts.load("current", {
         packages: ["geochart"],
@@ -107,33 +132,39 @@ const countryDiversityStringify = getCountryDiversityJson();
       google.charts.setOnLoadCallback(drawRegionsMap);
 
       async function drawRegionsMap() {
-        var data = await google.visualization.arrayToDataTable([
-          /**
-           * Represents the distribution data for countries.
-           * The first element is the country name.
-           * The second element indicates predicted: 1 for yes, 0 for no.
-           */
-          ["Country", "Species Count"],
-          ...Object.entries(countries).map(([country, count]) => [
+        var data = google.visualization.arrayToDataTable([
+          ["Country", "Species count"],
+          ...Object.entries(countryStats).map(([country, count]) => [
             country,
             count,
           ]),
         ]);
 
         var options = {
-          displayMode: "Regions",
           colorAxis: { colors: ["#FFEB00", "#117554"] },
-          legend: "none",
         };
 
         var chart = new google.visualization.GeoChart(
-          document.getElementById("diversity-map")
+          document.getElementById("stats-map")
         );
 
-        await chart.draw(data, options);
+        // Add click event to redirect to /country/[code]
+        google.visualization.events.addListener(
+          chart,
+          "regionClick",
+          function (e: any) {
+            if (e.region) {
+              window.location.href = `/country/${e.region}`;
+            }
+          }
+        );
+
+        chart.draw(data, options);
       }
     }
   }
 
-  customElements.define("distribution-map", DistributionMap);
+  if (!customElements.get("diversity-map")) {
+    customElements.define("diversity-map", DistributionMap);
+  }
 </script>
