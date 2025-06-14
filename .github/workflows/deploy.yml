@@ -39,9 +39,7 @@ jobs:
           mdd json -i MDD_v2.1_6801species.csv \
           -s Species_Syn_v2.1.csv \
           -o . --prefix mdd \
-          --plain-text \
-          --mdd="v2.1" \
-          --date "2025-4-6"
+          --plain-text
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         # with:
