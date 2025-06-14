@@ -81,11 +81,30 @@ Then, go to the GitHub repository and create a pull request. Make sure to includ
 
 After you have created a pull request, the MDD Web Development team will review your changes. If everything looks good, your changes will be merged into the main branch.
 
-## Deep dive into the codebase
+## How-to guides
 
-List of country codes and names used in the Mammal Diversity Database (MDD) web development. The code is implemented in Rust and made available to the TypeScript as json files in: `db/data/country_region_code.json`. The code implementation is in the [mdd_api](https://github.com/mammaldiversity/mdd_app/blob/main/mdd_api/src/helper/country_code.rs). This approach allows us to maintain a single source for the web, API, CLI, and GUI applications.
+### Release a new version of MDD
+
+The data release process is managed by a GitHub Actions workflow defined in [.github/workflows/deploy.yml](https://github.com/mammaldiversity/mammaldiversity-org/blob/main/.github/workflows/deploy.yml).
+
+To publish a new data release, simply re-run the most recent successful deployment workflow:
+
+1. Navigate to the **Actions** tab in the GitHub repository.
+2. Select the **Deploy to GitHub Pages** workflow.
+3. Click on the latest successful run.
+4. Click the **Re-run all jobs** button to trigger the workflow.
+
+The workflow will automatically fetch the latest data from the [assets directory](https://github.com/mammaldiversity/mammaldiversity.github.io/tree/master/assets/data) in the classic repository. This process also runs automatically for any new commits or approved pull requests merged into the `main` branch.
+
+## Deep dive into the codebase and MDD software architecture
+
+Coming soon!
 
 ### ISO 3166-1 alpha-2 Country Codes
+
+The code is implemented in Rust and made available to the TypeScript as json files in: `db/data/country_region_code.json`. The code implementation is in the [mdd_api](https://github.com/mammaldiversity/mdd_app/blob/main/mdd_api/src/helper/country_code.rs). This approach allows us to maintain a single source for the web, API, CLI, and GUI applications.
+
+>Note: This list is temporary. We will eventually update it as the country distribution data is standardized in the MDD.
 
 | Code | Country Name |
 |------|-------------------------------|
