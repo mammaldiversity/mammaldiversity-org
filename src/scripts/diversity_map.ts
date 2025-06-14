@@ -1,4 +1,4 @@
-import { getCountryData, getCountryRegionName } from "../../db/country_stats";
+import { getCountryData } from "../../db/country_stats";
 
 function buildCountryDiversityStats(): Record<string, number> {
   const data = getCountryData();
