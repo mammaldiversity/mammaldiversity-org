@@ -18,7 +18,8 @@ import { getTaxonDataByMddIds } from "../../scripts/taxon_table";
 export const getStaticPaths = async () => {
   const countryStats: Record<string, CountryData> = getCountryData();
 
-  // Use the keys of countryStats as the country codes for the paths
+  // We use the code as the URL parameter for consistency
+  // and to simplify the URL structure.
   return Object.keys(countryStats).map((code) => ({
     params: { code },
   }));
@@ -29,7 +30,6 @@ const countryData: CountryData = getDataByCountryCode(code);
 
 const speciesList = parseCountrySpeciesList(countryData);
 
-// Convert the keys of speciesList to an array of numbers
 const speciesIds = Object.keys(speciesList).map(Number);
 
 const speciesData = getTaxonDataByMddIds(speciesIds);
