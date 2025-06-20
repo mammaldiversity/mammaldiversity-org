@@ -1,5 +1,5 @@
 ---
-import { isItalic } from "../../scripts/utils";
+import { isItalicText } from "../../scripts/taxon";
 
 // Text span with _italic_ formatting awareness
 
@@ -8,12 +8,25 @@ interface Props {
 }
 
 const { text } = Astro.props as Props;
+
+const italicizedText = isItalicText(text);
 ---
 
 {
-  text
-    .split(/(_[^_]*?_)/g)
-    .map((part) =>
-      isItalic(part) ? <span class="italic">{part.slice(1, -1)}</span> : part
-    )
+  italicizedText ? (
+    // If text contains italicized parts,
+    // _G. epithet_ or _word_ or _Word_, We need to split it
+    // and wrap the italicized parts in <i> tags.
+    <span>
+      {text
+        .split(/(_[^_]+_)/g)
+        .map((part) =>
+          /^_.*_$/.test(part) ? <i>{part.slice(1, -1)}</i> : part
+        )}
+    </span>
+  ) : (
+    // If text does not contain italicized parts,
+    // just return the text as is.
+    <span>{text}</span>
+  )
 }
