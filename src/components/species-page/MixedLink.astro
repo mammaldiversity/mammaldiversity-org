@@ -14,10 +14,7 @@ const { text, isItalic } = Astro.props as Props;
   text.split(/(http\S+)/g).map((part) =>
     part.startsWith("http") ? (
       <>
-        <Link
-          url={part.replace(/[.,!?)]*$/, "")}
-          label={part.replace(/[.,!?)]*$/, "")}
-        />
+        <Link url={part.replace(/[.,!?)]*$/, "")} />
         {part.match(/[.,!?)]*$/)}
       </>
     ) : (
