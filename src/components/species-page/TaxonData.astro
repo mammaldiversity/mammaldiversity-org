@@ -53,7 +53,7 @@ const taxonClasses = cntl`
       textData.includes("|") ? (
         textData.split("|").map((link) => <Link url={link} label={link} />)
       ) : (
-        <Link url={textData} label={textData} />
+        <Link url={textData} />
       )
     ) : textData.includes("http") ? (
       <MixedLink text={textData} isItalic={isItalic} />
