@@ -8,6 +8,7 @@ import {
   parseCountrySpeciesList,
 } from "../../../db/country_stats";
 import type { CountryData } from "../../../db/country_stats_model";
+import OneLineNotes from "../../components/OneLineNotes.astro";
 import TaxonTable from "../../components/taxon-table/TaxonTable.astro";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
@@ -33,6 +34,13 @@ const speciesList = parseCountrySpeciesList(countryData);
 const speciesIds = Object.keys(speciesList).map(Number);
 
 const speciesData = getTaxonDataByMddIds(speciesIds);
+
+const baseMsg = `The list excludes widespread and domesticated species.`;
+
+const msg =
+  countryData.totalExtinctSpecies > 0
+    ? `${baseMsg} Extinct species are based on records in the past 500 years.`
+    : baseMsg;
 ---
 
 <Page title=`${countryData.name} Mammal Diversity Statistics`>
@@ -41,12 +49,17 @@ const speciesData = getTaxonDataByMddIds(speciesIds);
       <Title slot="title">{countryData.name}</Title>
       <div slot="description">
         <p>
-          Mammal diversity statistics for {countryData.name}, including counts
-          of orders, families, genera, extant species, and extinct species. This
-          list excludes widespread and domesticated species.
+          The country's mammalian diversity consists of
+          {countryData.totalLivingSpecies} living
+          {
+            countryData.totalExtinctSpecies > 0 && (
+              <>and {countryData.totalExtinctSpecies} extinct</>
+            )
+          } species in {countryData.totalOrders} orders,
+          {countryData.totalFamilies} families, and {countryData.totalGenera} genera.
         </p>
+        <OneLineNotes msg={msg} />
       </div>
-    </PageHeader>
-    <TaxonTable data={speciesData} />
-  </MainPage></Page
->
+    </PageHeader><TaxonTable data={speciesData} /></MainPage
+  >
+</Page>
