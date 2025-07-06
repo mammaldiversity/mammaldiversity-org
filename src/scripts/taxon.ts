@@ -16,6 +16,16 @@ function cleanTaxonData(taxonData: string): string {
   return taxonData;
 }
 
+// We will return true if text contains italic text.
+// Italic text is defined as text that starts and ends with an underscore "_"
+// and may contain a period and a space after the underscore.
+// Examples of italic text:
+// _G. Mus_, _Mus_, _M. Mus_, _G. word_,
+// _G. Word_, _Word_, _G. word_.
+function isItalicText(text: string): boolean {
+  return /_[^_]+_/.test(text);
+}
+
 function createSynonymName(
   rootName: string,
   species: string,
@@ -35,4 +45,9 @@ function createAuthorityCitation(
   return withParentheses ? `(${citation})` : citation;
 }
 
-export { createSynonymName, cleanTaxonData, createAuthorityCitation };
+export {
+  createSynonymName,
+  cleanTaxonData,
+  createAuthorityCitation,
+  isItalicText,
+};

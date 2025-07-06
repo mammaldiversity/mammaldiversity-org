@@ -21,7 +21,9 @@ const meta = getMetadata();
 const currentVersion = meta.version.startsWith("v")
   ? meta.version.slice(1)
   : meta.version;
-const releaseDate = new Date(meta.releaseDate).toLocaleDateString("en-US", {
+
+const verbatimReleaseDate = new Date("2025-06-13"); // Fallback date if releaseDate is not available
+const releaseDate = verbatimReleaseDate.toLocaleDateString("en-US", {
   year: "numeric",
   month: "long",
   day: "numeric",
@@ -263,7 +265,7 @@ const highlightedContainerClasses = cntl`
           <Zenodo
             authors={["Mammal Diversity Database"]}
             year={currentYear}
-            title="Mammal Diversity Database (Version 2.0) [Data set]"
+            title=`Mammal Diversity Database (Version ${currentVersion}) [Data set]`
             doi="https://doi.org/10.5281/zenodo.15007505"
           />
           <p>

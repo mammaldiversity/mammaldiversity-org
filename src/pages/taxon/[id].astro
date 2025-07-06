@@ -62,13 +62,16 @@ const common_name_class = cntl`
 <Page title={`${species} • ${taxon?.mainCommonName}`}>
   <MainPage isIndexed={true}>
     <div class="text-center item-center mt-8 md:mt-16 mb-4">
-      <h1 class="font-serif text-3xl md:text-5xl italic mb-2">
+      <h1
+        class="font-serif text-3xl md:text-5xl italic mb-2"
+        data-pagefind-filter="species"
+      >
         {species}
       </h1>
       <h2 class="text-xl md:text-2xl">
         {taxon?.authorityParentheses === 1 ? `(${authority})` : authority}
       </h2>
-      <h2 class={common_name_class}>
+      <h2 class={common_name_class} data-pagefind-filter="common-name">
         {taxon?.mainCommonName}
       </h2>
     </div>
@@ -104,7 +107,7 @@ const common_name_class = cntl`
                 )
               }
               <tr>
-                <td class="pr-2">Order</td>
+                <td class="pr-2" data-pagefind-filter="order">Order</td>
                 <td class="pl-2">: {taxon?.taxonOrder}</td>
               </tr>
               {
@@ -140,7 +143,7 @@ const common_name_class = cntl`
                 )
               }
               <tr>
-                <td class="pr-2">Family</td>
+                <td class="pr-2" data-pagefind-filter="family">Family</td>
                 <td class="pl-2">: {taxon?.family}</td>
               </tr>
               {
@@ -160,7 +163,7 @@ const common_name_class = cntl`
                 )
               }
               <tr>
-                <td class="pr-2">Genus</td>
+                <td class="pr-2" data-pagefind-filter="genus">Genus</td>
                 <td class="pl-2"
                   >: <span class="italic">{taxon?.genus}</span></td
                 >
