@@ -1,6 +1,8 @@
 # mammaldiversity.org
 
-This project is a complete rewrite of the [Mammal Diversity Database](httpss://www.mammaldiversity.org/) website. The primary goals of this rewrite are to:
+This project is a complete rewrite of the [Mammal Diversity Database](httpss://www.mammaldiversity.org/) website. 
+
+Our primary goals:
 
 - **Improve Performance:** Build a faster, more responsive website using modern web technologies.
 - **Modernize the Interface:** Create a clean, intuitive, and mobile-friendly user interface.
