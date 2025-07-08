@@ -1,6 +1,6 @@
 # mammaldiversity.org
 
-This project is a complete rewrite of the [Mammal Diversity Database](httpss://www.mammaldiversity.org/) website. 
+This project is a complete rewrite of the [Mammal Diversity Database (MDD)](httpss://www.mammaldiversity.org/) website.
 
 Our primary goals:
 
@@ -10,6 +10,8 @@ Our primary goals:
 - **Support for Synonyms:** Accommodate the growing dataset of the Mammal Diversity Database, including over 50,000 synonyms.
 
 The website is built with [Astro](https://astro.build/), a modern web framework for building fast, content-focused websites. It uses [Tailwind CSS](https://tailwindcss.com/) for styling and [React](https://react.dev/) for some interactive components. The search functionality is powered by [Pagefind](https://pagefind.app/), a static site search library. End-to-end testing is done with [Playwright](https://playwright.dev/).
+
+> **Note:** The original version of the MDD website is available at [classic.mammaldiversity.org](http://classic.mammaldiversity.org/).
 
 ## Development
 
