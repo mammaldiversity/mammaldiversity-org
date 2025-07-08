@@ -98,7 +98,73 @@ The workflow will automatically fetch the latest data from the [assets directory
 
 ## Deep dive into the codebase and MDD software architecture
 
-Coming soon!
+### Project Structure
+
+```bash
+.
+├── .github/
+│   └── workflows/
+├── db/
+│   └── data/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── data/
+│   ├── layouts/
+│   ├── pages/
+│   └── scripts/
+├── tests/
+├── .gitignore
+├── astro.config.mjs
+├── CITATION.cff
+├── CNAME
+├── CONTRIBUTING.md
+├── LICENSE
+├── package.json
+├── playwright.config.ts
+├── README.md
+├── tailwind.config.mjs
+├── tsconfig.json
+└── yarn.lock
+```
+
+- **`.github/`**: Contains GitHub Actions workflows for continuous integration and deployment.
+- **`db/`**: Holds the data models, scripts, and raw data files related to the Mammal Diversity Database.
+- **`public/`**: Stores static assets that are copied directly to the build output without processing, such as `favicon.svg` and `CNAME`.
+- **`src/`**: Contains all the source code for the Astro application.
+  - **`assets/`**: For assets that will be processed by Astro, like images and custom fonts.
+  - **`components/`**: Reusable UI components (`.astro`, `.tsx`).
+  - **`data/`**: Data files used within the application.
+  - **`layouts/`**: Defines the UI structure for different types of pages.
+  - **`pages/`**: Represents the routes of the website. Each file becomes a page.
+  - **`scripts/`**: Client-side TypeScript and JavaScript for interactive features.
+- **`tests/`**: End-to-end tests written with Playwright.
+
+### Data Flow
+
+The data for the website is stored in JSON files in the `db/data` directory. These files are read by scripts in the `db` directory, which then provide the data to the Astro components and pages.
+
+1. **Data Source**: The primary data is stored in `db/data/mdd.json`, which contains the main mammal diversity data. Additional data includes country statistics (`db/data/country_stats.json`) and country region codes (`db/data/country_region_code.json`).
+2. **Data Parsing**: The scripts in the `db` directory (e.g., `mdd.ts`, `country_stats.ts`) are responsible for parsing the JSON data and providing it to the application.
+3. **Page Generation**: The Astro pages in `src/pages` import the data from the `db` scripts and use it to generate the static HTML pages.
+4. **Search Indexing**: After the site is built, the `pagefind` script is run to create a search index of the content in the `dist` directory. This allows for fast, client-side search functionality.
+
+### Page Build Process
+
+The website is automatically built and deployed using a GitHub Actions workflow defined in `.github/workflows/deploy.yml`. This process ensures that the latest data is always reflected on the live site.
+
+The build process consists of the following steps:
+
+1. **Checkout Repository**: The workflow begins by checking out the latest version of the repository.
+2. **Setup Environment**: It sets up the necessary environment, including Node.js and Rust.
+3. **Install MDD CLI**: A command-line tool, `mdd_api`, is installed using `cargo`. This tool is used to process the raw MDD data.
+4. **Data Extraction**: The latest Mammal Diversity Database data is downloaded as a ZIP file. The `mdd` CLI is then used to extract the data into the `db/data` directory.
+5. **Build Site**: The `withastro/action` is used to build the Astro site. This action performs the following sub-steps:
+    - Installs Node.js dependencies using `yarn install`.
+    - Runs the `build` script from `package.json`, which executes `astro check && astro build`. This command type-checks the code and generates the static HTML, CSS, and JavaScript files in the `dist/` directory.
+    - Runs the `postbuild` script, which executes `pagefind --site dist` to create a search index for the generated site.
+6. **Deployment**: Once the build is complete, the contents of the `dist/` directory are deployed to GitHub Pages.
 
 ### ISO 3166-1 alpha-2 Country Codes
 
