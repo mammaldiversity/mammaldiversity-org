@@ -62,16 +62,13 @@ const common_name_class = cntl`
 <Page title={`${species} • ${taxon?.mainCommonName}`}>
   <MainPage isIndexed={true}>
     <div class="text-center item-center mt-8 md:mt-16 mb-4">
-      <h1
-        class="font-serif text-3xl md:text-5xl italic mb-2"
-        data-pagefind-filter="species"
-      >
+      <h1 class="font-serif text-3xl md:text-5xl italic mb-2">
         {species}
       </h1>
       <h2 class="text-xl md:text-2xl">
         {taxon?.authorityParentheses === 1 ? `(${authority})` : authority}
       </h2>
-      <h2 class={common_name_class} data-pagefind-filter="common-name">
+      <h2 class={common_name_class}>
         {taxon?.mainCommonName}
       </h2>
     </div>
@@ -226,7 +223,6 @@ const common_name_class = cntl`
         />
         <TaxonData
           label="Country distribution"
-          data-pagefind-filter="country-distribution"
           content={taxon?.countryDistribution}
         />
         <TaxonData
