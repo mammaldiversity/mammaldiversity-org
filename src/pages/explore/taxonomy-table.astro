@@ -4,9 +4,9 @@ import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import Page from "../../layouts/Page.astro";
 import PageHeader from "../../layouts/PageHeader.astro";
-import { getTaxonTable } from "../../scripts/taxon_table.ts";
+import { getHierarchicalTaxonData } from "../../scripts/taxon_table.ts";
 
-const taxonTable = getTaxonTable();
+const taxonTable = getHierarchicalTaxonData();
 ---
 
 <Page

@@ -1,15 +1,19 @@
 ---
+import getSpeciesPermalink from "../../scripts/permalink";
+
 interface Props {
   mdd_id: number;
   epithet: string;
 }
 
 const { mdd_id, epithet }: Props = Astro.props;
+
+const speciesPermalink = getSpeciesPermalink(mdd_id);
 ---
 
 <td class="py-2 px-4 border-b text-center">
   <a
-    href={`https://www.mammaldiversity.org/taxon/${mdd_id}`}
+    href={speciesPermalink}
     class="underline text-blue-600 hover:text-blue-800"
     target="_blank"
     rel="noopener noreferrer"
