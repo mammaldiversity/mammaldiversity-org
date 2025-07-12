@@ -1,6 +1,5 @@
 ---
 import cntl from "cntl";
-import { countryListToJson } from "../../scripts/species_map";
 
 interface Props {
   label: string;
@@ -9,8 +8,9 @@ interface Props {
   childCount?: number; // optional, number of children if this is a parent
   lastChild: boolean; // true if this is the last child in the list
   italic?: boolean; // optional, if true, label will be italicized
+  url?: string; // optional, if provided, label will be a link
 }
-const { label, idx, length, lastChild, childCount, italic } = Astro.props;
+const { label, idx, length, lastChild, childCount, italic, url } = Astro.props;
 
 const isOnlyChild = length === 1;
 const isFirstChild = idx === 0;
@@ -30,8 +30,10 @@ const itemClasses = cntl`
   dark:text-slate-100
   rounded-md
   px-2
+  py-1
   relative
   my-1
+  opacity-80
 `;
 ---
 
@@ -50,7 +52,24 @@ const itemClasses = cntl`
           </button>
         )
       }
-      <span class={italic ? "italic" : ""}>{label}</span>
+      <span class={italic ? "italic" : ""}>
+        {
+          url ? (
+            <>
+              <a
+                class="underline"
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {label}
+              </a>
+            </>
+          ) : (
+            label
+          )
+        }
+      </span>
       {
         !lastChild && childCount && (
           <span

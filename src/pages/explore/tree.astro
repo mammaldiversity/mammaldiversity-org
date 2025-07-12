@@ -9,6 +9,8 @@ import {
   type SubclassData,
 } from "../../scripts/higher_taxa";
 
+import getSpeciesPermalink from "../../scripts/permalink";
+
 const taxonData: Record<string, SubclassData> = getHigherTaxonData();
 ---
 
@@ -90,6 +92,7 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
                                       childCount={0}
                                       lastChild={true}
                                       italic={true}
+                                      url={getSpeciesPermalink(species.mdd_id)}
                                     />
                                   )
                                 )}
@@ -109,6 +112,7 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
                                       childCount={0}
                                       lastChild={true}
                                       italic={true}
+                                      url={getSpeciesPermalink(species.mdd_id)}
                                     />
                                   )
                                 )}
