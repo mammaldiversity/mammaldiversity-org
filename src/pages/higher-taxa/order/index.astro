@@ -44,18 +44,25 @@ const theria = Object.values(taxonData).filter(
 
       {
         theria.map((order, idx) => (
-          <TreeTips label={order.order} idx={idx} length={theria.length}>
+          <TreeTips
+            label={order.order}
+            idx={idx}
+            length={theria.length}
+            lastChild={false}
+          >
             {order.family_list.map((family, idx) => (
               <TreeTips
                 label={family.family}
                 idx={idx}
                 length={order.family_list.length}
+                lastChild={false}
               >
                 {family.genera.map((genus, idx) => (
                   <TreeTips
                     label={genus.genus}
                     idx={idx}
                     length={family.genera.length}
+                    lastChild={true}
                   />
                 ))}
               </TreeTips>

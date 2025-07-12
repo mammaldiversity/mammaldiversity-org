@@ -1,10 +1,11 @@
 ---
 interface Props {
   label: string;
-  idx: number;
-  length: number;
+  idx: number; // zero-based index of this item
+  length: number; // total number of items in this list
+  lastChild: boolean; // true if this is the last child in the list
 }
-const { label, idx, length } = Astro.props;
+const { label, idx, length, lastChild } = Astro.props;
 
 const isOnlyChild = length === 1;
 const isFirstChild = idx === 0;
@@ -13,13 +14,29 @@ const isLastChild = idx === length - 1;
 
 <ul class="relative ml-2 pl-2">
   <li class="relative pl-3">
-    <div class="inline-block">{label}</div>
+    <div
+      class="inline-block bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-md px-2 relative my-1"
+    >
+      {
+        !lastChild && (
+          <button
+            id={`toggle-${idx}`}
+            class="bg-transparent"
+            aria-expanded="false"
+            aria-label="Expand"
+          >
+            +
+          </button>
+        )
+      }
+      {label}
+    </div>
 
     <!-- vertical connector line -->
     {
       !isLastChild && (
         <span
-          class="absolute top-3 bottom-[-12px] left-[-10px] w-1 bg-slate-300"
+          class="absolute top-3 bottom-[-12px] left-[-10px] w-px bg-slate-300"
           aria-hidden="true"
         />
       )
@@ -27,7 +44,7 @@ const isLastChild = idx === length - 1;
     {
       (isOnlyChild || isFirstChild) && (
         <span
-          class="absolute top-0 h-[12px] left-[-10px] w-1 bg-slate-300"
+          class="absolute top-0 h-[12px] left-[-10px] w-px bg-slate-300"
           aria-hidden="true"
         />
       )
@@ -35,11 +52,28 @@ const isLastChild = idx === length - 1;
 
     <!-- horizontal connector line -->
     <span
-      class="absolute top-3 left-[-10px] w-[16px] h-1 bg-slate-300"
+      class="absolute top-3 left-[-10px] w-[16px] h-px bg-slate-300"
       aria-hidden="true"></span>
 
-    <ul class="ml-4">
+    <ul id="children" class="ml-4 children" style="display: none;">
       <slot />
     </ul>
   </li>
 </ul>
+
+<script>
+  const buttons = document.querySelectorAll("button[id^='toggle-']");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const li = btn.closest("li");
+      if (!li) return;
+      const children = li.querySelector(".children") as HTMLElement | null;
+      if (!children) return;
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!expanded));
+      btn.textContent = expanded ? "+" : "–";
+      btn.setAttribute("aria-label", expanded ? "Expand" : "Collapse");
+      children.style.display = expanded ? "none" : "block";
+    });
+  });
+</script>
