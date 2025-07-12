@@ -1,0 +1,129 @@
+---
+import cntl from "cntl";
+
+interface Props {
+  label: string;
+  idx: number; // zero-based index of this item
+  length: number; // total number of items in this list
+  childCount?: number; // optional, number of children if this is a parent
+  lastChild: boolean; // true if this is the last child in the list
+  italic?: boolean; // optional, if true, label will be italicized
+  url?: string; // optional, if provided, label will be a link
+}
+const { label, idx, length, lastChild, childCount, italic, url } = Astro.props;
+
+const isOnlyChild = length === 1;
+const isFirstChild = idx === 0;
+const isLastItem = idx === length - 1;
+
+const containerClasses = cntl`
+  relative
+  ml-2
+  pl-2
+`;
+
+const itemClasses = cntl`
+  inline-block
+  bg-spectra-100
+  dark:bg-spectra-800
+  text-slate-900
+  dark:text-slate-100
+  rounded-md
+  px-2
+  py-1
+  relative
+  my-1
+  opacity-80
+`;
+---
+
+<ul class={containerClasses}>
+  <li class="relative pl-3">
+    <div class={itemClasses}>
+      {
+        !lastChild && (
+          <button
+            id={`toggle-${idx}`}
+            class="bg-transparent"
+            aria-expanded="false"
+            aria-label="Expand"
+          >
+            +
+          </button>
+        )
+      }
+      <span class={italic ? "italic" : ""}>
+        {
+          url ? (
+            <>
+              <a
+                class="underline hover:text-spectra-700 dark:hover:text-spectra-200"
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {label}
+              </a>
+            </>
+          ) : (
+            label
+          )
+        }
+      </span>
+      {
+        !lastChild && childCount && (
+          <span
+            class=" text-spicy-mix-700 dark:text-spicy-mix-400 text-spe text-sm"
+            aria-hidden="true"
+          >
+            &middot; {childCount}
+          </span>
+        )
+      }
+    </div>
+
+    <!-- vertical connector line -->
+    {
+      !isLastItem && (
+        <span
+          class="absolute top-3 bottom-[-12px] left-[-10px] w-px bg-slate-300"
+          aria-hidden="true"
+        />
+      )
+    }
+    {
+      (isOnlyChild || isFirstChild) && (
+        <span
+          class="absolute top-0 h-[12px] left-[-10px] w-px bg-slate-300"
+          aria-hidden="true"
+        />
+      )
+    }
+
+    <!-- horizontal connector line -->
+    <span
+      class="absolute top-3 left-[-10px] w-[16px] h-px bg-slate-300"
+      aria-hidden="true"></span>
+
+    <ul id="children" class="ml-4 children" style="display: none;">
+      <slot />
+    </ul>
+  </li>
+</ul>
+
+<script>
+  const buttons = document.querySelectorAll("button[id^='toggle-']");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const li = btn.closest("li");
+      if (!li) return;
+      const children = li.querySelector(".children") as HTMLElement | null;
+      if (!children) return;
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!expanded));
+      btn.textContent = expanded ? "+" : "–";
+      btn.setAttribute("aria-label", expanded ? "Expand" : "Collapse");
+      children.style.display = expanded ? "none" : "block";
+    });
+  });
+</script>
