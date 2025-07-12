@@ -53,8 +53,11 @@ const itemClasses = cntl`
       <span class={italic ? "italic" : ""}>{label}</span>
       {
         !lastChild && childCount && (
-          <span class=" text-spicy-mix-500 text-spe text-sm" aria-hidden="true">
-            | {childCount}
+          <span
+            class=" text-spicy-mix-700 dark:text-spicy-mix-400 text-spe text-sm"
+            aria-hidden="true"
+          >
+            &middot; {childCount}
           </span>
         )
       }
