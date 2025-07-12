@@ -85,6 +85,8 @@ After you have created a pull request, the MDD Web Development team will review 
 
 ### Release a new version of MDD
 
+>Note: The release section is only relevant for the MDD Web Development team.
+
 The data release process is managed by a GitHub Actions workflow defined in [.github/workflows/deploy.yml](https://github.com/mammaldiversity/mammaldiversity-org/blob/main/.github/workflows/deploy.yml).
 
 To publish a new data release, simply re-run the most recent successful deployment workflow:

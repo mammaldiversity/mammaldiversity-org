@@ -37,6 +37,14 @@ yarn run dev
 
 The project uses Playwright for end-to-end testing. To run the tests, use the following command:
 
+Install Playwright dependencies if you haven't already:
+
+```bash
+yarn playwright install
+```
+
+Run the tests:
+
 ```bash
 yarn test
 ```
