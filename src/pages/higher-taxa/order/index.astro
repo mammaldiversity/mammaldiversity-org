@@ -1,0 +1,150 @@
+---
+import TreeTips from "../../../components/phylo/TreeTips.astro";
+import Title from "../../../components/Title.astro";
+import MainPage from "../../../layouts/MainPage.astro";
+import Page from "../../../layouts/Page.astro";
+import PageHeader from "../../../layouts/PageHeader.astro";
+import {
+  getHierarchicalTaxonData,
+  type OrderData,
+} from "../../../scripts/taxon_table";
+
+const taxonData: Record<string, OrderData> = getHierarchicalTaxonData();
+
+// We filter the taxon order that value contains subclass: Prototheria
+const prototheria = Object.values(taxonData).filter(
+  (item: OrderData) => item.subclass && item.subclass.includes("Prototheria")
+);
+
+const theria = Object.values(taxonData).filter(
+  (item: OrderData) => item.subclass && item.subclass.includes("Theria")
+);
+---
+
+<Page
+  title="Tree View"
+  description="A tree view of the mammalian taxonomic hierarchy"
+>
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">List of Orders</Title>
+      <div slot="description">
+        <p>
+          List of orders in the Mammal Diversity Database (MDD). The ❌ symbol
+          indicates extinct species.
+        </p>
+      </div>
+    </PageHeader>
+    <div>
+      <h2 class="text-lg font-bold">Subclass: Prototheria</h2>
+      {
+        prototheria.map((order, idx) => (
+          <TreeTips
+            label={order.order}
+            idx={idx}
+            length={prototheria.length}
+            lastChild={false}
+          >
+            {order.family_list.map((family, idx) => (
+              <TreeTips
+                label={family.family}
+                idx={idx}
+                length={order.family_list.length}
+                lastChild={false}
+              >
+                {family.genera.map((genus, idx) => (
+                  <TreeTips
+                    label={genus.genus}
+                    idx={idx}
+                    length={family.genera.length}
+                    italic={true}
+                    lastChild={false}
+                  >
+                    {genus.species.living_species.map((species, idx) => (
+                      <TreeTips
+                        label={genus.genus + " " + species.epithet}
+                        idx={idx}
+                        length={genus.species.living_species.length}
+                        childCount={0}
+                        lastChild={true}
+                        italic={true}
+                      />
+                    ))}
+                    {genus.species.extinct_species.map((species, idx) => (
+                      <TreeTips
+                        label={genus.genus + " " + species.epithet}
+                        idx={idx}
+                        length={genus.species.extinct_species.length}
+                        childCount={0}
+                        lastChild={true}
+                        italic={true}
+                      />
+                    ))}
+                  </TreeTips>
+                ))}
+              </TreeTips>
+            ))}
+          </TreeTips>
+        ))
+      }
+    </div>
+    <div class="mt-4">
+      <h2 class="text-lg font-bold">Subclass: Theria</h2>
+      {
+        theria.map((order, idx) => (
+          <TreeTips
+            label={order.order}
+            idx={idx}
+            length={theria.length}
+            childCount={order.family_list.length}
+            lastChild={false}
+          >
+            {order.family_list.map((family, idx) => (
+              <TreeTips
+                label={family.family}
+                idx={idx}
+                length={order.family_list.length}
+                childCount={family.genera.length}
+                lastChild={false}
+              >
+                {family.genera.map((genus, idx) => (
+                  <TreeTips
+                    label={genus.genus}
+                    idx={idx}
+                    length={family.genera.length}
+                    childCount={
+                      genus.living_species_count + genus.extinct_species_count
+                    }
+                    lastChild={false}
+                    italic={true}
+                  >
+                    {genus.species.living_species.map((species, idx) => (
+                      <TreeTips
+                        label={genus.genus + " " + species.epithet}
+                        idx={idx}
+                        length={genus.species.living_species.length}
+                        childCount={0}
+                        lastChild={true}
+                        italic={true}
+                      />
+                    ))}
+                    {genus.species.extinct_species.map((species, idx) => (
+                      <TreeTips
+                        label={genus.genus + " " + species.epithet + " ❌"}
+                        idx={idx}
+                        length={genus.species.extinct_species.length}
+                        childCount={0}
+                        lastChild={true}
+                        italic={true}
+                      />
+                    ))}
+                  </TreeTips>
+                ))}
+              </TreeTips>
+            ))}
+          </TreeTips>
+        ))
+      }
+    </div>
+  </MainPage>
+</Page>

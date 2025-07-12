@@ -1,6 +1,16 @@
+/**
+ * @module taxon_table
+ * This module is responsible for building a hierarchical taxonomic table from a flat list of species data.
+ * It fetches data from the Mammal Diversity Database (MDD) stored  and processes it into a nested structure
+ * of orders, families, genera, and species, which can then be used to display taxonomic information.
+ * It provides functions to get the complete taxon table or a table for a specific list of MDD IDs.
+ */
 import { getSpeciesData, getSpeciesDataByIds } from "../../db/mdd";
 import type { SpeciesData } from "../../db/mdd_model";
 
+/**
+ * Represents a single species with its taxonomic classification and other details.
+ */
 interface Taxon {
   id: number;
   family: string;
@@ -11,6 +21,9 @@ interface Taxon {
   synonyms: string[];
 }
 
+/**
+ * Represents a taxonomic order, containing counts and a list of families.
+ */
 interface OrderData {
   subclass: string;
   infraclass: string;
@@ -22,6 +35,9 @@ interface OrderData {
   family_list: FamilyData[];
 }
 
+/**
+ * Represents a taxonomic family, containing counts and a list of genera.
+ */
 interface FamilyData {
   family: string;
   genus_count: number;
@@ -30,6 +46,9 @@ interface FamilyData {
   genera: GenusData[];
 }
 
+/**
+ * Represents a taxonomic genus, containing counts and a list of species.
+ */
 interface GenusData {
   genus: string;
   living_species_count: number;
@@ -37,19 +56,33 @@ interface GenusData {
   species: SpeciesListData;
 }
 
+/**
+ * Represents lists of living and extinct species within a genus.
+ */
 interface SpeciesListData {
   living_species: SpeciesIdData[];
   extinct_species: SpeciesIdData[];
 }
 
+/**
+ * Represents a species with its MDD ID and specific epithet.
+ */
 interface SpeciesIdData {
   mdd_id: number;
   epithet: string;
 }
 
+/**
+ * A class to construct a hierarchical taxonomic table from a flat list of species data.
+ */
 class TaxonTableBuilder {
   private taxonTable: Record<string, OrderData> = {};
 
+  /**
+   * Builds a hierarchical taxonomic table from a flat list of species data.
+   * @param taxaList A list of species data.
+   * @returns A record of orders, each containing families, genera, and species.
+   */
   build(taxaList: SpeciesData[]): Record<string, OrderData> {
     this.taxonTable = {};
     taxaList.forEach((taxon) => this.processTaxon(taxon));
@@ -57,6 +90,10 @@ class TaxonTableBuilder {
     return this.taxonTable;
   }
 
+  /**
+   * Processes a single taxon and adds it to the table.
+   * @param taxon The species data to process.
+   */
   private processTaxon(taxon: SpeciesData) {
     const {
       speciesData: {
@@ -87,8 +124,23 @@ class TaxonTableBuilder {
     // Update counts
     familyData.genus_count = familyData.genera.length;
     orderData.family_count = orderData.family_list.length;
+    
+    // We sort all the living and extinct species list in alphabetical order
+    genusData.species.living_species.sort((a, b) =>
+      a.epithet.localeCompare(b.epithet)
+    );
+    genusData.species.extinct_species.sort((a, b) =>
+      a.epithet.localeCompare(b.epithet)
+    );
   }
 
+  /**
+   * Gets or creates an order in the taxon table.
+   * @param order The name of the order.
+   * @param subclass The name of the subclass.
+   * @param infraclass The name of the infraclass.
+   * @returns The data for the order.
+   */
   private getOrCreateOrder(
     order: string,
     subclass: string,
@@ -109,6 +161,12 @@ class TaxonTableBuilder {
     return this.taxonTable[order];
   }
 
+  /**
+   * Gets or creates a family within an order.
+   * @param orderData The data for the order.
+   * @param family The name of the family.
+   * @returns The data for the family.
+   */
   private getOrCreateFamily(orderData: OrderData, family: string): FamilyData {
     let familyData = orderData.family_list.find((f) => f.family === family);
     if (!familyData) {
@@ -124,6 +182,12 @@ class TaxonTableBuilder {
     return familyData;
   }
 
+  /**
+   * Gets or creates a genus within a family.
+   * @param familyData The data for the family.
+   * @param genus The name of the genus.
+   * @returns The data for the genus.
+   */
   private getOrCreateGenus(familyData: FamilyData, genus: string): GenusData {
     let genusData = familyData.genera.find((g) => g.genus === genus);
     if (!genusData) {
@@ -141,6 +205,15 @@ class TaxonTableBuilder {
     return genusData;
   }
 
+  /**
+   * Adds a species to the appropriate genus, family, and order, and updates the counts.
+   * @param genusData The data for the genus.
+   * @param familyData The data for the family.
+   * @param orderData The data for the order.
+   * @param extinct Whether the species is extinct (1) or living (0).
+   * @param id The MDD ID of the species.
+   * @param specificEpithet The specific epithet of the species.
+   */
   private addSpecies(
     genusData: GenusData,
     familyData: FamilyData,
@@ -168,6 +241,9 @@ class TaxonTableBuilder {
     }
   }
 
+  /**
+   * Updates the genus counts for each order after the table has been built.
+   */
   private updateOrderGenusCounts() {
     Object.values(this.taxonTable).forEach((orderData) => {
       orderData.genus_count = [
@@ -181,11 +257,24 @@ class TaxonTableBuilder {
 
 const taxonTableBuilder = new TaxonTableBuilder();
 
+/**
+ * Builds the taxon table from a list of species data.
+ * @param taxaList The list of species data.
+ * @returns The taxon table.
+ */
 function buildTable(taxaList: SpeciesData[]) {
   return taxonTableBuilder.build(taxaList);
 }
 
-function getTaxonTable(): Record<string, OrderData> {
+/**
+ * Gets the complete taxon data in a hierarchical structure.
+ * This function retrieves species data from the Mammal Diversity Database (MDD),
+ * stored in the db directory: `db/data/ and parses it into a nested structure
+ * of orders, families, genera, and species.
+ * @returns The complete taxon table.
+ * @throws An error if no taxa data is found.
+ */
+function getHierarchicalTaxonData(): Record<string, OrderData> {
   const taxa = getSpeciesData();
   if (!taxa || taxa.length === 0) {
     throw new Error("No taxa data found");
@@ -193,6 +282,12 @@ function getTaxonTable(): Record<string, OrderData> {
   return buildTable(taxa);
 }
 
+/**
+ * Gets the taxon table for a specific list of MDD IDs.
+ * @param mddIds A list of MDD IDs.
+ * @returns The taxon table for the specified MDD IDs.
+ * @throws An error if no taxa data is found for the provided IDs.
+ */
 function getTaxonDataByMddIds(mddIds: number[]): Record<string, OrderData> {
   const taxonList = getSpeciesDataByIds(mddIds);
   if (!taxonList || taxonList.length === 0) {
@@ -212,4 +307,4 @@ export type {
   SpeciesIdData,
 };
 
-export { getTaxonTable, getTaxonDataByMddIds };
+export { getHierarchicalTaxonData, getTaxonDataByMddIds };
