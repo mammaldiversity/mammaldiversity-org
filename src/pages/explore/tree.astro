@@ -20,17 +20,17 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
 >
   <MainPage>
     <PageHeader>
-      <Title slot="title">Tree View</Title>
+      <Title slot="title">Taxonomic Tree View</Title>
       <div slot="description">
-        <p>Mammalian tree view showing relationships between different taxa.</p>
+        <p>
+          Explore the evolutionary relationships among mammals in this
+          interactive tree. Expand branches to reveal infraclasses, orders,
+          families, genera, and species. Click on underlined names for detailed
+          taxon pages. Extinct species are marked with ❌.
+        </p>
       </div>
     </PageHeader>
-    <div>
-      <p class="mt-4 mb-2 text-sm text-gray-600 dark:text-gray-400">
-        Note: The ❌ symbol indicates extinct species. The number on each label
-        indicates the count of children under each taxon, such as infraclass,
-        orders, families, genera, or species.
-      </p>
+    <div class="max-w-6xl mx-auto">
       <div id="taxon-tree" class="mt-4 overflow-x-auto">
         <h2 class="text-lg font-bold">Mammalia</h2>
         {
