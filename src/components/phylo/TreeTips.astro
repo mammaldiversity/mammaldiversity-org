@@ -1,0 +1,45 @@
+---
+interface Props {
+  label: string;
+  idx: number;
+  length: number;
+}
+const { label, idx, length } = Astro.props;
+
+const isOnlyChild = length === 1;
+const isFirstChild = idx === 0;
+const isLastChild = idx === length - 1;
+---
+
+<ul class="relative ml-2 pl-2">
+  <li class="relative pl-3">
+    <div class="inline-block">{label}</div>
+
+    <!-- vertical connector line -->
+    {
+      !isLastChild && (
+        <span
+          class="absolute top-3 bottom-[-12px] left-[-10px] w-1 bg-slate-300"
+          aria-hidden="true"
+        />
+      )
+    }
+    {
+      (isOnlyChild || isFirstChild) && (
+        <span
+          class="absolute top-0 h-[12px] left-[-10px] w-1 bg-slate-300"
+          aria-hidden="true"
+        />
+      )
+    }
+
+    <!-- horizontal connector line -->
+    <span
+      class="absolute top-3 left-[-10px] w-[16px] h-1 bg-slate-300"
+      aria-hidden="true"></span>
+
+    <ul class="ml-4">
+      <slot />
+    </ul>
+  </li>
+</ul>
