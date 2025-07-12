@@ -35,13 +35,37 @@ const theria = Object.values(taxonData).filter(
     </PageHeader>
     <div>
       <h2 class="text-lg font-bold">Subclass: Prototheria</h2>
-      <ul>
-        {prototheria.map((order) => <li>{order.order}</li>)}
-      </ul>
+      {
+        prototheria.map((order, idx) => (
+          <TreeTips
+            label={order.order}
+            idx={idx}
+            length={prototheria.length}
+            lastChild={false}
+          >
+            {order.family_list.map((family, idx) => (
+              <TreeTips
+                label={family.family}
+                idx={idx}
+                length={order.family_list.length}
+                lastChild={false}
+              >
+                {family.genera.map((genus, idx) => (
+                  <TreeTips
+                    label={genus.genus}
+                    idx={idx}
+                    length={family.genera.length}
+                    lastChild={true}
+                  />
+                ))}
+              </TreeTips>
+            ))}
+          </TreeTips>
+        ))
+      }
     </div>
     <div class="mt-4">
       <h2 class="text-lg font-bold">Subclass: Theria</h2>
-
       {
         theria.map((order, idx) => (
           <TreeTips
