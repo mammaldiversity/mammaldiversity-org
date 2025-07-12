@@ -1,22 +1,43 @@
 ---
+import cntl from "cntl";
+import { countryListToJson } from "../../scripts/species_map";
+
 interface Props {
   label: string;
   idx: number; // zero-based index of this item
   length: number; // total number of items in this list
+  childCount?: number; // optional, number of children if this is a parent
   lastChild: boolean; // true if this is the last child in the list
+  italic?: boolean; // optional, if true, label will be italicized
 }
-const { label, idx, length, lastChild } = Astro.props;
+const { label, idx, length, lastChild, childCount, italic } = Astro.props;
 
 const isOnlyChild = length === 1;
 const isFirstChild = idx === 0;
-const isLastChild = idx === length - 1;
+const isLastItem = idx === length - 1;
+
+const containerClasses = cntl`
+  relative
+  ml-2
+  pl-2
+`;
+
+const itemClasses = cntl`
+  inline-block
+  bg-spectra-100
+  dark:bg-spectra-800
+  text-slate-900
+  dark:text-slate-100
+  rounded-md
+  px-2
+  relative
+  my-1
+`;
 ---
 
-<ul class="relative ml-2 pl-2">
+<ul class={containerClasses}>
   <li class="relative pl-3">
-    <div
-      class="inline-block bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-md px-2 relative my-1"
-    >
+    <div class={itemClasses}>
       {
         !lastChild && (
           <button
@@ -29,12 +50,19 @@ const isLastChild = idx === length - 1;
           </button>
         )
       }
-      {label}
+      <span class={italic ? "italic" : ""}>{label}</span>
+      {
+        !lastChild && childCount && (
+          <span class=" text-spicy-mix-500 text-spe text-sm" aria-hidden="true">
+            | {childCount}
+          </span>
+        )
+      }
     </div>
 
     <!-- vertical connector line -->
     {
-      !isLastChild && (
+      !isLastItem && (
         <span
           class="absolute top-3 bottom-[-12px] left-[-10px] w-px bg-slate-300"
           aria-hidden="true"
