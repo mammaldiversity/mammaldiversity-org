@@ -1,6 +1,6 @@
 # mammaldiversity.org
 
-This project is a complete rewrite of the [Mammal Diversity Database (MDD)](httpss://www.mammaldiversity.org/) website.
+This project is a complete rewrite of the [Mammal Diversity Database (MDD)](httpss://www.mammaldiversity.org/) website. The live site is available at [mammaldiversity.org](https://www.mammaldiversity.org/).
 
 Our primary goals:
 
