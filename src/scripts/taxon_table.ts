@@ -124,6 +124,14 @@ class TaxonTableBuilder {
     // Update counts
     familyData.genus_count = familyData.genera.length;
     orderData.family_count = orderData.family_list.length;
+    
+    // We sort all the living and extinct species list in alphabetical order
+    genusData.species.living_species.sort((a, b) =>
+      a.epithet.localeCompare(b.epithet)
+    );
+    genusData.species.extinct_species.sort((a, b) =>
+      a.epithet.localeCompare(b.epithet)
+    );
   }
 
   /**
