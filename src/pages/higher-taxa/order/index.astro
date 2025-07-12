@@ -1,0 +1,68 @@
+---
+import TreeTips from "../../../components/phylo/TreeTips.astro";
+import TaxonTable from "../../../components/taxon-table/TaxonTable.astro";
+import Title from "../../../components/Title.astro";
+import MainPage from "../../../layouts/MainPage.astro";
+import Page from "../../../layouts/Page.astro";
+import PageHeader from "../../../layouts/PageHeader.astro";
+import {
+  getHierarchicalTaxonData,
+  type OrderData,
+} from "../../../scripts/taxon_table";
+
+const taxonData: Record<string, OrderData> = getHierarchicalTaxonData();
+
+// We filter the taxon order that value contains subclass: Prototheria
+const prototheria = Object.values(taxonData).filter(
+  (item: OrderData) => item.subclass && item.subclass.includes("Prototheria")
+);
+
+const theria = Object.values(taxonData).filter(
+  (item: OrderData) => item.subclass && item.subclass.includes("Theria")
+);
+---
+
+<Page
+  title="Taxonomy Table"
+  description="A table to display taxonomy information."
+>
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">List of Orders</Title>
+      <div slot="description">
+        <p>List of orders in the Mammal Diversity Database (MDD).</p>
+      </div>
+    </PageHeader>
+    <div>
+      <h2 class="text-lg font-bold">Subclass: Prototheria</h2>
+      <ul>
+        {prototheria.map((order) => <li>{order.order}</li>)}
+      </ul>
+    </div>
+    <div class="mt-4">
+      <h2 class="text-lg font-bold">Subclass: Theria</h2>
+
+      {
+        theria.map((order, idx) => (
+          <TreeTips label={order.order} idx={idx} length={theria.length}>
+            {order.family_list.map((family, idx) => (
+              <TreeTips
+                label={family.family}
+                idx={idx}
+                length={order.family_list.length}
+              >
+                {family.genera.map((genus, idx) => (
+                  <TreeTips
+                    label={genus.genus}
+                    idx={idx}
+                    length={family.genera.length}
+                  />
+                ))}
+              </TreeTips>
+            ))}
+          </TreeTips>
+        ))
+      }
+    </div>
+  </MainPage>
+</Page>
