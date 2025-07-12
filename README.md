@@ -15,15 +15,17 @@ The website is built with [Astro](https://astro.build/), a modern web framework 
 
 ## Development
 
-To get started with development, you will need to have Node.js and yarn installed.
+To get started with development, you will need to have Node.js and yarn installed. A detailed guideline for working with MDD codebase is available in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
-1. **Install dependencies:**
+### Quick Start
+
+#### Install dependencies
 
 ```bash
 yarn install
 ```
 
-2. **Run the development server:**
+#### Run the development server
 
 ```bash
 yarn run dev
@@ -31,7 +33,7 @@ yarn run dev
 
    This will start the development server at `http://localhost:4321`.
 
-## Testing
+### Testing
 
 The project uses Playwright for end-to-end testing. To run the tests, use the following command:
 
@@ -45,7 +47,7 @@ You can view the test report using:
 yarn show-report
 ```
 
-## Building for Production
+### Building for Production
 
 To build the site for production, run the following command:
 
@@ -53,9 +55,7 @@ To build the site for production, run the following command:
 yarn build
 ```
 
-This will create a `dist` directory with the built site. The build command also runs `pagefind` to create the search index.
-
-## Deployment
+### Deployment
 
 Deployment is handled automatically by a GitHub Action whenever changes are pushed to the `main` branch. The action builds the site and deploys it to GitHub Pages.
 
