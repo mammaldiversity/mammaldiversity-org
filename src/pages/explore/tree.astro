@@ -37,60 +37,53 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
           Object.values(taxonData).map((data: SubclassData, idx: number) => (
             <>
               <TreeTips
-                label={data.subclass}
+                taxonName={data.subclass}
                 idx={idx}
                 length={Object.keys(taxonData).length}
                 childCount={data.infraclass.length}
-                lastChild={false}
               >
                 {data.infraclass.map((infraclass, idx) => (
                   <TreeTips
-                    label={infraclass.infraclass}
+                    taxonName={infraclass.infraclass}
                     idx={idx}
                     length={data.infraclass.length}
                     childCount={infraclass.orders.length}
-                    lastChild={false}
                   >
                     {infraclass.orders.map((order, idx) => (
                       <TreeTips
-                        label={order.order}
+                        taxonName={order.order}
                         idx={idx}
                         length={infraclass.orders.length}
                         childCount={order.family_list.length}
-                        lastChild={false}
                       >
                         {order.family_list.map((family, idx) => (
                           <TreeTips
-                            label={family.family}
+                            taxonName={family.family}
                             idx={idx}
                             length={order.family_list.length}
                             childCount={family.genera.length}
-                            lastChild={false}
                           >
                             {family.genera.map((genus, idx) => (
                               <TreeTips
-                                label={genus.genus}
+                                taxonName={genus.genus}
                                 idx={idx}
                                 length={family.genera.length}
                                 childCount={
                                   genus.living_species_count +
                                   genus.extinct_species_count
                                 }
-                                lastChild={false}
                                 italic={true}
                               >
                                 {genus.species.living_species.map(
                                   (species, idx) => (
                                     <TreeTips
-                                      label={
+                                      taxonName={
                                         genus.genus + " " + species.epithet
                                       }
                                       idx={idx}
                                       length={
                                         genus.species.living_species.length
                                       }
-                                      childCount={0}
-                                      lastChild={true}
                                       italic={true}
                                       url={getSpeciesPermalink(species.mdd_id)}
                                     />
@@ -99,7 +92,7 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
                                 {genus.species.extinct_species.map(
                                   (species, idx) => (
                                     <TreeTips
-                                      label={
+                                      taxonName={
                                         genus.genus +
                                         " " +
                                         species.epithet +
@@ -109,8 +102,6 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
                                       length={
                                         genus.species.extinct_species.length
                                       }
-                                      childCount={0}
-                                      lastChild={true}
                                       italic={true}
                                       url={getSpeciesPermalink(species.mdd_id)}
                                     />
