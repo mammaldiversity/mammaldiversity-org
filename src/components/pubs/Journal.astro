@@ -27,7 +27,7 @@ const { authors, year, title, journal, volume, pages, doi } =
     }. ({year}). {title}{title.endsWith("?") ? "" : "."}
     <em>{journal}</em>
     {volume}{pages && `: ${pages}`}.{" "}
-    <Link label={doi} url={doi} />
+    <Link url={doi} />
   </p>
   <slot />
 </Container>

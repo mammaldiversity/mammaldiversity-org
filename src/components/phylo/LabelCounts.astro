@@ -1,0 +1,18 @@
+---
+interface Props {
+  childCount?: number; // optional, number of children if this is a parent
+}
+
+const { childCount } = Astro.props as Props;
+---
+
+{
+  childCount && (
+    <p
+      class="text-xl font-semibold text-spicy-mix-700 dark:text-spicy-mix-400"
+      aria-hidden="true"
+    >
+      <span class="mr-2">&middot;</span> {childCount}
+    </p>
+  )
+}

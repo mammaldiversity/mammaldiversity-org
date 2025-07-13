@@ -15,9 +15,6 @@ const { authors, year, title, doi } = Astro.props as ZenodoRecord;
 
 <Container>
   <p>
-    {authors.join(", ")}. ({year}). {title}. Zenodo. <Link
-      label={doi}
-      url={doi}
-    />
+    {authors.join(", ")}. ({year}). {title}. Zenodo. <Link url={doi} />
   </p>
 </Container>
