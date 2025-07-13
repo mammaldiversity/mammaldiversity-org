@@ -1,16 +1,23 @@
 ---
 import cntl from "cntl";
+import TaxonLabel from "./TaxonLabel.astro";
+import LabelCounts from "./LabelCounts.astro";
+import VerticalLines from "./VerticalLines.astro";
+import HorizontalLines from "./HorizontalLines.astro";
 
 interface Props {
-  label: string;
+  label?: string; // optional, additional info to help reader understand the taxon rank
+  taxonName: string;
   idx: number; // zero-based index of this item
   length: number; // total number of items in this list
-  childCount?: number; // optional, number of children if this is a parent
-  lastChild: boolean; // true if this is the last child in the list
+  // optional, number of children if this is a parent
+  // if childCount is not provided, will not render the expand button or item count
+  // This will always be the case for leaf nodes (typically species)
+  childCount?: number;
   italic?: boolean; // optional, if true, label will be italicized
   url?: string; // optional, if provided, label will be a link
 }
-const { label, idx, length, lastChild, childCount, italic, url } = Astro.props;
+const { label, taxonName, idx, length, childCount, italic, url } = Astro.props;
 
 const isOnlyChild = length === 1;
 const isFirstChild = idx === 0;
@@ -23,87 +30,64 @@ const containerClasses = cntl`
 `;
 
 const itemClasses = cntl`
-  inline-block
-  bg-spectra-100
+  flex
+  w-fit
+  gap-2
+  items-center
+  bg-spectra-200
   dark:bg-spectra-800
   text-slate-900
   dark:text-slate-100
-  rounded-md
-  px-2
-  py-1
+  rounded-xl
+  px-4
   relative
   my-1
+  py-2
   opacity-80
+  whitespace-nowrap
+`;
+
+const buttonDivClasses = cntl`
+  border-r-2
+  border-spectra-400
+  dark:border-spectra-600
+  py-2
+  mr-2
+  text-center
 `;
 ---
 
 <ul class={containerClasses}>
-  <li class="relative pl-3">
-    <div class={itemClasses}>
+  <li class="relative pl-6">
+    <div id="taxon-label" class={itemClasses}>
       {
-        !lastChild && (
-          <button
-            id={`toggle-${idx}`}
-            class="bg-transparent"
-            aria-expanded="false"
-            aria-label="Expand"
-          >
-            +
-          </button>
+        childCount && (
+          <div class={buttonDivClasses}>
+            <button
+              id={`toggle-${idx}`}
+              class="bg-transparent ml-2 mr-4 text-2xl font-semibold"
+              aria-expanded="false"
+              aria-label="Expand"
+            >
+              +
+            </button>
+          </div>
         )
       }
-      <span class={italic ? "italic" : ""}>
-        {
-          url ? (
-            <>
-              <a
-                class="underline hover:text-spectra-700 dark:hover:text-spectra-200"
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {label}
-              </a>
-            </>
-          ) : (
-            label
-          )
-        }
-      </span>
-      {
-        !lastChild && childCount && (
-          <span
-            class=" text-spicy-mix-700 dark:text-spicy-mix-400 text-spe text-sm"
-            aria-hidden="true"
-          >
-            &middot; {childCount}
-          </span>
-        )
-      }
+      <TaxonLabel
+        taxonName={taxonName}
+        label={label}
+        italic={italic}
+        url={url}
+      />
+      <LabelCounts childCount={childCount} />
     </div>
-
-    <!-- vertical connector line -->
-    {
-      !isLastItem && (
-        <span
-          class="absolute top-3 bottom-[-12px] left-[-10px] w-px bg-slate-300"
-          aria-hidden="true"
-        />
-      )
-    }
-    {
-      (isOnlyChild || isFirstChild) && (
-        <span
-          class="absolute top-0 h-[12px] left-[-10px] w-px bg-slate-300"
-          aria-hidden="true"
-        />
-      )
-    }
-
-    <!-- horizontal connector line -->
-    <span
-      class="absolute top-3 left-[-10px] w-[16px] h-px bg-slate-300"
-      aria-hidden="true"></span>
+    <VerticalLines
+      isLastItem={isLastItem}
+      isFirstChild={isFirstChild}
+      isOnlyChild={isOnlyChild}
+    />
+    <HorizontalLines />
 
     <ul id="children" class="ml-4 children" style="display: none;">
       <slot />

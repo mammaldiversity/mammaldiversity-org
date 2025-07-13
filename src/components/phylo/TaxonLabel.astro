@@ -1,0 +1,35 @@
+---
+interface Props {
+  // Additional info to help reader understand the taxon rank
+  label?: string;
+  taxonName: string;
+  url?: string; // optional, if provided, taxon name will be a link
+  italic?: boolean; // optional, if true, taxon name will be italicized
+}
+
+const { label, taxonName, url, italic } = Astro.props as Props;
+---
+
+<div class={`mr-2 ${italic ? "italic" : ""}`}>
+  {
+    label && (
+      <p class="text-sm text-spectra-600 dark:text-spectra-400">{label}</p>
+    )
+  }
+  {
+    url ? (
+      <>
+        <a
+          class="underline hover:text-spectra-700 dark:hover:text-spectra-200"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {taxonName}
+        </a>
+      </>
+    ) : (
+      <p class="font-semibold tracking-wide">{taxonName}</p>
+    )
+  }
+</div>
