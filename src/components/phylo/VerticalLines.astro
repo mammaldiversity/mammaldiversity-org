@@ -1,0 +1,25 @@
+---
+interface Props {
+  isLastItem: boolean; // true if this is the last item in the list
+  isFirstChild: boolean; // true if this is the first child in the list
+  isOnlyChild: boolean; // true if this is the only child in the list
+}
+const { isLastItem, isFirstChild, isOnlyChild } = Astro.props as Props;
+---
+
+{
+  !isLastItem && (
+    <span
+      class="absolute top-2 bottom-[-16px] left-[-10px] w-px bg-slate-500"
+      aria-hidden="true"
+    />
+  )
+}
+{
+  (isOnlyChild || isFirstChild) && (
+    <span
+      class="absolute top-0 h-[13px] left-[-10px] w-px bg-slate-500"
+      aria-hidden="true"
+    />
+  )
+}
