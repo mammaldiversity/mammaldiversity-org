@@ -1,6 +1,9 @@
 ---
 import cntl from "cntl";
 import TaxonLabel from "./TaxonLabel.astro";
+import LabelCounts from "./LabelCounts.astro";
+import VerticalLines from "./VerticalLines.astro";
+import HorizontalLines from "./HorizontalLines.astro";
 
 interface Props {
   label?: string; // optional, additional info to help reader understand the taxon rank
@@ -35,12 +38,22 @@ const itemClasses = cntl`
   dark:bg-spectra-800
   text-slate-900
   dark:text-slate-100
-  rounded-md
-  px-2
-  py-2
+  rounded-xl
+  px-4
   relative
   my-1
+  py-2
   opacity-80
+  whitespace-nowrap
+`;
+
+const buttonDivClasses = cntl`
+  border-r-2
+  border-spectra-400
+  dark:border-spectra-600
+  py-2
+  mr-2
+  text-center
 `;
 ---
 
@@ -49,14 +62,16 @@ const itemClasses = cntl`
     <div id="taxon-label" class={itemClasses}>
       {
         childCount && (
-          <button
-            id={`toggle-${idx}`}
-            class="bg-transparent ml-2 mr-4 text-2xl font-bold"
-            aria-expanded="false"
-            aria-label="Expand"
-          >
-            +
-          </button>
+          <div class={buttonDivClasses}>
+            <button
+              id={`toggle-${idx}`}
+              class="bg-transparent ml-2 mr-4 text-2xl font-semibold"
+              aria-expanded="false"
+              aria-label="Expand"
+            >
+              +
+            </button>
+          </div>
         )
       }
       <TaxonLabel
@@ -65,39 +80,14 @@ const itemClasses = cntl`
         italic={italic}
         url={url}
       />
-      {
-        childCount && (
-          <span
-            class=" text-spicy-mix-700 dark:text-spicy-mix-400 text-spe text-sm"
-            aria-hidden="true"
-          >
-            &middot; {childCount}
-          </span>
-        )
-      }
+      <LabelCounts childCount={childCount} />
     </div>
-    <!-- vertical connector line -->
-    {
-      !isLastItem && (
-        <span
-          class="absolute top-2 bottom-[-16px] left-[-10px] w-px bg-slate-300"
-          aria-hidden="true"
-        />
-      )
-    }
-    {
-      (isOnlyChild || isFirstChild) && (
-        <span
-          class="absolute top-0 h-[13px] left-[-10px] w-px bg-slate-300"
-          aria-hidden="true"
-        />
-      )
-    }
-
-    <!-- horizontal connector line -->
-    <span
-      class="absolute top-3 left-[-10px] w-[16px] h-px bg-slate-300"
-      aria-hidden="true"></span>
+    <VerticalLines
+      isLastItem={isLastItem}
+      isFirstChild={isFirstChild}
+      isOnlyChild={isOnlyChild}
+    />
+    <HorizontalLines />
 
     <ul id="children" class="ml-4 children" style="display: none;">
       <slot />

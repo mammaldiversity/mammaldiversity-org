@@ -26,17 +26,18 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
           Explore the evolutionary relationships among mammals in this
           interactive tree. Expand branches to reveal infraclasses, orders,
           families, genera, and species. Click on underlined names for detailed
-          taxon pages. Extinct species are marked with ❌.
+          taxon pages.
         </p>
       </div>
     </PageHeader>
     <div class="max-w-6xl mx-auto">
       <div id="taxon-tree" class="mt-4 overflow-x-auto">
-        <h2 class="text-lg font-bold">Mammalia</h2>
+        <h2 class="text-2xl font-semibold">Mammalia</h2>
         {
           Object.values(taxonData).map((data: SubclassData, idx: number) => (
             <>
               <TreeTips
+                label="Subclass"
                 taxonName={data.subclass}
                 idx={idx}
                 length={Object.keys(taxonData).length}
@@ -44,6 +45,7 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
               >
                 {data.infraclass.map((infraclass, idx) => (
                   <TreeTips
+                    label="Infraclass"
                     taxonName={infraclass.infraclass}
                     idx={idx}
                     length={data.infraclass.length}
@@ -51,6 +53,7 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
                   >
                     {infraclass.orders.map((order, idx) => (
                       <TreeTips
+                        label="Order"
                         taxonName={order.order}
                         idx={idx}
                         length={infraclass.orders.length}
@@ -58,6 +61,7 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
                       >
                         {order.family_list.map((family, idx) => (
                           <TreeTips
+                            label="Family"
                             taxonName={family.family}
                             idx={idx}
                             length={order.family_list.length}
@@ -65,6 +69,7 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
                           >
                             {family.genera.map((genus, idx) => (
                               <TreeTips
+                                label="Genus"
                                 taxonName={genus.genus}
                                 idx={idx}
                                 length={family.genera.length}
@@ -77,6 +82,7 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
                                 {genus.species.living_species.map(
                                   (species, idx) => (
                                     <TreeTips
+                                      label="Living species"
                                       taxonName={
                                         genus.genus + " " + species.epithet
                                       }
@@ -92,11 +98,9 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
                                 {genus.species.extinct_species.map(
                                   (species, idx) => (
                                     <TreeTips
+                                      label="Extinct species ☠️"
                                       taxonName={
-                                        genus.genus +
-                                        " " +
-                                        species.epithet +
-                                        " ❌"
+                                        genus.genus + " " + species.epithet
                                       }
                                       idx={idx}
                                       length={

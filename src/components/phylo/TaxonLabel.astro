@@ -10,7 +10,12 @@ interface Props {
 const { label, taxonName, url, italic } = Astro.props as Props;
 ---
 
-<div class={`text-semibold ${italic ? "italic" : ""}`}>
+<div class={`mr-2 ${italic ? "italic" : ""}`}>
+  {
+    label && (
+      <p class="text-sm text-spectra-600 dark:text-spectra-400">{label}</p>
+    )
+  }
   {
     url ? (
       <>
@@ -24,7 +29,7 @@ const { label, taxonName, url, italic } = Astro.props as Props;
         </a>
       </>
     ) : (
-      taxonName
+      <p class="font-semibold tracking-wide">{taxonName}</p>
     )
   }
 </div>
