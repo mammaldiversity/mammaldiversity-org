@@ -1,7 +1,9 @@
 ---
 import cntl from "cntl";
+import TaxonLabel from "./TaxonLabel.astro";
 
 interface Props {
+  label?: string; // optional, additional info to help reader understand the taxon rank
   taxonName: string;
   idx: number; // zero-based index of this item
   length: number; // total number of items in this list
@@ -12,7 +14,7 @@ interface Props {
   italic?: boolean; // optional, if true, label will be italicized
   url?: string; // optional, if provided, label will be a link
 }
-const { taxonName, idx, length, childCount, italic, url } = Astro.props;
+const { label, taxonName, idx, length, childCount, italic, url } = Astro.props;
 
 const isOnlyChild = length === 1;
 const isFirstChild = idx === 0;
@@ -25,14 +27,17 @@ const containerClasses = cntl`
 `;
 
 const itemClasses = cntl`
-  inline-block
+  flex
+  w-fit
+  gap-2
+  items-center
   bg-spectra-100
   dark:bg-spectra-800
   text-slate-900
   dark:text-slate-100
   rounded-md
   px-2
-  py-1
+  py-2
   relative
   my-1
   opacity-80
@@ -41,12 +46,12 @@ const itemClasses = cntl`
 
 <ul class={containerClasses}>
   <li class="relative pl-3">
-    <div class={itemClasses}>
+    <div id="taxon-label" class={itemClasses}>
       {
         childCount && (
           <button
             id={`toggle-${idx}`}
-            class="bg-transparent"
+            class="bg-transparent ml-2 mr-4 text-2xl font-bold"
             aria-expanded="false"
             aria-label="Expand"
           >
@@ -54,24 +59,12 @@ const itemClasses = cntl`
           </button>
         )
       }
-      <span class={italic ? "italic" : ""}>
-        {
-          url ? (
-            <>
-              <a
-                class="underline hover:text-spectra-700 dark:hover:text-spectra-200"
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {taxonName}
-              </a>
-            </>
-          ) : (
-            taxonName
-          )
-        }
-      </span>
+      <TaxonLabel
+        taxonName={taxonName}
+        label={label}
+        italic={italic}
+        url={url}
+      />
       {
         childCount && (
           <span
@@ -83,12 +76,11 @@ const itemClasses = cntl`
         )
       }
     </div>
-
     <!-- vertical connector line -->
     {
       !isLastItem && (
         <span
-          class="absolute top-3 bottom-[-12px] left-[-10px] w-px bg-slate-300"
+          class="absolute top-2 bottom-[-16px] left-[-10px] w-px bg-slate-300"
           aria-hidden="true"
         />
       )
@@ -96,7 +88,7 @@ const itemClasses = cntl`
     {
       (isOnlyChild || isFirstChild) && (
         <span
-          class="absolute top-0 h-[12px] left-[-10px] w-px bg-slate-300"
+          class="absolute top-0 h-[13px] left-[-10px] w-px bg-slate-300"
           aria-hidden="true"
         />
       )
