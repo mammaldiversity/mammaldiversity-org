@@ -31,98 +31,111 @@ const taxonData: Record<string, SubclassData> = getHigherTaxonData();
       </div>
     </PageHeader>
     <div class="max-w-6xl mx-auto">
-      <div id="taxon-tree" class="mt-4 overflow-x-auto">
-        <h2 class="text-2xl font-semibold">Mammalia</h2>
-        {
-          Object.values(taxonData).map((data: SubclassData, idx: number) => (
-            <>
-              <TreeTips
-                label="Subclass"
-                taxonName={data.subclass}
-                idx={idx}
-                length={Object.keys(taxonData).length}
-                childCount={data.infraclass.length}
-              >
-                {data.infraclass.map((infraclass, idx) => (
-                  <TreeTips
-                    label="Infraclass"
-                    taxonName={infraclass.infraclass}
-                    idx={idx}
-                    length={data.infraclass.length}
-                    childCount={infraclass.orders.length}
-                  >
-                    {infraclass.orders.map((order, idx) => (
-                      <TreeTips
-                        label="Order"
-                        taxonName={order.order}
-                        idx={idx}
-                        length={infraclass.orders.length}
-                        childCount={order.family_list.length}
-                      >
-                        {order.family_list.map((family, idx) => (
-                          <TreeTips
-                            label="Family"
-                            taxonName={family.family}
-                            idx={idx}
-                            length={order.family_list.length}
-                            childCount={family.genera.length}
-                          >
-                            {family.genera.map((genus, idx) => (
-                              <TreeTips
-                                label="Genus"
-                                taxonName={genus.genus}
-                                idx={idx}
-                                length={family.genera.length}
-                                childCount={
-                                  genus.living_species_count +
-                                  genus.extinct_species_count
-                                }
-                                italic={true}
-                              >
-                                {genus.species.living_species.map(
-                                  (species, idx) => (
-                                    <TreeTips
-                                      label="Living species"
-                                      taxonName={
-                                        genus.genus + " " + species.epithet
-                                      }
-                                      idx={idx}
-                                      length={
-                                        genus.species.living_species.length
-                                      }
-                                      italic={true}
-                                      url={getSpeciesPermalink(species.mdd_id)}
-                                    />
-                                  )
-                                )}
-                                {genus.species.extinct_species.map(
-                                  (species, idx) => (
-                                    <TreeTips
-                                      label="Extinct species ☠️"
-                                      taxonName={
-                                        genus.genus + " " + species.epithet
-                                      }
-                                      idx={idx}
-                                      length={
-                                        genus.species.extinct_species.length
-                                      }
-                                      italic={true}
-                                      url={getSpeciesPermalink(species.mdd_id)}
-                                    />
-                                  )
-                                )}
-                              </TreeTips>
-                            ))}
-                          </TreeTips>
-                        ))}
-                      </TreeTips>
-                    ))}
-                  </TreeTips>
-                ))}
-              </TreeTips>
-            </>
-          ))
-        }
+      <div id="page-notes">
+        <p class="text-sm text-spectra-600 dark:text-spectra-400">
+          The taxon relationships are inferred from the taxonomic hierarchy in
+          the Mammal Diversity Database (MDD). The sorting from class to family
+          follows the phylogenetic hierarchy in the Checklist of the Mammals of
+          the World (2020). Lower taxa were sorted in alphabetical order. Click
+          on +/- buttons to expand or collapse branches.
+        </p>
+        <div id="taxon-tree" class="mt-4 overflow-x-auto">
+          <h2 class="text-2xl font-semibold">Mammalia</h2>
+          {
+            Object.values(taxonData).map((data: SubclassData, idx: number) => (
+              <>
+                <TreeTips
+                  label="Subclass"
+                  taxonName={data.subclass}
+                  idx={idx}
+                  length={Object.keys(taxonData).length}
+                  childCount={data.infraclass.length}
+                >
+                  {data.infraclass.map((infraclass, idx) => (
+                    <TreeTips
+                      label="Infraclass"
+                      taxonName={infraclass.infraclass}
+                      idx={idx}
+                      length={data.infraclass.length}
+                      childCount={infraclass.orders.length}
+                    >
+                      {infraclass.orders.map((order, idx) => (
+                        <TreeTips
+                          label="Order"
+                          taxonName={order.order}
+                          idx={idx}
+                          length={infraclass.orders.length}
+                          childCount={order.family_list.length}
+                        >
+                          {order.family_list.map((family, idx) => (
+                            <TreeTips
+                              label="Family"
+                              taxonName={family.family}
+                              idx={idx}
+                              length={order.family_list.length}
+                              childCount={family.genera.length}
+                            >
+                              {family.genera.map((genus, idx) => (
+                                <TreeTips
+                                  label="Genus"
+                                  taxonName={genus.genus}
+                                  idx={idx}
+                                  length={family.genera.length}
+                                  childCount={
+                                    genus.living_species_count +
+                                    genus.extinct_species_count
+                                  }
+                                  italic={true}
+                                >
+                                  {genus.species.living_species.map(
+                                    (species, idx) => (
+                                      <TreeTips
+                                        label="Living species"
+                                        taxonName={
+                                          genus.genus + " " + species.epithet
+                                        }
+                                        idx={idx}
+                                        length={
+                                          genus.species.living_species.length
+                                        }
+                                        italic={true}
+                                        url={getSpeciesPermalink(
+                                          species.mdd_id
+                                        )}
+                                      />
+                                    )
+                                  )}
+                                  {genus.species.extinct_species.map(
+                                    (species, idx) => (
+                                      <TreeTips
+                                        label="Extinct species ☠️"
+                                        taxonName={
+                                          genus.genus + " " + species.epithet
+                                        }
+                                        idx={idx}
+                                        length={
+                                          genus.species.extinct_species.length
+                                        }
+                                        italic={true}
+                                        url={getSpeciesPermalink(
+                                          species.mdd_id
+                                        )}
+                                      />
+                                    )
+                                  )}
+                                </TreeTips>
+                              ))}
+                            </TreeTips>
+                          ))}
+                        </TreeTips>
+                      ))}
+                    </TreeTips>
+                  ))}
+                </TreeTips>
+              </>
+            ))
+          }
+        </div>
       </div>
     </div>
   </MainPage>
