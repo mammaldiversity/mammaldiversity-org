@@ -43,12 +43,15 @@ const theria = Object.values(taxonData).filter(
             taxonName={order.order}
             idx={idx}
             length={prototheria.length}
+            expanded={true}
           >
             {order.family_list.map((family, idx) => (
               <TreeTips
                 taxonName={family.family}
                 idx={idx}
                 length={order.family_list.length}
+                childCount={family.genera.length}
+                expanded={false}
               >
                 {family.genera.map((genus, idx) => (
                   <TreeTips
@@ -56,6 +59,7 @@ const theria = Object.values(taxonData).filter(
                     idx={idx}
                     length={family.genera.length}
                     italic={true}
+                    expanded={false}
                   >
                     {genus.species.living_species.map((species, idx) => (
                       <TreeTips
@@ -63,6 +67,7 @@ const theria = Object.values(taxonData).filter(
                         idx={idx}
                         length={genus.species.living_species.length}
                         italic={true}
+                        expanded={false}
                       />
                     ))}
                     {genus.species.extinct_species.map((species, idx) => (
@@ -71,6 +76,7 @@ const theria = Object.values(taxonData).filter(
                         idx={idx}
                         length={genus.species.extinct_species.length}
                         italic={true}
+                        expanded={false}
                       />
                     ))}
                   </TreeTips>
@@ -90,6 +96,7 @@ const theria = Object.values(taxonData).filter(
             idx={idx}
             length={theria.length}
             childCount={order.family_list.length}
+            expanded={true}
           >
             {order.family_list.map((family, idx) => (
               <TreeTips
@@ -97,6 +104,7 @@ const theria = Object.values(taxonData).filter(
                 idx={idx}
                 length={order.family_list.length}
                 childCount={family.genera.length}
+                expanded={false}
               >
                 {family.genera.map((genus, idx) => (
                   <TreeTips
@@ -107,6 +115,7 @@ const theria = Object.values(taxonData).filter(
                       genus.living_species_count + genus.extinct_species_count
                     }
                     italic={true}
+                    expanded={false}
                   >
                     {genus.species.living_species.map((species, idx) => (
                       <TreeTips
@@ -114,6 +123,7 @@ const theria = Object.values(taxonData).filter(
                         idx={idx}
                         length={genus.species.living_species.length}
                         italic={true}
+                        expanded={false}
                       />
                     ))}
                     {genus.species.extinct_species.map((species, idx) => (
@@ -122,6 +132,7 @@ const theria = Object.values(taxonData).filter(
                         idx={idx}
                         length={genus.species.extinct_species.length}
                         italic={true}
+                        expanded={false}
                       />
                     ))}
                   </TreeTips>
