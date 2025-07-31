@@ -1,0 +1,50 @@
+---
+import Image from "astro/components/Image.astro";
+import cntl from "cntl";
+import ActionButton from "./buttons/ActionButton.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  imageSrc: ImageMetadata;
+  imageAlt: string;
+  buttonLabel: string;
+  buttonUri: string;
+}
+
+const { title, description, imageSrc, imageAlt, buttonLabel, buttonUri } =
+  Astro.props as Props;
+
+const cardClasses = cntl`
+  card
+  w-full
+  bg-gradient-to-l
+  dark:from-transparent
+  dark:to-spectra-800
+  from-spectra-100
+  to-transparent
+`;
+
+const cardTextClasses = cntl`
+  text-md
+`;
+---
+
+<div class={cardClasses}>
+  <figure>
+    <Image
+      src={imageSrc}
+      alt={imageAlt}
+      width={600}
+      height={400}
+      class="w-full h-auto object-cover"
+    />
+  </figure>
+  <div class="card-body">
+    <h2 class="card-title">{title}</h2>
+    <p class={cardTextClasses}>
+      {description}
+    </p>
+    <ActionButton label={buttonLabel} uri={buttonUri} />
+  </div>
+</div>
