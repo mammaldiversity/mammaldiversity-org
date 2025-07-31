@@ -11,7 +11,19 @@ import PageHeader from "../../layouts/PageHeader.astro";
 import cntl from "cntl";
 import { createSynonymName } from "../../scripts/taxon";
 
-const synonyms: Synonym[] = getSynonymOnly();
+let synonyms: Synonym[] = getSynonymOnly();
+if (!Array.isArray(synonyms)) {
+  synonyms = [];
+}
+
+const pageSize = 50;
+const url = new URL(Astro.request.url);
+const pageParam = url.searchParams.get("page");
+const currentPage = pageParam ? Math.max(1, parseInt(pageParam)) : 1;
+const totalPages = Math.ceil(synonyms.length / pageSize);
+const start = (currentPage - 1) * pageSize;
+const end = start + pageSize;
+const pageSynonyms = synonyms.slice(start, end);
 
 const tableClasses = cntl`
   table-auto
@@ -41,10 +53,10 @@ const theadClasses = cntl`
       <Title slot="title">Available Synonyms</Title>
       <div slot="description">
         <p>
-          This page lists {synonyms.length} available synonyms not linked to accepted
-          taxa in the Mammal Diversity Database (MDD).
+          This page lists {synonyms.length} available synonyms not linked to
+          accepted taxa in the Mammal Diversity Database (MDD).
         </p>
-        <p>Test {synonyms[0].synId}</p>
+        {synonyms.length > 0 && <p>Test {synonyms[0].synId}</p>}
       </div>
     </PageHeader>
     <table class={tableClasses}>
@@ -63,7 +75,7 @@ const theadClasses = cntl`
       </thead>
       <tbody>
         {
-          synonyms.map((synonym) => (
+          pageSynonyms.map((synonym) => (
             <tr>
               <td class="py-2 px-4 border-b text-center">{synonym.synId}</td>
               <td class="py-2 px-4 border-b text-center">{synonym.hespId}</td>
@@ -76,6 +88,36 @@ const theadClasses = cntl`
           ))
         }
       </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="7" class="py-4 px-4 text-center">
+            <nav>
+              {currentPage > 1 && (
+                <a
+                  class="mx-2 underline text-blue-600"
+                  href={`?page=${currentPage - 1}`}>&laquo; Prev</a
+                >
+              )}
+              {[...Array(totalPages).keys()].map((i) => {
+                const page = i + 1;
+                return page === currentPage ? (
+                  <span class="mx-1 font-bold">{page}</span>
+                ) : (
+                  <a class="mx-1 underline text-blue-600" href={`?page=${page}`}
+                    >{page}</a
+                  >
+                );
+              })}
+              {currentPage < totalPages && (
+                <a
+                  class="mx-2 underline text-blue-600"
+                  href={`?page=${currentPage + 1}`}>Next &raquo;</a
+                >
+              )}
+            </nav>
+          </td>
+        </tr>
+      </tfoot>
     </table>
   </MainPage>
 </Page>
