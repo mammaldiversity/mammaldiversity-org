@@ -10,7 +10,7 @@ Our primary goals for this rewrite are:
 - **Support Dataset Growth:** Accommodate the expanding Mammal Diversity Database, including over 50,000 synonyms introduced in the version 2 release.
 - **Maintainability:** Ensure the codebase is easy to maintain and extend. The new modular and scalable architecture allows for easier updates and feature additions, which saves time, effort, and project budget in the long run.
 
-The website is built with [Astro](https://astro.build/), a modern web framework for building fast, content-focused websites. It uses [Tailwind CSS](https://tailwindcss.com/) for styling and [React](https://react.dev/) for some interactive components. The search functionality is powered by [Pagefind](https://pagefind.app/), a static site search library. End-to-end testing is done with [Playwright](https://playwright.dev/).
+The website is built with [Astro](https://astro.build/), a modern web framework for building fast, content-focused websites. It uses [Tailwind CSS](https://tailwindcss.com/) for styling. The search functionality is powered by [Pagefind](https://pagefind.app/), a static site search library. End-to-end testing is done with [Playwright](https://playwright.dev/).
 
 > **Note:** The original version of the MDD website is available at [classic.mammaldiversity.org](http://classic.mammaldiversity.org/).
 
