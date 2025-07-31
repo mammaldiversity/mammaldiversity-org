@@ -1,13 +1,13 @@
 ---
-import Image from "astro/components/Image.astro";
 import ActionButton from "../../components/buttons/ActionButton.astro";
-import Link from "../../components/Link.astro";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import Page from "../../layouts/Page.astro";
 import PageHeader from "../../layouts/PageHeader.astro";
-import listImg from "../../assets/images/explore-cards/list.jpg";
-import tableImg from "../../assets/images/explore-cards/table.jpg";
+import listImg from "../../assets/images/explore-cards/list.png";
+import listImgDark from "../../assets/images/explore-cards/list-dark.png";
+import tableImg from "../../assets/images/explore-cards/table.png";
+import tableImgDark from "../../assets/images/explore-cards/table-dark.png";
 import ResponsiveCard from "../../components/ResponsiveCard.astro";
 import { getCountryDiversityJson } from "../../scripts/diversity_map";
 import cntl from "cntl";
@@ -44,6 +44,7 @@ const cardClasses = cntl`
           title="Taxon List"
           description="Explore the taxonomy of species listed in the MDD, grouped by taxonomic order and sorted according to their phylogenetic hierarchy."
           imageSrc={listImg}
+          imageSrcDark={listImgDark}
           imageAlt="Taxon List"
           buttonLabel="Explore List"
           buttonUri="/explore/taxon-list"
@@ -52,6 +53,7 @@ const cardClasses = cntl`
           title="Taxonomy Table"
           description="Explore current mammalian taxonomy in an expandable table format, including counts of orders, families, genera, and species."
           imageSrc={tableImg}
+          imageSrcDark={tableImgDark}
           imageAlt="Taxonomy Table"
           buttonLabel="Explore Table"
           buttonUri="/explore/taxonomy-table"
