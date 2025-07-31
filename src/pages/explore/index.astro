@@ -32,15 +32,15 @@ const cardClasses = cntl`
     <PageHeader>
       <Title slot="title">Explore MDD</Title>
       <div slot="description">
-        <p class="text-md mb-4">
-          Explore the Mammal Diversity Database (MDD) through interactive tools
-          and visualizations. View the data as a list ordered by taxonomic
-          hierarchy or as a table, and discover mammalian diversity by country
-          and region.
+        <p class="text-xl mb-4">
+          Multiple ways to explore the Mammal Diversity Database (MDD). View the
+          data as a list ordered by taxonomic hierarchy, a table, or a
+          phylogenetic tree. You can also explore mammalian diversity by country
+          using the interactive map.
         </p>
       </div>
     </PageHeader>
-    <div class="lg:max-w-7xl mx-auto">
+    <div class="lg:max-w-7xl mx-auto mt-16">
       <div class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4">
         <ResponsiveCard
           title="Taxon List"
@@ -66,7 +66,7 @@ const cardClasses = cntl`
           <h2 class="text-3xl font-semibold mb-4">
             Mammal Diversity by Country and Region
           </h2>
-          <p class="text-sm mb-4 max-w-4xl mx-auto">
+          <p class="text-md mb-4 max-w-4xl mx-auto">
             The interactive map below offers an overview of mammal diversity by
             country. Hover over a country to view the species count. Click on a
             country to see its species list, or use the "Explore by Country"
@@ -77,18 +77,18 @@ const cardClasses = cntl`
               <div id="stats-map"></div>
             </diversity-map>
           </div>
-          <ActionButton label="Explore by Country" uri="/country" />
+          <ActionButton label="Show country data" uri="/country" />
         </div>
       </div><div
         class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4"
       >
         <ResponsiveCard
-          title="Phylogenetic Tree"
-          description="Explore the evolutionary relationships among mammals in this interactive tree."
+          title="Tree View"
+          description="Explore by taxonomic hierarchy in an interactive tree view."
           imageSrc={phyloImg}
           imageSrcDark={phyloImgDark}
           imageAlt="Phylogenetic Tree"
-          buttonLabel="Explore Tree"
+          buttonLabel="View Tree"
           buttonUri="/explore/tree"
         />
       </div>
