@@ -1,0 +1,81 @@
+---
+// Singleton synonyms page.
+// We use this page to display taxon synonyms not
+// linked to a specific MDD taxon.
+import { getSynonymOnly } from "../../../db/mdd";
+import type { Synonym } from "../../../db/mdd_model";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
+import cntl from "cntl";
+import { createSynonymName } from "../../scripts/taxon";
+
+const synonyms: Synonym[] = getSynonymOnly();
+
+const tableClasses = cntl`
+  table-auto
+  my-4
+  mx-auto
+  border-collapse
+  border-spacing-0
+`;
+
+const theadClasses = cntl`
+  bg-spectra-100 
+  dark:bg-spectra-900
+  sticky 
+  top-0 
+  z-10
+  text-center
+  border-b
+`;
+---
+
+<Page
+  title="Synonyms"
+  description="A list of synonyms not linked to a specific accepted taxon in the MDD."
+>
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">Available Synonyms</Title>
+      <div slot="description">
+        <p>
+          This page lists {synonyms.length} available synonyms not linked to accepted
+          taxa in the Mammal Diversity Database (MDD).
+        </p>
+        <p>Test {synonyms[0].synId}</p>
+      </div>
+    </PageHeader>
+    <table class={tableClasses}>
+      <thead class={theadClasses}>
+        <tr>
+          <th class="py-2 px-4 border-b rounded-tl-xl text-center"
+            >Synonym id</th
+          >
+          <th class="py-2 px-4 border-b text-center">Hesperomys id</th>
+          <th class="py-2 px-4 border-b text-center">Species</th>
+          <th class="py-2 px-4 border-b text-center">Root name</th>
+          <th class="py-2 px-4 border-b text-center">Author</th>
+          <th class="py-2 px-4 border-b text-center">Year</th>
+          <th class="py-2 px-4 border-b rounded-tr-xl text-center">Family</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          synonyms.map((synonym) => (
+            <tr>
+              <td class="py-2 px-4 border-b text-center">{synonym.synId}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.hespId}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.species}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.rootName}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.author}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.year}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.family}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </MainPage>
+</Page>
