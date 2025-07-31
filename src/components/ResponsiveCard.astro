@@ -7,13 +7,21 @@ interface Props {
   title: string;
   description: string;
   imageSrc: ImageMetadata;
+  imageSrcDark: ImageMetadata;
   imageAlt: string;
   buttonLabel: string;
   buttonUri: string;
 }
 
-const { title, description, imageSrc, imageAlt, buttonLabel, buttonUri } =
-  Astro.props as Props;
+const {
+  title,
+  description,
+  imageSrc,
+  imageSrcDark,
+  imageAlt,
+  buttonLabel,
+  buttonUri,
+} = Astro.props as Props;
 
 const cardClasses = cntl`
   card
@@ -37,7 +45,14 @@ const cardTextClasses = cntl`
       alt={imageAlt}
       width={600}
       height={400}
-      class="w-full h-auto object-cover"
+      class="w-full h-auto object-cover block dark:hidden"
+    />
+    <Image
+      src={imageSrcDark}
+      alt={imageAlt}
+      width={600}
+      height={400}
+      class="w-full h-auto object-cover hidden dark:block"
     />
   </figure>
   <div class="card-body">
