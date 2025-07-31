@@ -9,7 +9,6 @@ import MainPage from "../../layouts/MainPage.astro";
 import Page from "../../layouts/Page.astro";
 import PageHeader from "../../layouts/PageHeader.astro";
 import cntl from "cntl";
-import { createSynonymName } from "../../scripts/taxon";
 
 let synonyms: Synonym[] = getSynonymOnly();
 if (!Array.isArray(synonyms)) {
