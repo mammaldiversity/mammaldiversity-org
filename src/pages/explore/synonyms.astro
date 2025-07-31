@@ -53,8 +53,8 @@ const theadClasses = cntl`
       <Title slot="title">Available Synonyms</Title>
       <div slot="description">
         <p>
-          This page lists {synonyms.length} available synonyms not linked to
-          accepted taxa in the Mammal Diversity Database (MDD).
+          This page lists {synonyms.length} available synonyms not linked to accepted
+          taxa in the Mammal Diversity Database (MDD).
         </p>
         {synonyms.length > 0 && <p>Test {synonyms[0].synId}</p>}
       </div>
@@ -92,28 +92,41 @@ const theadClasses = cntl`
         <tr>
           <td colspan="7" class="py-4 px-4 text-center">
             <nav>
-              {currentPage > 1 && (
-                <a
-                  class="mx-2 underline text-blue-600"
-                  href={`?page=${currentPage - 1}`}>&laquo; Prev</a
-                >
-              )}
-              {[...Array(totalPages).keys()].map((i) => {
-                const page = i + 1;
-                return page === currentPage ? (
-                  <span class="mx-1 font-bold">{page}</span>
-                ) : (
-                  <a class="mx-1 underline text-blue-600" href={`?page=${page}`}
-                    >{page}</a
+              {
+                currentPage > 1 && (
+                  <a
+                    class="mx-2 underline text-blue-600"
+                    href={`?page=${currentPage - 1}`}
                   >
-                );
-              })}
-              {currentPage < totalPages && (
-                <a
-                  class="mx-2 underline text-blue-600"
-                  href={`?page=${currentPage + 1}`}>Next &raquo;</a
-                >
-              )}
+                    &laquo; Prev
+                  </a>
+                )
+              }
+              {
+                [...Array(totalPages).keys()].map((i) => {
+                  const page = i + 1;
+                  return page === currentPage ? (
+                    <span class="mx-1 font-bold">{page}</span>
+                  ) : (
+                    <a
+                      class="mx-1 underline text-blue-600"
+                      href={`?page=${page}`}
+                    >
+                      {page}
+                    </a>
+                  );
+                })
+              }
+              {
+                currentPage < totalPages && (
+                  <a
+                    class="mx-2 underline text-blue-600"
+                    href={`?page=${currentPage + 1}`}
+                  >
+                    Next &raquo;
+                  </a>
+                )
+              }
             </nav>
           </td>
         </tr>
