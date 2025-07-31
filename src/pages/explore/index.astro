@@ -8,6 +8,8 @@ import listImg from "../../assets/images/explore-cards/list.png";
 import listImgDark from "../../assets/images/explore-cards/list-dark.png";
 import tableImg from "../../assets/images/explore-cards/table.png";
 import tableImgDark from "../../assets/images/explore-cards/table-dark.png";
+import phyloImg from "../../assets/images/explore-cards/phylo.png";
+import phyloImgDark from "../../assets/images/explore-cards/phylo-dark.png";
 import ResponsiveCard from "../../components/ResponsiveCard.astro";
 import { getCountryDiversityJson } from "../../scripts/diversity_map";
 import cntl from "cntl";
@@ -59,7 +61,7 @@ const cardClasses = cntl`
           buttonUri="/explore/taxonomy-table"
         />
       </div>
-      <div class="mt-4 text-center">
+      <div class="my-4 text-center">
         <div class={cardClasses}>
           <h2 class="text-3xl font-semibold mb-4">
             Mammal Diversity by Country and Region
@@ -77,6 +79,18 @@ const cardClasses = cntl`
           </div>
           <ActionButton label="Explore by Country" uri="/country" />
         </div>
+      </div><div
+        class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4"
+      >
+        <ResponsiveCard
+          title="Phylogenetic Tree"
+          description="Explore the evolutionary relationships among mammals in this interactive tree."
+          imageSrc={phyloImg}
+          imageSrcDark={phyloImgDark}
+          imageAlt="Phylogenetic Tree"
+          buttonLabel="Explore Tree"
+          buttonUri="/explore/tree"
+        />
       </div>
     </div>
   </MainPage>
