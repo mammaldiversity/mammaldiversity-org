@@ -16,8 +16,10 @@ interface Props {
   childCount?: number;
   italic?: boolean; // optional, if true, label will be italicized
   url?: string; // optional, if provided, label will be a link
+  expanded: boolean; // whether the item is expanded or collapsed at the start
 }
-const { label, taxonName, idx, length, childCount, italic, url } = Astro.props;
+const { label, taxonName, idx, length, childCount, italic, url, expanded } =
+  Astro.props;
 
 const isOnlyChild = length === 1;
 const isFirstChild = idx === 0;
@@ -66,10 +68,10 @@ const buttonDivClasses = cntl`
             <button
               id={`toggle-${idx}`}
               class="bg-transparent ml-2 mr-4 text-2xl font-semibold"
-              aria-expanded="false"
-              aria-label="Expand"
+              aria-expanded={expanded}
+              aria-label={expanded ? "Collapse" : "Expand"}
             >
-              +
+              {expanded ? "–" : "+"}
             </button>
           </div>
         )
@@ -89,7 +91,11 @@ const buttonDivClasses = cntl`
     />
     <HorizontalLines />
 
-    <ul id="children" class="ml-4 children" style="display: none;">
+    <ul
+      id="children"
+      class="ml-4 children"
+      style={`display: ${expanded ? "block" : "none"}`}
+    >
       <slot />
     </ul>
   </li>
