@@ -1,0 +1,135 @@
+---
+// Singleton synonyms page.
+// We use this page to display taxon synonyms not
+// linked to a specific MDD taxon.
+import { getSynonymOnly } from "../../../db/mdd";
+import type { Synonym } from "../../../db/mdd_model";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
+import cntl from "cntl";
+
+let synonyms: Synonym[] = getSynonymOnly();
+if (!Array.isArray(synonyms)) {
+  synonyms = [];
+}
+
+const pageSize = 50;
+const url = new URL(Astro.request.url);
+const pageParam = url.searchParams.get("page");
+const currentPage = pageParam ? Math.max(1, parseInt(pageParam)) : 1;
+const totalPages = Math.ceil(synonyms.length / pageSize);
+const start = (currentPage - 1) * pageSize;
+const end = start + pageSize;
+const pageSynonyms = synonyms.slice(start, end);
+
+const tableClasses = cntl`
+  table-auto
+  my-4
+  mx-auto
+  border-collapse
+  border-spacing-0
+`;
+
+const theadClasses = cntl`
+  bg-spectra-100 
+  dark:bg-spectra-900
+  sticky 
+  top-0 
+  z-10
+  text-center
+  border-b
+`;
+---
+
+<Page
+  title="Synonyms"
+  description="A list of synonyms not linked to a specific accepted taxon in the MDD."
+>
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">Available Synonyms</Title>
+      <div slot="description">
+        <p>
+          This page lists {synonyms.length} available synonyms not linked to accepted
+          taxa in the Mammal Diversity Database (MDD).
+        </p>
+        {synonyms.length > 0 && <p>Test {synonyms[0].synId}</p>}
+      </div>
+    </PageHeader>
+    <table class={tableClasses}>
+      <thead class={theadClasses}>
+        <tr>
+          <th class="py-2 px-4 border-b rounded-tl-xl text-center"
+            >Synonym id</th
+          >
+          <th class="py-2 px-4 border-b text-center">Hesperomys id</th>
+          <th class="py-2 px-4 border-b text-center">Species</th>
+          <th class="py-2 px-4 border-b text-center">Root name</th>
+          <th class="py-2 px-4 border-b text-center">Author</th>
+          <th class="py-2 px-4 border-b text-center">Year</th>
+          <th class="py-2 px-4 border-b rounded-tr-xl text-center">Family</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          pageSynonyms.map((synonym) => (
+            <tr>
+              <td class="py-2 px-4 border-b text-center">{synonym.synId}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.hespId}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.species}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.rootName}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.author}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.year}</td>
+              <td class="py-2 px-4 border-b text-center">{synonym.family}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="7" class="py-4 px-4 text-center">
+            <nav>
+              {
+                currentPage > 1 && (
+                  <a
+                    class="mx-2 underline text-blue-600"
+                    href={`?page=${currentPage - 1}`}
+                  >
+                    &laquo; Prev
+                  </a>
+                )
+              }
+              {
+                [...Array(totalPages).keys()].map((i) => {
+                  const page = i + 1;
+                  return page === currentPage ? (
+                    <span class="mx-1 font-bold">{page}</span>
+                  ) : (
+                    <a
+                      class="mx-1 underline text-blue-600"
+                      href={`?page=${page}`}
+                    >
+                      {page}
+                    </a>
+                  );
+                })
+              }
+              {
+                currentPage < totalPages && (
+                  <a
+                    class="mx-2 underline text-blue-600"
+                    href={`?page=${currentPage + 1}`}
+                  >
+                    Next &raquo;
+                  </a>
+                )
+              }
+            </nav>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </MainPage>
+</Page>
