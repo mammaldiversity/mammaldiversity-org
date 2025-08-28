@@ -16,18 +16,23 @@ import DiversityStatTable from "../components/DiversityStatTable.astro";
 import desktopApp from "../assets/images/screenshots/desktopApp.png";
 import InstallButton from "../components/buttons/InstallButton.astro";
 import { getMetadata } from "../../db/mdd";
+import {
+  formatDate,
+  cleanVersion,
+  getCurrentYear,
+  getCurrentDate,
+} from "../scripts/metadata";
 
 const meta = getMetadata();
-const currentVersion = meta.version.startsWith("v")
-  ? meta.version.slice(1)
-  : meta.version;
+const currentVersion = cleanVersion(meta.version);
 
-const verbatimReleaseDate = new Date("2025-06-13"); // Fallback date if releaseDate is not available
-const releaseDate = verbatimReleaseDate.toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
+const overrideReleaseDate = "2025-06-13"; // Fallback date if releaseDate is not available
+const releaseDate = meta.releaseDate
+  ? formatDate(meta.releaseDate)
+  : formatDate(overrideReleaseDate);
+
+const currentYear = getCurrentYear();
+const currentDate = getCurrentDate();
 
 const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
 const mddDownloadLink =
@@ -54,15 +59,6 @@ const allImages = [
     alt: "An Abbott's duiker. Courtesy of the ASM’s MIL",
   },
 ];
-
-// const mammalImg = allImages[Math.floor(Math.random() * allImages.length)];
-
-const currentYear = new Date().getFullYear();
-const currentDate = new Date().toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
 
 const titleClasses = cntl`
   font-serif
