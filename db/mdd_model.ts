@@ -123,6 +123,8 @@ interface Metadata {
   genusCount: number;
   familyCount: number;
   orderCount: number;
+  remark?: string;
+  doi?: string;
 }
 
 interface SynonymName {

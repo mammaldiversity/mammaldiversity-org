@@ -1,7 +1,7 @@
 // Parser for parsing the MDD json file
 import fs from "fs";
 
-import type { MddData, SpeciesData, Metadata } from "./mdd_model";
+import type { MddData, SpeciesData, Metadata, Synonym } from "./mdd_model";
 
 const MDD_PATH = "./db/data/mdd.json";
 // const MDD_PATH = "./db/data/test.json";
@@ -37,8 +37,15 @@ function getTaxonomyData(data: SpeciesData[], speciesId: number): SpeciesData {
   return taxonomy || ({} as SpeciesData);
 }
 
+function getSynonymOnly(): Synonym[] {
+  const synonym = parseMDDJson().synonymOnly;
+  console.log("Synonym Only: ", synonym);
+  return synonym;
+}
+
 export {
   getSpeciesData,
+  getSynonymOnly,
   getTaxonomyData,
   getSpeciesDataByIds,
   filterSpeciesId,
