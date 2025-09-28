@@ -1,4 +1,32 @@
 "use client";
+/**
+ * CountryMap
+ * ---------------------------------------------------------------------------
+ * Reusable choropleth map component for visualizing mammal species diversity
+ * by country. Uses Observable Plot for rendering.
+ *
+ * Inputs:
+ *  - stats: Record<ISO2, number>
+ *  - world: GeoJSON FeatureCollection (must contain properties with at least
+ *           one of iso_a2 / iso_a3 / name to resolve an ISO2 code)
+ *  - isoCodeMap: (optional) mapping from alternative identifiers (ISO3 codes,
+ *                 names) to ISO2 codes. Keys are case-insensitive.
+ *
+ * Behavior:
+ *  1. Resolves a feature's ISO2 code, then joins with stats.
+ *  2. Renders a continuous color scale (linear) for species counts.
+ *  3. Provides tooltips (title) and navigation via /country/{ISO2} links.
+ *  4. Displays labels only for countries that have data (to reduce clutter).
+ *
+ * Accessibility / UX:
+ *  - Tooltips show Country Name: <count> species.
+ *  - Countries without data are left unfilled (default map background).
+ *
+ * Extensibility notes:
+ *  - For quantized classes, swap the color config to { type: "quantize", domain, range }.
+ *  - For a legend domain clamp, compute min/max before constructing Plot.
+ *  - To allow toggling labels, add a showLabels prop and conditionally push the Plot.text mark.
+ */
 // components/DistributionMap.tsx
 import { useEffect, useRef } from "react";
 import * as Plot from "@observablehq/plot";
@@ -7,16 +35,22 @@ import * as Plot from "@observablehq/plot";
 // - stats: object mapping ISO codes to counts, e.g. { US: 120, ID: 340, ... } (ISO2 or ISO3)
 // - world: GeoJSON FeatureCollection of countries with properties.iso_a2 and properties.iso_a3
 // - colors: optional [minColor, maxColor]
-type Props = {
-  stats: Record<string, number>; // keyed by ISO alpha-2 currently
-  world: GeoJSON.FeatureCollection; // country features
+interface Props {
+  /** Map of ISO 3166-1 alpha-2 codes to species count. */
+  stats: Record<string, number>;
+  /** GeoJSON features for the world (countries layer). */
+  world: GeoJSON.FeatureCollection;
+  /** Two-color gradient [low, high] for linear scale. */
   colors?: [string, string];
+  /** Projection name or options; defaults to 'equal-earth'. */
   projection?: string | Plot.ProjectionOptions;
-  isoCodeMap?: Record<string, string>; // optional mapping from ISO3 to ISO2 codes
+  /** Mapping from alternative identifiers (ISO3 codes, names) to ISO2 codes. */
+  isoCodeMap?: Record<string, string>;
+  /** Primary feature property to inspect first when resolving a code. */
   valueKey?: "iso_a2" | "iso_a3" | "id" | "name";
-  /** Optional ordered fallback keys to try if primary valueKey missing */
+  /** Fallback feature property names to attempt if the primary fails. */
   fallbackKeys?: string[];
-};
+}
 
 function CountryMap({
   stats,
@@ -46,6 +80,7 @@ function CountryMap({
       Object.entries(stats).map(([k, v]) => [k.toUpperCase(), v])
     );
 
+    // Normalize isoCodeMap keys and values (uppercase) for case-insensitive lookups.
     const countryCodeMap = new Map<string, string>(
       Object.entries(isoCodeMap).map(([k, v]) => [
         k.toUpperCase(),
@@ -53,13 +88,20 @@ function CountryMap({
       ])
     );
 
+    /**
+     * Resolve a country identifier from a feature's properties.
+     * Order:
+     *  1. valueKey property
+     *  2. Each fallback key
+     * Returns uppercase string or undefined.
+     */
     function getFeatureCountry(props: any): string | undefined {
       if (!props) return undefined;
       const primary = props[valueKey];
-      if (primary && typeof primary === "string") return primary.toUpperCase();
+      if (typeof primary === "string" && primary) return primary.toUpperCase();
       for (const fk of fallbackKeys) {
         const val = props[fk];
-        if (val && typeof val === "string") return val.toUpperCase();
+        if (typeof val === "string" && val) return val.toUpperCase();
       }
       return undefined;
     }
