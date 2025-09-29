@@ -1,4 +1,3 @@
-"use client";
 /**
  * CountryMap
  * ---------------------------------------------------------------------------
@@ -28,7 +27,7 @@
  *  - To allow toggling labels, add a showLabels prop and conditionally push the Plot.text mark.
  */
 // components/DistributionMap.tsx
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 
 // Props:

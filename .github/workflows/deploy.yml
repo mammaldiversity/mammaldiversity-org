@@ -36,6 +36,10 @@ jobs:
         run: |
           curl -L -o MDD.zip https://github.com/mammaldiversity/mammaldiversity.github.io/raw/master/assets/data/MDD.zip
           mdd zip -i MDD.zip
+      - name: Cleaning up data files
+        working-directory: db/data
+        run: |
+          rm MDD.zip
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         # with:
