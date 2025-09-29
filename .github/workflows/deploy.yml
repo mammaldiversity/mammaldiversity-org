@@ -40,7 +40,6 @@ jobs:
         working-directory: db/data
         run: |
           rm MDD.zip
-          cargo clean
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         # with:
