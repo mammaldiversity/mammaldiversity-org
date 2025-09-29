@@ -111,24 +111,24 @@ function getCountryRegionName(code: string): string {
   return regionNameToMapName[regionName] || regionName;
 }
 
+function isFeatureCollection(
+  input: any
+): input is GeoJSON.FeatureCollection<
+  GeoJSON.Geometry,
+  GeoJSON.GeoJsonProperties
+> {
+  return (
+    input &&
+    input.type === "FeatureCollection" &&
+    Array.isArray(input.features)
+  );
+}
+
 function getWorldGeoJson(): GeoJSON.FeatureCollection {
   const worldCountriesResultUnknown = feature(
     worldTopoJson as any,
     (worldTopoJson as any).objects.countries
   ) as unknown;
-
-  function isFeatureCollection(
-    input: any
-  ): input is GeoJSON.FeatureCollection<
-    GeoJSON.Geometry,
-    GeoJSON.GeoJsonProperties
-  > {
-    return (
-      input &&
-      input.type === "FeatureCollection" &&
-      Array.isArray(input.features)
-    );
-  }
 
   if (!isFeatureCollection(worldCountriesResultUnknown)) {
     throw new Error(
@@ -142,6 +142,7 @@ function getWorldGeoJson(): GeoJSON.FeatureCollection {
 
 
 export {
+  isFeatureCollection,
   getCountryRegionCode,
   getCountryRegionName,
   getWorldGeoJson,

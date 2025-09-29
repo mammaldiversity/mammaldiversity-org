@@ -10,7 +10,6 @@ import cntl from "cntl";
 const { countries, extendClass } = Astro.props;
 
 const countryList = splitCountryDistribution(countries ?? "");
-const worldGeoJson = getWorldGeoJson();
 
 const emptyDistribution =
   countryList.known.length === 0 && countryList.predicted.length === 0;
@@ -66,11 +65,7 @@ const emptyTextClasses = cntl`
     emptyDistribution ? (
       <p class={emptyTextClasses}>No distribution data available.</p>
     ) : (
-      <SpeciesDistributionMap
-        client:load
-        distribution={countries ?? ""}
-        world={worldGeoJson}
-      />
+      <SpeciesDistributionMap client:load distribution={countries ?? ""} />
     )
   }
 </div>
