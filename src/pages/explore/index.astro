@@ -24,11 +24,11 @@ const countryStats = buildDiversityStatsByCountryName();
 const worldGeoJson = getWorldGeoJson();
 const countryCodeMap = getMappingCodeFromStats(countryStats);
 
-const cardClasses = cntl`
+const mapClasses = cntl`
   w-full
   bg-gradient-to-l
   dark:from-spectra-800
-  dark:to-spicy-mix-900
+  dark:to-spicy-mix-800
   from-spectra-100
   to-spicy-mix-100
   rounded-2xl
@@ -71,7 +71,7 @@ const cardClasses = cntl`
         />
       </div>
       <div class="my-4 text-center">
-        <div class={cardClasses}>
+        <div class={mapClasses}>
           <h2 class="text-3xl font-semibold mb-4">
             Mammal Diversity by Country and Region
           </h2>
@@ -89,7 +89,6 @@ const cardClasses = cntl`
               isoCodeMap={countryCodeMap}
             />
           </div>
-
           <ActionButton label="Show country data" uri="/country" />
         </div>
       </div>
