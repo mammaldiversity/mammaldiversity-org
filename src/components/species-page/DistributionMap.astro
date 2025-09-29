@@ -1,9 +1,6 @@
 ---
 import { getWorldGeoJson } from "../../../db/country_data";
-import {
-  countryListToJson,
-  splitCountryDistribution,
-} from "../../scripts/species_map";
+import { splitCountryDistribution } from "../../scripts/species_map";
 import SpeciesDistributionMap from "../maps/SpeciesDistributionMap";
 import cntl from "cntl";
 
@@ -11,12 +8,10 @@ const { countries, extendClass } = Astro.props;
 
 const countryList = splitCountryDistribution(countries ?? "");
 
-// const countryListStringify = countryListToJson(countryList);
 const emptyDistribution =
   countryList.known.length === 0 && countryList.predicted.length === 0;
 
 const hasPredictedDistribution = countryList.predicted.length > 0;
-const worldGeoJson = getWorldGeoJson();
 
 const mapContainerClasses = cntl`
   bg-spectra-100 
