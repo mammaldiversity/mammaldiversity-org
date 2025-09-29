@@ -11,15 +11,24 @@ import tableImgDark from "../../assets/images/explore-cards/table-dark.png";
 import phyloImg from "../../assets/images/explore-cards/phylo.png";
 import phyloImgDark from "../../assets/images/explore-cards/phylo-dark.png";
 import ResponsiveCard from "../../components/ResponsiveCard.astro";
-import { getCountryDiversityJson } from "../../scripts/diversity_map";
+import {
+  buildDiversityStatsByCountryName,
+  getMappingCodeFromStats,
+} from "../../scripts/diversity_map";
+import { getWorldGeoJson } from "../../../db/country_data";
+import CountryMap from "../../components/maps/CountryMap";
 import cntl from "cntl";
-const countryDiversityStringify = getCountryDiversityJson();
 
-const cardClasses = cntl`
+const countryStats = buildDiversityStatsByCountryName();
+
+const worldGeoJson = getWorldGeoJson();
+const countryCodeMap = getMappingCodeFromStats(countryStats);
+
+const mapClasses = cntl`
   w-full
   bg-gradient-to-l
   dark:from-spectra-800
-  dark:to-spicy-mix-900
+  dark:to-spicy-mix-800
   from-spectra-100
   to-spicy-mix-100
   rounded-2xl
@@ -62,7 +71,7 @@ const cardClasses = cntl`
         />
       </div>
       <div class="my-4 text-center">
-        <div class={cardClasses}>
+        <div class={mapClasses}>
           <h2 class="text-3xl font-semibold mb-4">
             Mammal Diversity by Country and Region
           </h2>
@@ -72,84 +81,28 @@ const cardClasses = cntl`
             country to see its species list, or use the "Explore by Country"
             button for more detailed country-level mammalian diversity.
           </p>
-          <div class="mb-4">
-            <diversity-map data-stats={countryDiversityStringify}>
-              <div id="stats-map"></div>
-            </diversity-map>
+          <div class="mb-4 mx-auto">
+            <CountryMap
+              client:load
+              stats={countryStats}
+              world={worldGeoJson}
+              isoCodeMap={countryCodeMap}
+            />
           </div>
           <ActionButton label="Show country data" uri="/country" />
         </div>
-      </div><div
-        class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4"
-      >
-        <ResponsiveCard
-          title="Tree View"
-          description="Explore by taxonomic hierarchy in an interactive tree view."
-          imageSrc={phyloImg}
-          imageSrcDark={phyloImgDark}
-          imageAlt="Phylogenetic Tree"
-          buttonLabel="View Tree"
-          buttonUri="/explore/tree"
-        />
       </div>
+      <div class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4">
+      </div>
+      <ResponsiveCard
+        title="Tree View"
+        description="Explore by taxonomic hierarchy in an interactive tree view."
+        imageSrc={phyloImg}
+        imageSrcDark={phyloImgDark}
+        imageAlt="Phylogenetic Tree"
+        buttonLabel="View Tree"
+        buttonUri="/explore/tree"
+      />
     </div>
   </MainPage>
 </Page>
-
-<script
-  is:inline
-  type="text/javascript"
-  src="https://www.gstatic.com/charts/loader.js"></script>
-<script>
-  import { jsonToCountryDiversityMap } from "../../scripts/diversity_map";
-  declare const google: any;
-
-  class DistributionMap extends HTMLElement {
-    connectedCallback() {
-      const countryDiversity = this.dataset.stats;
-      const countryStats = jsonToCountryDiversityMap(countryDiversity ?? "");
-
-      google.charts.load("current", {
-        packages: ["geochart"],
-      });
-      google.charts.setOnLoadCallback(drawRegionsMap);
-
-      async function drawRegionsMap() {
-        var data = google.visualization.arrayToDataTable([
-          ["Country", "Species count"],
-          ...Object.entries(countryStats).map(([country, count]) => [
-            country,
-            count,
-          ]),
-        ]);
-
-        var options = {
-          colorAxis: { colors: ["#FFEB00", "#117554"] },
-        };
-
-        var chart = new google.visualization.GeoChart(
-          document.getElementById("stats-map")
-        );
-
-        // This click even allows users to navigate to the country page
-        // Astro generate the page with the country code in the url
-        // e.g. /country/US
-        google.visualization.events.addListener(
-          chart,
-          "regionClick",
-          function (e: any) {
-            if (e.region) {
-              window.location.href = `/country/${e.region}`;
-            }
-          }
-        );
-
-        chart.draw(data, options);
-      }
-    }
-  }
-
-  if (!customElements.get("diversity-map")) {
-    customElements.define("diversity-map", DistributionMap);
-  }
-</script>
