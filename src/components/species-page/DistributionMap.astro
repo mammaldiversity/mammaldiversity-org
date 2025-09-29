@@ -12,7 +12,7 @@ const { countries, extendClass } = Astro.props;
 const countryList = splitCountryDistribution(countries ?? "");
 const worldGeoJson = getWorldGeoJson();
 
-const countryListStringify = countryListToJson(countryList);
+// const countryListStringify = countryListToJson(countryList);
 const emptyDistribution =
   countryList.known.length === 0 && countryList.predicted.length === 0;
 
