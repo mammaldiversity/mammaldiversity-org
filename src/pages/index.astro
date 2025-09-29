@@ -38,6 +38,7 @@ const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
 const mddDownloadLink =
   "https://github.com/mammaldiversity/mammaldiversity.github.io/raw/refs/heads/master/assets/data/MDD.zip";
 
+const doi = meta.doi ? meta.doi : "https://doi.org/10.5281/zenodo.17033774";
 // Define version description
 const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
 
@@ -262,7 +263,7 @@ const highlightedContainerClasses = cntl`
             authors={["Mammal Diversity Database"]}
             year={currentYear}
             title=`Mammal Diversity Database (Version ${currentVersion}) [Data set]`
-            doi="https://doi.org/10.5281/zenodo.15007505"
+            doi={doi}
           />
           <p>
             A specific entry: Each entry has a citation string at the end. For
@@ -290,7 +291,7 @@ const highlightedContainerClasses = cntl`
             year={2025}
             title="How many mammal species are there now? Updates and trends in taxonomic, nomenclatural, and geographic knowledge"
             journal="Journal of Mammalogy"
-            volume="in revision"
+            volume="in press"
             pages="TBD"
             doi="https://doi.org/10.1101/2025.02.27.640393"
           />
