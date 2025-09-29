@@ -28,7 +28,7 @@
  *  - To allow toggling labels, add a showLabels prop and conditionally push the Plot.text mark.
  */
 // components/DistributionMap.tsx
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Plot from "@observablehq/plot";
 
 // Props:
@@ -62,6 +62,29 @@ function CountryMap({
   fallbackKeys = ["iso_a3", "id", "name"],
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
+
+  // Observe container size changes and update width state (debounced via rAF).
+  useEffect(() => {
+    if (!ref.current) return;
+    const el = ref.current;
+    let frame: number | null = null;
+    const ro = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      const newWidth = entry.contentRect.width;
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        setContainerWidth((prev) => (prev !== newWidth ? newWidth : prev));
+      });
+    });
+    ro.observe(el);
+    // Initialize immediately
+    setContainerWidth(el.clientWidth || 0);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      ro.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -72,8 +95,16 @@ function CountryMap({
     )
       return;
 
-    // Determine dynamic width (fallback to 980)
-    const width = ref.current.clientWidth || 980;
+    // Wait until we have measured width at least once
+    if (containerWidth === null) return;
+
+    const isDark =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    // Use observed width (fallback to 980 if zero)
+    const width = containerWidth || 980;
 
     // Normalize keys to uppercase for robust matching (ISO codes usually uppercase)
     const statMap = new Map<string, number>(
@@ -131,20 +162,25 @@ function CountryMap({
             const v = statMap.get(country) ?? 0;
             return `${name}: ${v} species`;
           },
-          tip: true,
+          tip: {
+            fontSize: 12,
+            lineHeight: 1.3,
+            fill: isDark ? "#000" : "#fff",
+          },
           href: (d: any) => {
             const country = getFeatureCountry(d.properties);
             if (!country) return undefined;
             const code = countryCodeMap.get(country) || country;
-            // Use iso_a2 if present (already usually the code), else fallback to derived code.
             return `/country/${d.properties?.iso_a2 || code}`;
           },
         }),
-        // Country code labels at approximate centroids for countries with data.
+        // Country code labels (force black text)
         Plot.text(
           (world as any).features.filter((f: any) => {
             const country = getFeatureCountry(f.properties);
-            return country && statMap.has(country);
+            return (
+              country && statMap.has(country) && (statMap.get(country) ?? 0) > 0
+            );
           })
         ),
         // Thin borders
@@ -164,13 +200,9 @@ function CountryMap({
     return () => {
       plot.remove();
     };
-  }, [stats, world, colors, projection, valueKey]);
+  }, [stats, world, colors, projection, valueKey, containerWidth]);
 
-  return (
-    <div className="mx-auto">
-      <div ref={ref} className="w-full h-full" />
-    </div>
-  );
+  return <div ref={ref} className="min-w-lg md:max-w-full mx-auto" />;
 }
 
 export default CountryMap;
