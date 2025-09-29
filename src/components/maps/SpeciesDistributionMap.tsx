@@ -22,7 +22,7 @@
  *
  * Example distribution string: "USA|CAN|MEX?" -> Known: USA, CAN; Predicted: MEX
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 import { splitCountryDistribution } from "../../scripts/species_map";
 

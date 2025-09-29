@@ -1,17 +1,16 @@
 ---
-// import { getWorldGeoJson } from "../../../db/country_data";
+import { getWorldGeoJson } from "../../../db/country_data";
 import {
   countryListToJson,
   splitCountryDistribution,
-  // countryListToJson,
 } from "../../scripts/species_map";
-// import SpeciesDistributionMap from "../maps/SpeciesDistributionMap";
+import SpeciesDistributionMap from "../maps/SpeciesDistributionMap";
 import cntl from "cntl";
 
 const { countries, extendClass } = Astro.props;
 
 const countryList = splitCountryDistribution(countries ?? "");
-// const worldGeoJson = getWorldGeoJson();
+const worldGeoJson = getWorldGeoJson();
 
 const countryListStringify = countryListToJson(countryList);
 const emptyDistribution =
@@ -28,14 +27,14 @@ const mapContainerClasses = cntl`
   ${extendClass}
 `;
 
-const mapClasses = cntl`
-  justify-items-center 
-  max-w-full 
-  w-full 
-  h-96
-  overflow-auto
-  ${emptyDistribution ? "hidden" : ""}
-`;
+// const mapClasses = cntl`
+//   justify-items-center
+//   max-w-full
+//   w-full
+//   h-96
+//   overflow-auto
+//   ${emptyDistribution ? "hidden" : ""}
+// `;
 
 const titleClasses = cntl`
   text-lg 
@@ -77,18 +76,18 @@ const emptyTextClasses = cntl`
     emptyDistribution ? (
       <p class={emptyTextClasses}>No distribution data available.</p>
     ) : (
-      // <SpeciesDistributionMap
-      //   client:load
-      //   distribution={countries ?? ""}
-      //   world={worldGeoJson}
-      // />
-      <distribution-map data-countries={countryListStringify}>
-        <div id="map" class={mapClasses} />
-      </distribution-map>
+      <SpeciesDistributionMap
+        client:load
+        distribution={countries ?? ""}
+        world={worldGeoJson}
+      />
+      // <distribution-map data-countries={countryListStringify}>
+      //   <div id="map" class={mapClasses} />
+      // </distribution-map>
     )
   }
 </div>
-
+<!-- 
 <script
   is:inline
   type="text/javascript"
@@ -139,4 +138,4 @@ const emptyTextClasses = cntl`
   }
 
   customElements.define("distribution-map", DistributionMap);
-</script>
+</script> -->
