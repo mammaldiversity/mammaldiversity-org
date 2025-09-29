@@ -1,3 +1,8 @@
+import { feature } from "topojson-client";
+import { isFeatureCollection } from "../../db/country_data";
+
+const COUNTRY_MAP_URL = "https://raw.githubusercontent.com/mammaldiversity/mammaldiversity-org/refs/heads/main/db/data/countries-50m.json"
+
 interface CountryDistribution {
   known: string[];
   predicted: string[];
@@ -30,6 +35,29 @@ function splitCountryDistribution(
   return { known, predicted };
 }
 
+async function downloadCountryGeoJSON(): Promise<GeoJSON.FeatureCollection> {
+  const response = await fetch(COUNTRY_MAP_URL);
+  if (!response.ok) {
+    throw new Error(
+      `Failed to download country geojson data: ${response.statusText}`
+    );
+  }
+  const geojson = await response.json();
+  const worldCountriesResultUnknown = feature(
+    geojson as any,
+    (geojson as any).objects.countries
+  ) as unknown;
+
+  if (!isFeatureCollection(worldCountriesResultUnknown)) {
+    throw new Error(
+      "Expected 'countries' TopoJSON object to convert to a FeatureCollection."
+    );
+  }
+  const worldGeoJson = worldCountriesResultUnknown as GeoJSON.FeatureCollection;
+  return worldGeoJson;
+}
+  
+
 function countryListToJson(countryList: CountryDistribution): string {
   return JSON.stringify(countryList);
 }
@@ -39,4 +67,4 @@ function jsonToCountryList(jsonString: string): CountryDistribution {
 }
 
 export type { CountryDistribution };
-export { splitCountryDistribution, countryListToJson, jsonToCountryList };
+export { splitCountryDistribution, countryListToJson, jsonToCountryList, downloadCountryGeoJSON };

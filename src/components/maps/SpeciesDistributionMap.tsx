@@ -22,9 +22,12 @@
  *
  * Example distribution string: "USA|CAN|MEX?" -> Known: USA, CAN; Predicted: MEX
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
-import { splitCountryDistribution } from "../../scripts/species_map";
+import {
+  downloadCountryGeoJSON,
+  splitCountryDistribution,
+} from "../../scripts/species_map";
 
 interface Props {
   /**
@@ -32,8 +35,6 @@ interface Props {
    * A "?" suffix indicates a predicted distribution. E.g., "ID|MY|US?".
    */
   distribution: string;
-  /** GeoJSON features for the world (countries layer). */
-  world: GeoJSON.FeatureCollection;
   /** Color for known distribution areas. */
   knownColor?: string;
   /** Color for predicted distribution areas. */
@@ -48,11 +49,8 @@ interface Props {
   fallbackKeys?: string[];
 }
 
-// --- Component Implementation ---
-
 function SpeciesDistributionMap({
   distribution,
-  world,
   knownColor = "#117554", // Dark green
   predictedColor = "#FFEB00", // Bright yellow
   projection = "equal-earth",
@@ -62,6 +60,23 @@ function SpeciesDistributionMap({
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
+  const [world, setWorld] = useState<GeoJSON.FeatureCollection | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const worldData = await downloadCountryGeoJSON();
+        if (!cancelled) setWorld(worldData);
+      } catch (err) {
+        console.error("Failed to load country GeoJSON", err);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Observe container size for responsive resizing.
   useEffect(() => {
