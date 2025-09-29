@@ -2,9 +2,17 @@
 import fs from "fs";
 import { feature } from "topojson-client";
 import type { CountryRegionCode } from "./country_stats_model";
-import worldTopoJson from "./data/countries-50m.json";
+// NOTE: Node's native ESM loader (used when Playwright runs tests in this repo because
+// package.json sets "type": "module") now requires an explicit import assertion for
+// JSON modules. Without `assert { type: "json" }`, Node throws:
+//   TypeError: Module ".../countries-50m.json" needs an import attribute of "type: json"
+// Vite/Astro's build pipeline handled this implicitly, but the raw Node runtime (as
+// exercised by Playwright) does not. Adding the assertion fixes the test-time import.
+// If TypeScript complains, ensure `resolveJsonModule` is enabled (included in Astro's
+// strict tsconfig) or add it explicitly in tsconfig.
 
 const COUNTRY_REGION_CODE_PATH = "./db/data/country_region_code.json";
+const TOPO_JSON_PATH = "./db/data/countries-50m.json";
 
 const regionNameToMapName: Record<string, string> = {
   "Andaman and Nicobar Islands": "India",
@@ -125,9 +133,12 @@ function isFeatureCollection(
 }
 
 function getWorldGeoJson(): GeoJSON.FeatureCollection {
+  // Load and parse the world TopoJSON data
+  const raw = fs.readFileSync(TOPO_JSON_PATH, "utf8");
+  const topoJson = JSON.parse(raw);
   const worldCountriesResultUnknown = feature(
-    worldTopoJson as any,
-    (worldTopoJson as any).objects.countries
+    topoJson as any,
+    (topoJson as any).objects.countries
   ) as unknown;
 
   if (!isFeatureCollection(worldCountriesResultUnknown)) {
