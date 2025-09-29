@@ -1,17 +1,19 @@
 ---
-import { getWorldGeoJson } from "../../../db/country_data";
+// import { getWorldGeoJson } from "../../../db/country_data";
 import {
+  countryListToJson,
   splitCountryDistribution,
   // countryListToJson,
 } from "../../scripts/species_map";
-import SpeciesDistributionMap from "../maps/SpeciesDistributionMap";
+// import SpeciesDistributionMap from "../maps/SpeciesDistributionMap";
 import cntl from "cntl";
 
 const { countries, extendClass } = Astro.props;
 
 const countryList = splitCountryDistribution(countries ?? "");
-const worldGeoJson = getWorldGeoJson();
+// const worldGeoJson = getWorldGeoJson();
 
+const countryListStringify = countryListToJson(countryList);
 const emptyDistribution =
   countryList.known.length === 0 && countryList.predicted.length === 0;
 
@@ -24,6 +26,15 @@ const mapContainerClasses = cntl`
   p-4 
   my-2
   ${extendClass}
+`;
+
+const mapClasses = cntl`
+  justify-items-center 
+  max-w-full 
+  w-full 
+  h-96
+  overflow-auto
+  ${emptyDistribution ? "hidden" : ""}
 `;
 
 const titleClasses = cntl`
@@ -66,11 +77,66 @@ const emptyTextClasses = cntl`
     emptyDistribution ? (
       <p class={emptyTextClasses}>No distribution data available.</p>
     ) : (
-      <SpeciesDistributionMap
-        client:load
-        distribution={countries ?? ""}
-        world={worldGeoJson}
-      />
+      // <SpeciesDistributionMap
+      //   client:load
+      //   distribution={countries ?? ""}
+      //   world={worldGeoJson}
+      // />
+      <distribution-map data-countries={countryListStringify}>
+        <div id="map" class={mapClasses} />
+      </distribution-map>
     )
   }
 </div>
+
+<script
+  is:inline
+  type="text/javascript"
+  src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+  // Declare google as a global variable
+  declare const google: any;
+  import { jsonToCountryList } from "../../scripts/species_map";
+
+  class DistributionMap extends HTMLElement {
+    lastWidth: number = 0;
+
+    connectedCallback() {
+      // Read the message from the data attribute.
+      const countryDistribution = this.dataset.countries;
+      const countries = jsonToCountryList(countryDistribution ?? "");
+
+      google.charts.load("current", {
+        packages: ["geochart"],
+      });
+      google.charts.setOnLoadCallback(drawRegionsMap);
+
+      async function drawRegionsMap() {
+        var data = await google.visualization.arrayToDataTable([
+          /**
+           * Represents the distribution data for countries.
+           * The first element is the country name.
+           * The second element indicates predicted: 1 for yes, 0 for no.
+           */
+          ["Country", "Known distribution (1: yes, 0: no)?"],
+          ...countries.known.map((country) => [country, 1]),
+          ...countries.predicted.map((country) => [country, 0]),
+        ]);
+
+        var options = {
+          displayMode: "Regions",
+          colorAxis: { colors: ["#FFEB00", "#117554"] },
+          legend: "none",
+        };
+
+        var chart = new google.visualization.GeoChart(
+          document.getElementById("map")
+        );
+
+        await chart.draw(data, options);
+      }
+    }
+  }
+
+  customElements.define("distribution-map", DistributionMap);
+</script>
