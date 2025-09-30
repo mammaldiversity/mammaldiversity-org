@@ -140,7 +140,7 @@ function CountryMap({
     const plot = Plot.plot({
       projection,
       width,
-      height: 520,
+      height: width * 0.52,
       color: {
         type: "linear",
         range: colors,

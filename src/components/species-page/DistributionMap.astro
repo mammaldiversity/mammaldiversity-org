@@ -1,18 +1,13 @@
 ---
 import { getWorldGeoJson } from "../../../db/country_data";
-import {
-  countryListToJson,
-  splitCountryDistribution,
-} from "../../scripts/species_map";
+import { splitCountryDistribution } from "../../scripts/species_map";
 import SpeciesDistributionMap from "../maps/SpeciesDistributionMap";
 import cntl from "cntl";
 
 const { countries, extendClass } = Astro.props;
 
 const countryList = splitCountryDistribution(countries ?? "");
-const worldGeoJson = getWorldGeoJson();
 
-const countryListStringify = countryListToJson(countryList);
 const emptyDistribution =
   countryList.known.length === 0 && countryList.predicted.length === 0;
 
@@ -76,14 +71,7 @@ const emptyTextClasses = cntl`
     emptyDistribution ? (
       <p class={emptyTextClasses}>No distribution data available.</p>
     ) : (
-      <SpeciesDistributionMap
-        client:load
-        distribution={countries ?? ""}
-        world={worldGeoJson}
-      />
-      // <distribution-map data-countries={countryListStringify}>
-      //   <div id="map" class={mapClasses} />
-      // </distribution-map>
+      <SpeciesDistributionMap client:load distribution={countries ?? ""} />
     )
   }
 </div>
