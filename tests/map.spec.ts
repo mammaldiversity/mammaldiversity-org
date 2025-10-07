@@ -17,7 +17,7 @@ test("splitCountryDistribution with NA", () => {
 test("splitCountryDistribution", () => {
   expect(splitCountryDistribution("Indonesia|USA")).toEqual(
     expect.objectContaining({
-      known: ["Indonesia", "USA"],
+      known: ["INDONESIA", "USA"],
       predicted: [],
     })
   );
@@ -25,21 +25,21 @@ test("splitCountryDistribution", () => {
 
 test("countryListToJson", () => {
   expect(
-    countryListToJson({ known: ["Indonesia", "USA"], predicted: [] })
-  ).toEqual('{"known":["Indonesia","USA"],"predicted":[]}');
+    countryListToJson({ known: ["INDONESIA", "USA"], predicted: [] })
+  ).toEqual('{"known":["INDONESIA","USA"],"predicted":[]}');
 });
 
 test("jsonToCountryList", () => {
   expect(
-    jsonToCountryList('{"known":["Indonesia","USA"],"predicted":[]}')
+    jsonToCountryList('{"known":["INDONESIA","USA"],"predicted":[]}')
   ).toEqual({
-    known: ["Indonesia", "USA"],
+    known: ["INDONESIA", "USA"],
     predicted: [],
   });
   expect(
-    jsonToCountryList('{"known":["Indonesia"],"predicted":["USA"]}')
+    jsonToCountryList('{"known":["INDONESIA"],"predicted":["USA"]}')
   ).toEqual({
-    known: ["Indonesia"],
+    known: ["INDONESIA"],
     predicted: ["USA"],
   });
 });
