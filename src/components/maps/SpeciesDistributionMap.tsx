@@ -5,249 +5,368 @@
  * Reusable choropleth map component for visualizing species distribution
  * by country, distinguishing between known and predicted areas.
  * Uses Observable Plot for rendering.
- *
- * Inputs:
- * - distribution: A single pipe-separated string of country codes. A '?'
- * suffix on a country code indicates a predicted distribution.
- * - world: GeoJSON FeatureCollection of world countries.
- * - isoCodeMap: (optional) mapping from alternative identifiers (ISO3, names)
- * to ISO2 codes for robust matching.
- *
- * Behavior:
- * 1. Parses the distribution string into 'known' and 'predicted' sets.
- * 2. Resolves a feature's ISO code and checks for its presence in the sets.
- * 3. Renders 'known' countries in a solid color and 'predicted' countries
- * with a pattern fill for clear visual distinction.
- * 4. Provides tooltips indicating the distribution type (Known/Predicted).
- *
- * Example distribution string: "USA|CAN|MEX?" -> Known: USA, CAN; Predicted: MEX
  */
-import { useEffect, useRef, useState } from "preact/hooks";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 import { downloadCountryGeoJSON } from "../../scripts/species_map";
+import cntl from "cntl";
+
+const KNOWN_COLOR = "#117554"; // Dark green
+const PREDICTED_COLOR = "#FFEB00"; // Bright yellow
+
+const mapClasses = cntl`
+  min-w-lg 
+  md:max-w-full 
+  mx-auto
+`;
+
+const knownClasses = cntl`
+  w-3 
+  h-3 
+  rounded-full 
+  inline-block 
+  bg-[${KNOWN_COLOR}]
+`;
+
+const predictedClasses = cntl`
+  w-3 
+  h-3 
+  rounded-full 
+  inline-block 
+  bg-[${PREDICTED_COLOR}]
+`;
+
+interface GeoFeatureProperties {
+  iso_a2?: string;
+  iso_a3?: string;
+  id?: string;
+  name?: string;
+  [key: string]: string | number | undefined;
+}
+
+interface GeoFeature {
+  type: "Feature";
+  properties: GeoFeatureProperties | null;
+  geometry: any;
+}
+
+interface WorldGeoJSON {
+  type: "FeatureCollection";
+  features: GeoFeature[];
+}
 
 interface Props {
-  /**
-   * A single pipe-separated string of country codes (ISO2, ISO3, or names).
-   * A "?" suffix indicates a predicted distribution. E.g., "ID|MY|US?".
-   */
   knownDistribution?: string[];
   predictedDistribution?: string[];
-  /** Color for known distribution areas. */
   knownColor?: string;
-  /** Color for predicted distribution areas. */
   predictedColor?: string;
-  /** Projection name or options; defaults to 'equal-earth'. */
   projection?: string | Plot.ProjectionOptions;
-  /** Mapping from alternative identifiers (ISO3 codes, names) to ISO2 codes. */
   isoCodeMap?: Record<string, string>;
-  /** Primary feature property to inspect first when resolving a code. */
   valueKey?: "iso_a2" | "iso_a3" | "id" | "name";
-  /** Fallback feature property names to attempt if the primary fails. */
   fallbackKeys?: string[];
+  width?: number;
+  height?: number;
 }
 
 function SpeciesDistributionMap({
-  knownDistribution,
-  predictedDistribution,
-  knownColor = "#117554", // Dark green
-  predictedColor = "#FFEB00", // Bright yellow
+  knownDistribution = [],
+  predictedDistribution = [],
+  knownColor = KNOWN_COLOR,
+  predictedColor = PREDICTED_COLOR,
   projection = "equal-earth",
   isoCodeMap = {},
   valueKey = "iso_a2",
   fallbackKeys = ["iso_a3", "id", "name"],
+  width,
+  height,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  const frameRef = useRef<number | null>(null);
+
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
-  const [world, setWorld] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [world, setWorld] = useState<WorldGeoJSON | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const worldData = await downloadCountryGeoJSON();
-        if (!cancelled) setWorld(worldData);
-      } catch (err) {
-        console.error("Failed to load country GeoJSON", err);
-      }
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  // Memoize country sets
+  // THis ensures that the sets are only recreated when the input arrays change
+  const knownCountries = useMemo(() => {
+    if (!knownDistribution?.length) return new Set<string>();
+    return new Set(knownDistribution.map((c) => c));
+  }, [knownDistribution]);
 
-  // Observe container size for responsive resizing.
-  useEffect(() => {
-    if (!ref.current) return;
-    const el = ref.current;
-    let frame: number | null = null;
-    const ro = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      const newWidth = entry.contentRect.width;
-      if (frame) cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        setContainerWidth((prev) => (prev !== newWidth ? newWidth : prev));
-      });
-    });
-    ro.observe(el);
-    setContainerWidth(el.clientWidth || 0);
-    return () => {
-      if (frame) cancelAnimationFrame(frame);
-      ro.disconnect();
-    };
-  }, []);
+  const predictedCountries = useMemo(() => {
+    if (!predictedDistribution?.length) return new Set<string>();
+    return new Set(predictedDistribution.map((c) => c));
+  }, [predictedDistribution]);
 
-  useEffect(() => {
-    if (
-      !ref.current ||
-      !world ||
-      !Array.isArray((world as any).features) ||
-      containerWidth === null
-    ) {
-      return;
-    }
-
-    // Normalize all country codes to uppercase for robust matching.
-    const knownCountries = new Set(
-      knownDistribution?.map((c) => c.toUpperCase())
-    );
-    const predictedCountries = new Set(
-      predictedDistribution?.map((c) => c.toUpperCase())
-    );
-
-    // Normalize isoCodeMap keys and values to uppercase.
-    const countryCodeMap = new Map<string, string>(
+  // Memoize country code mapping
+  const countryCodeMap = useMemo(() => {
+    if (!Object.keys(isoCodeMap).length) return new Map<string, string>();
+    return new Map<string, string>(
       Object.entries(isoCodeMap).map(([k, v]) => [
-        k.toUpperCase(),
-        v.toUpperCase(),
+        k.trim().toUpperCase(),
+        v.trim().toUpperCase(),
       ])
     );
+  }, [isoCodeMap]);
 
-    /**
-     * Resolves a country identifier from a feature's properties, trying primary
-     * and fallback keys. The result is then mapped to an ISO2 code if possible.
-     */
-    function getFeatureISO2(props: any): string | undefined {
+  // Memoize feature resolution function
+  const getFeatureISO2 = useCallback(
+    (props: GeoFeatureProperties | null): string | undefined => {
       if (!props) return undefined;
+
       let identifiedCountry: string | undefined;
 
-      // Try primary key first
       const primary = props[valueKey];
-      if (typeof primary === "string" && primary) {
-        identifiedCountry = primary.toUpperCase();
+      if (typeof primary === "string" && primary.trim()) {
+        identifiedCountry = primary.trim().toUpperCase();
       } else {
-        // Then try fallback keys
         for (const fk of fallbackKeys) {
           const val = props[fk];
-          if (typeof val === "string" && val) {
-            identifiedCountry = val.toUpperCase();
+          if (typeof val === "string" && val.trim()) {
+            identifiedCountry = val.trim().toUpperCase();
             break;
           }
         }
       }
 
       if (!identifiedCountry) return undefined;
-
-      // Return the mapped ISO2 code or the identifier itself if not in the map.
       return countryCodeMap.get(identifiedCountry) || identifiedCountry;
+    },
+    [valueKey, fallbackKeys, countryCodeMap]
+  );
+
+  // Load world GeoJSON data
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadWorldData() {
+      try {
+        const worldData = await downloadCountryGeoJSON();
+        if (!cancelled && worldData && Array.isArray(worldData.features)) {
+          setWorld(worldData as WorldGeoJSON);
+        }
+      } catch (err) {
+        console.error("Failed to load country GeoJSON:", err);
+      }
     }
+
+    loadWorldData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Handle responsive resizing
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const el = ref.current;
+
+    const handleResize = (entries: ResizeObserverEntry[]) => {
+      const entry = entries[0];
+      if (!entry) return;
+
+      const newWidth = entry.contentRect.width;
+
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+
+      frameRef.current = requestAnimationFrame(() => {
+        setContainerWidth((prev) => {
+          if (prev === null || Math.abs(prev - newWidth) > 2) {
+            return newWidth;
+          }
+          return prev;
+        });
+      });
+    };
+
+    resizeObserverRef.current = new ResizeObserver(handleResize);
+    resizeObserverRef.current.observe(el);
+    setContainerWidth(el.clientWidth || 0);
+
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
+      }
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+        resizeObserverRef.current = null;
+      }
+    };
+  }, []);
+
+  // Create and manage Observable Plot
+  useEffect(() => {
+    // Don't render if conditions aren't met
+    if (
+      !ref.current ||
+      !world ||
+      !Array.isArray(world.features) ||
+      containerWidth === null
+    ) {
+      return;
+    }
+
+    // Store reference to current container
+    const container = ref.current;
+
+    // Clear container before creating plot
+    container.innerHTML = "";
 
     const isDark =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const width = containerWidth || 980;
 
+    const plotWidth = width || containerWidth || 980;
+    const plotHeight = height || plotWidth * 0.52;
+
+    // Create the plot
     const plot = Plot.plot({
       projection,
-      width,
-      height: width * 0.52, // Maintain aspect ratio
+      width: plotWidth,
+      height: plotHeight,
+      style: {
+        overflow: "visible",
+      },
       marks: [
-        // Removed undefined pattern; using base map and solid fills
-        Plot.geo(world as any, {
+        // Base map layer
+        Plot.geo(world.features, {
           stroke: "currentColor",
           strokeOpacity: 0.1,
           fill: isDark ? "#333" : "#f0f0f0",
-        }), // Base map fill
+        }),
 
-        // Predicted countries layer (semi-transparent fill)
-        Plot.geo(world as any, {
-          filter: (d: any) => {
+        // Predicted countries layer
+        Plot.geo(world.features, {
+          filter: (d: GeoFeature) => {
             const iso2 = getFeatureISO2(d.properties);
             return iso2 ? predictedCountries.has(iso2) : false;
           },
           fill: predictedColor,
           fillOpacity: 0.55,
+          stroke: predictedColor,
+          strokeOpacity: 0.8,
+          strokeWidth: 0.5,
         }),
 
-        // Known countries layer (solid fill, drawn on top)
-        Plot.geo(world as any, {
-          filter: (d: any) => {
+        // Known countries layer
+        Plot.geo(world.features, {
+          filter: (d: GeoFeature) => {
             const iso2 = getFeatureISO2(d.properties);
             return iso2 ? knownCountries.has(iso2) : false;
           },
           fill: knownColor,
+          stroke: knownColor,
+          strokeOpacity: 0.9,
+          strokeWidth: 0.5,
         }),
 
-        // A separate, transparent layer for tooltips over all highlighted countries
-        Plot.geo(world as any, {
-          filter: (d: any) => {
+        // Tooltip layer
+        Plot.geo(world.features, {
+          filter: (d: GeoFeature) => {
             const iso2 = getFeatureISO2(d.properties);
             return iso2
               ? knownCountries.has(iso2) || predictedCountries.has(iso2)
               : false;
           },
-          title: (d: any) => {
-            const iso2 = getFeatureISO2(d.properties)!;
-            const name = d.properties?.name || "Unknown";
-            const isKnown = knownCountries.has(iso2);
-            const isPredicted = predictedCountries.has(iso2);
+          fill: "transparent",
+          title: (d: GeoFeature) => {
+            const name = d.properties?.name || "Unknown Country";
+            const iso2 = getFeatureISO2(d.properties);
+            const isKnown = iso2 ? knownCountries.has(iso2) : false;
+            const isPredicted = iso2 ? predictedCountries.has(iso2) : false;
+
             let status = "";
-            if (isKnown && isPredicted) status = "known & predicted";
-            else if (isKnown) status = "known";
-            else if (isPredicted) status = "predicted";
-            return `${name}\nStatus: ${status}`;
+            if (isKnown && isPredicted) {
+              status = " (Known & Predicted)";
+            } else if (isKnown) {
+              status = " (Known Distribution)";
+            } else if (isPredicted) {
+              status = " (Predicted Distribution)";
+            }
+
+            return `${name}${status}`;
           },
           tip: {
             fontSize: 12,
-            lineHeight: 1.3,
-            fill: isDark ? "#000" : "#fff",
+            lineHeight: 1.4,
+            fill: isDark ? "#fff" : "#000",
+            stroke: isDark ? "#000" : "#fff",
+            strokeWidth: 1,
           },
         }),
 
-        // Borders for all countries, drawn on top of fills
-        Plot.geo(world as any, {
+        // Country borders
+        Plot.geo(world.features, {
           stroke: "currentColor",
-          strokeOpacity: 0.25,
+          strokeOpacity: 0.3,
           strokeWidth: 0.25,
+          fill: "none",
         }),
-        Plot.sphere({ stroke: "currentColor", strokeOpacity: 0.2 }),
-        Plot.graticule({ stroke: "currentColor", strokeOpacity: 0.1 }),
+
+        // Sphere and graticule
+        Plot.sphere({
+          stroke: "currentColor",
+          strokeOpacity: 0.2,
+          fill: "none",
+        }),
+        Plot.graticule({
+          stroke: "currentColor",
+          strokeOpacity: 0.1,
+          strokeDasharray: "2,2",
+        }),
       ],
     });
 
-    if (ref.current) {
-      ref.current.innerHTML = "";
-      ref.current.append(plot);
-    }
+    container.append(plot);
 
+    // Cleanup function - only remove if the plot still exists in DOM
     return () => {
-      plot.remove();
+      if (plot && plot.parentNode) {
+        plot.remove();
+      }
     };
   }, [
-    knownDistribution,
-    predictedDistribution,
     world,
+    knownCountries,
+    predictedCountries,
     knownColor,
     predictedColor,
     projection,
-    valueKey,
     containerWidth,
-    isoCodeMap,
-    fallbackKeys,
+    getFeatureISO2,
+    width,
+    height,
   ]);
 
-  return <div ref={ref} className="min-w-lg md:max-w-full mx-auto" />;
+  return (
+    <>
+      {predictedDistribution && predictedDistribution.length > 0 && (
+        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-1">
+          <span className="inline-flex items-center gap-2">
+            <span className={knownClasses} />
+            <span>Known</span>
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className={predictedClasses} />
+            <span>Predicted distribution</span>
+          </span>
+        </div>
+      )}
+      <div ref={ref} className={mapClasses} />
+    </>
+  );
 }
 
 export default SpeciesDistributionMap;
