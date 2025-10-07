@@ -24,17 +24,15 @@
  */
 import { useEffect, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
-import {
-  downloadCountryGeoJSON,
-  splitCountryDistribution,
-} from "../../scripts/species_map";
+import { downloadCountryGeoJSON } from "../../scripts/species_map";
 
 interface Props {
   /**
    * A single pipe-separated string of country codes (ISO2, ISO3, or names).
    * A "?" suffix indicates a predicted distribution. E.g., "ID|MY|US?".
    */
-  distribution: string;
+  knownDistribution?: string[];
+  predictedDistribution?: string[];
   /** Color for known distribution areas. */
   knownColor?: string;
   /** Color for predicted distribution areas. */
@@ -50,7 +48,8 @@ interface Props {
 }
 
 function SpeciesDistributionMap({
-  distribution,
+  knownDistribution,
+  predictedDistribution,
   knownColor = "#117554", // Dark green
   predictedColor = "#FFEB00", // Bright yellow
   projection = "equal-earth",
@@ -109,11 +108,13 @@ function SpeciesDistributionMap({
       return;
     }
 
-    const { known, predicted } = splitCountryDistribution(distribution);
-
     // Normalize all country codes to uppercase for robust matching.
-    const knownCountries = new Set(known.map((c) => c.toUpperCase()));
-    const predictedCountries = new Set(predicted.map((c) => c.toUpperCase()));
+    const knownCountries = new Set(
+      knownDistribution?.map((c) => c.toUpperCase())
+    );
+    const predictedCountries = new Set(
+      predictedDistribution?.map((c) => c.toUpperCase())
+    );
 
     // Normalize isoCodeMap keys and values to uppercase.
     const countryCodeMap = new Map<string, string>(
@@ -234,7 +235,8 @@ function SpeciesDistributionMap({
       plot.remove();
     };
   }, [
-    distribution,
+    knownDistribution,
+    predictedDistribution,
     world,
     knownColor,
     predictedColor,
