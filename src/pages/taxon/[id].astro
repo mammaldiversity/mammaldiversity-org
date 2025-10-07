@@ -13,8 +13,7 @@ import type { SpeciesData, Synonym, Taxonomy } from "../../../db/mdd_model";
 import { getSpeciesData } from "../../../db/mdd";
 import SpeciesStatus from "../../components/species-page/SpeciesStatus.astro";
 import DistributionMap from "../../components/species-page/DistributionMap.astro";
-import getSpeciesPermalink from "../../scripts/permalink";
-
+import { generateSpeciesPermalink } from "../../scripts/permalink";
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
 // This approach allow us make sure the generated page is always up to date with the database
@@ -35,7 +34,7 @@ const taxon: Taxonomy = species_data.speciesData;
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
 const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");
 
-const mddSpeciesLink = getSpeciesPermalink(taxon?.id);
+const mddSpeciesLink = generateSpeciesPermalink(taxon?.id);
 
 const species = taxon?.genus + " " + taxon?.specificEpithet;
 

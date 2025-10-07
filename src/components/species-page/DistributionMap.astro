@@ -1,14 +1,11 @@
 ---
-import {
-  splitCountryDistribution,
-  countryListToJson,
-} from "../../scripts/species_map";
+import { splitCountryDistribution } from "../../scripts/species_map";
+import SpeciesDistributionMap from "../maps/SpeciesDistributionMap";
 import cntl from "cntl";
 
 const { countries, extendClass } = Astro.props;
 
 const countryList = splitCountryDistribution(countries ?? "");
-const countryListStringify = countryListToJson(countryList);
 
 const emptyDistribution =
   countryList.known.length === 0 && countryList.predicted.length === 0;
@@ -24,14 +21,14 @@ const mapContainerClasses = cntl`
   ${extendClass}
 `;
 
-const mapClasses = cntl`
-  justify-items-center 
-  max-w-full 
-  w-full 
-  h-96
-  overflow-auto
-  ${emptyDistribution ? "hidden" : ""}
-`;
+// const mapClasses = cntl`
+//   justify-items-center
+//   max-w-full
+//   w-full
+//   h-96
+//   overflow-auto
+//   ${emptyDistribution ? "hidden" : ""}
+// `;
 
 const titleClasses = cntl`
   text-lg 
@@ -73,13 +70,15 @@ const emptyTextClasses = cntl`
     emptyDistribution ? (
       <p class={emptyTextClasses}>No distribution data available.</p>
     ) : (
-      <distribution-map data-countries={countryListStringify}>
-        <div id="map" class={mapClasses} />
-      </distribution-map>
+      <SpeciesDistributionMap
+        client:load
+        knownDistribution={countryList.known}
+        predictedDistribution={countryList.predicted}
+      />
     )
   }
 </div>
-
+<!-- 
 <script
   is:inline
   type="text/javascript"
@@ -130,4 +129,4 @@ const emptyTextClasses = cntl`
   }
 
   customElements.define("distribution-map", DistributionMap);
-</script>
+</script> -->

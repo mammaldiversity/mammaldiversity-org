@@ -1,4 +1,6 @@
 ---
+import cntl from "cntl";
+
 interface Props {
   // Additional info to help reader understand the taxon rank
   label?: string;
@@ -8,19 +10,39 @@ interface Props {
 }
 
 const { label, taxonName, url, italic } = Astro.props as Props;
+
+const containerClasses = cntl`
+  my-1
+  mr-2
+  ${italic ? "italic" : ""}
+`;
+
+const labelClasses = cntl`
+  text-xs
+  text-spectra-600
+  dark:text-spectra-400
+`;
+
+const textClasses = cntl`
+  text-md
+  tracking-wide
+`;
+
+const urlClasses = cntl`
+  underline
+  text-sm
+  hover:text-spectra-700
+  dark:hover:text-spectra-200
+`;
 ---
 
-<div class={`mr-2 ${italic ? "italic" : ""}`}>
-  {
-    label && (
-      <p class="text-sm text-spectra-600 dark:text-spectra-400">{label}</p>
-    )
-  }
+<div class={containerClasses}>
+  {label && <p class={labelClasses}>{label}</p>}
   {
     url ? (
       <>
         <a
-          class="underline hover:text-spectra-700 dark:hover:text-spectra-200"
+          class={urlClasses}
           href={url}
           target="_blank"
           rel="noopener noreferrer"
@@ -29,7 +51,7 @@ const { label, taxonName, url, italic } = Astro.props as Props;
         </a>
       </>
     ) : (
-      <p class="font-semibold tracking-wide">{taxonName}</p>
+      <p class={textClasses}>{taxonName}</p>
     )
   }
 </div>

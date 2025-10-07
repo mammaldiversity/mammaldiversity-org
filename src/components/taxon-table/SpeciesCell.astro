@@ -1,5 +1,5 @@
 ---
-import getSpeciesPermalink from "../../scripts/permalink";
+import { generateSpeciesLink } from "../../scripts/permalink";
 
 interface Props {
   mdd_id: number;
@@ -8,7 +8,7 @@ interface Props {
 
 const { mdd_id, epithet }: Props = Astro.props;
 
-const speciesPermalink = getSpeciesPermalink(mdd_id);
+const speciesPermalink = generateSpeciesLink(mdd_id);
 ---
 
 <td class="py-2 px-4 border-b text-center">
