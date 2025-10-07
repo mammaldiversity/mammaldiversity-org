@@ -1,7 +1,11 @@
 import { feature } from "topojson-client";
-import { isFeatureCollection } from "../../db/country_data";
+import {
+  getCountryRegionName,
+  isFeatureCollection,
+} from "../../db/country_data";
 
-const COUNTRY_MAP_URL = "https://raw.githubusercontent.com/mammaldiversity/mammaldiversity-org/refs/heads/main/db/data/countries-50m.json"
+const COUNTRY_MAP_URL =
+  "https://raw.githubusercontent.com/mammaldiversity/mammaldiversity-org/refs/heads/main/db/data/countries-50m.json";
 
 interface CountryDistribution {
   known: string[];
@@ -19,7 +23,9 @@ function splitCountryDistribution(
 
   let countryList = countryDistribution.split("|");
   // If ends with "?", it is a predicted distribution
-  let known = countryList.filter((country: string) => !country.endsWith("?"));
+  let known = countryList
+    .filter((country: string) => !country.endsWith("?"))
+    .map((country: string) => getCountryRegionName(country));
 
   // If known distribution contains one info
   // listed domesticated (case insensitive),
@@ -30,7 +36,7 @@ function splitCountryDistribution(
 
   let predicted = countryList
     .filter((country: string) => country.endsWith("?"))
-    .map((country: string) => country.slice(0, -1));
+    .map((country: string) => country.slice(0, -1)).map((country: string) => getCountryRegionName(country));
 
   return { known, predicted };
 }
@@ -56,7 +62,6 @@ async function downloadCountryGeoJSON(): Promise<GeoJSON.FeatureCollection> {
   const worldGeoJson = worldCountriesResultUnknown as GeoJSON.FeatureCollection;
   return worldGeoJson;
 }
-  
 
 function countryListToJson(countryList: CountryDistribution): string {
   return JSON.stringify(countryList);
@@ -67,4 +72,9 @@ function jsonToCountryList(jsonString: string): CountryDistribution {
 }
 
 export type { CountryDistribution };
-export { splitCountryDistribution, countryListToJson, jsonToCountryList, downloadCountryGeoJSON };
+export {
+  splitCountryDistribution,
+  countryListToJson,
+  jsonToCountryList,
+  downloadCountryGeoJSON,
+};

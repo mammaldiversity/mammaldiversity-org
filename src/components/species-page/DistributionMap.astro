@@ -1,5 +1,4 @@
 ---
-import { getWorldGeoJson } from "../../../db/country_data";
 import { splitCountryDistribution } from "../../scripts/species_map";
 import SpeciesDistributionMap from "../maps/SpeciesDistributionMap";
 import cntl from "cntl";
@@ -71,7 +70,11 @@ const emptyTextClasses = cntl`
     emptyDistribution ? (
       <p class={emptyTextClasses}>No distribution data available.</p>
     ) : (
-      <SpeciesDistributionMap client:load distribution={countries ?? ""} />
+      <SpeciesDistributionMap
+        client:load
+        knownDistribution={countryList.known}
+        predictedDistribution={countryList.predicted}
+      />
     )
   }
 </div>
