@@ -45,7 +45,7 @@ const mapClasses = cntl`
           Multiple ways to explore the Mammal Diversity Database (MDD). View the
           data as a list ordered by taxonomic hierarchy, a table, or a
           phylogenetic tree. You can also explore mammalian diversity by country
-          using the interactive map.
+          using an interactive map.
         </p>
       </div>
     </PageHeader>
@@ -53,16 +53,16 @@ const mapClasses = cntl`
       <div class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4">
         <ResponsiveCard
           title="Taxon List"
-          description="Explore the taxonomy of species listed in the MDD, grouped by taxonomic order and sorted according to their phylogenetic hierarchy."
+          description="Quickly browse all species and their synonyms."
           imageSrc={listImg}
           imageSrcDark={listImgDark}
           imageAlt="Taxon List"
-          buttonLabel="Explore List"
+          buttonLabel="Show List"
           buttonUri="/explore/taxon-list"
         />
         <ResponsiveCard
           title="Taxonomy Table"
-          description="Explore current mammalian taxonomy in an expandable table format, including counts of orders, families, genera, and species."
+          description="Explore taxonomy and compare counts across ranks."
           imageSrc={tableImg}
           imageSrcDark={tableImgDark}
           imageAlt="Taxonomy Table"
@@ -96,7 +96,7 @@ const mapClasses = cntl`
       </div>
       <ResponsiveCard
         title="Tree View"
-        description="Explore by taxonomic hierarchy in an interactive tree view."
+        description="Dive into an interactive phylogenetic tree of mammals."
         imageSrc={phyloImg}
         imageSrcDark={phyloImgDark}
         imageAlt="Phylogenetic Tree"
