@@ -1,4 +1,53 @@
 ---
+/*
+  Component: TreeTips
+
+  Purpose
+  - Render a single 'tip' (list item) used by the phylogenetic tree UI.
+  - Shows an optional expand/collapse control, a taxon label, and child count.
+  - Renders connector lines and nested children via slots.
+
+  Props (Astro.props)
+  - label?: string         Optional short label or rank hint to help readers.
+  - taxonName: string      Required. The taxon name to display.
+  - idx: number            Required. Zero-based index of this item in the parent list.
+  - length: number         Required. Total number of items in the parent list.
+  - childCount?: number    Optional. When present, an expand/collapse button and
+                           child count are rendered. Omit for leaf nodes.
+  - italic?: boolean       Optional. If true, the taxon label is rendered in italics.
+  - url?: string           Optional. If provided, the taxon label renders as a link.
+  - expanded: boolean      Required. Whether children are visible initially.
+
+  Behavior
+  - Toggle button (when rendered) sets aria-expanded and toggles the nested <ul>
+    visibility using inline styles. The DOM script adds click handlers for
+    progressive enhancement on the client.
+
+  Accessibility
+  - Toggle button uses aria-expanded and an aria-label that flips between
+    "Expand" and "Collapse". TaxonLabel should provide semantic link text
+    when `url` is used.
+
+  Usage example
+  <TreeTips
+    taxonName="Z. bartoni"
+    label="Species"
+    idx={0}
+    length={3}
+    childCount={2}
+    italic
+    url="/taxon/z-bartoni"
+    expanded={false}
+  >
+    <!-- nested TreeTips children here -->
+  </TreeTips>
+
+  Notes
+  - Keep toggle element ids unique (toggle-{idx} is local to a list level).
+  - The embedded client-side script uses simple DOM APIs; if you prefer a
+    framework-reactive approach, replace the script with framework handlers.
+*/
+
 import cntl from "cntl";
 import TaxonLabel from "./TaxonLabel.astro";
 import LabelCounts from "./LabelCounts.astro";
@@ -43,17 +92,16 @@ const itemClasses = cntl`
   rounded-xl
   px-4
   relative
-  my-1
-  py-2
+  my-2
   opacity-80
   whitespace-nowrap
 `;
 
 const buttonDivClasses = cntl`
-  border-r-2
+  border-r
   border-spectra-400
   dark:border-spectra-600
-  py-2
+  py-1
   mr-2
   text-center
 `;
@@ -61,13 +109,19 @@ const buttonDivClasses = cntl`
 
 <ul class={containerClasses}>
   <li class="relative pl-6">
+    <VerticalLines
+      isLastItem={isLastItem}
+      isFirstChild={isFirstChild}
+      isOnlyChild={isOnlyChild}
+    />
+    <HorizontalLines />
     <div id="taxon-label" class={itemClasses}>
       {
         childCount && (
           <div class={buttonDivClasses}>
             <button
               id={`toggle-${idx}`}
-              class="bg-transparent ml-2 mr-4 text-2xl font-semibold"
+              class="bg-transparent mr-4 text-2xl"
               aria-expanded={expanded}
               aria-label={expanded ? "Collapse" : "Expand"}
             >
@@ -84,12 +138,6 @@ const buttonDivClasses = cntl`
       />
       <LabelCounts childCount={childCount} />
     </div>
-    <VerticalLines
-      isLastItem={isLastItem}
-      isFirstChild={isFirstChild}
-      isOnlyChild={isOnlyChild}
-    />
-    <HorizontalLines />
 
     <ul
       id="children"
