@@ -24,10 +24,7 @@
  */
 import { useEffect, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
-import {
-  downloadCountryGeoJSON,
-  splitCountryDistribution,
-} from "../../scripts/species_map";
+import { downloadCountryGeoJSON } from "../../scripts/species_map";
 
 interface Props {
   /**
