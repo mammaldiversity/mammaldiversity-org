@@ -75,12 +75,16 @@ const mapClasses = cntl`
           <h2 class="text-3xl font-semibold mb-4">
             Mammal Diversity by Country and Region
           </h2>
-          <p class="text-md mb-4 max-w-4xl mx-auto">
-            The interactive map below offers an overview of mammal diversity by
-            country. Hover over a country to view the species count. Click on a
-            country to see its species list, or use the "Explore by Country"
-            button for more detailed country-level mammalian diversity.
-          </p>
+          <p class="text-xs mb-2 max-w-4xl mx-auto">Tips:</p>
+          <ul class="list-disc list-inside text-xs mb-4 max-w-4xl mx-auto">
+            <li>Hover over a country to see its name and species counts.</li>
+            <li>Click on a country to see its species list.</li>
+            <li>
+              Use the "Explore by Country" button for more detailed
+              country-level mammalian diversity.
+            </li>
+          </ul>
+
           <div class="mb-4 mx-auto">
             <CountryMap
               client:load
