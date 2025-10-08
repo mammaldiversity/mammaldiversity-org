@@ -109,10 +109,7 @@ function SpeciesDistributionMap({
   const countryCodeMap = useMemo(() => {
     if (!Object.keys(isoCodeMap).length) return new Map<string, string>();
     return new Map<string, string>(
-      Object.entries(isoCodeMap).map(([k, v]) => [
-        k.trim().toUpperCase(),
-        v.trim().toUpperCase(),
-      ])
+      Object.entries(isoCodeMap).map(([k, v]) => [k, v])
     );
   }, [isoCodeMap]);
 
@@ -301,7 +298,7 @@ function SpeciesDistributionMap({
           tip: {
             fontSize: 12,
             lineHeight: 1.4,
-            fill: isDark ? "#fff" : "#000",
+            fill: isDark ? "#000" : "#fff",
             stroke: isDark ? "#000" : "#fff",
             strokeWidth: 1,
           },
