@@ -264,20 +264,8 @@ function SpeciesDistributionMap({
           fill: "transparent",
           title: (d: GeoFeature) => {
             const name = d.properties?.name || "Unknown Country";
-            const iso2 = getFeatureISO2(d.properties);
-            const isKnown = iso2 ? knownCountries.has(iso2) : false;
-            const isPredicted = iso2 ? predictedCountries.has(iso2) : false;
 
-            let status = "";
-            if (isKnown && isPredicted) {
-              status = " (Known & Predicted)";
-            } else if (isKnown) {
-              status = " (Known Distribution)";
-            } else if (isPredicted) {
-              status = " (Predicted Distribution)";
-            }
-
-            return `${name}${status}`;
+            return name;
           },
           tip: {
             fontSize: 12,
