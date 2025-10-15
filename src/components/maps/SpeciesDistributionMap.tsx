@@ -26,22 +26,6 @@ const mapClasses = cntl`
   mx-auto
 `;
 
-const knownClasses = cntl`
-  w-3 
-  h-3 
-  rounded-full 
-  inline-block 
-  bg-[${KNOWN_COLOR}]
-`;
-
-const predictedClasses = cntl`
-  w-3 
-  h-3 
-  rounded-full 
-  inline-block 
-  bg-[${PREDICTED_COLOR}]
-`;
-
 interface GeoFeatureProperties {
   iso_a2?: string;
   iso_a3?: string;
@@ -352,11 +336,11 @@ function SpeciesDistributionMap({
       {predictedDistribution && predictedDistribution.length > 0 && (
         <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-1">
           <span className="inline-flex items-center gap-2">
-            <span className={knownClasses} />
+            <span className="w-3 h-3 rounded-full inline-block bg-[#117554]" />
             <span>Known</span>
           </span>
           <span className="inline-flex items-center gap-2">
-            <span className={predictedClasses} />
+            <span className="w-3 h-3 rounded-full inline-block bg-[#FFEB00]" />
             <span>Predicted distribution</span>
           </span>
         </div>
