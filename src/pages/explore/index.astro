@@ -75,13 +75,16 @@ const mapClasses = cntl`
           <h2 class="text-3xl font-semibold mb-4">
             Mammal Diversity by Country and Region
           </h2>
-          <p class="text-xs mb-2 max-w-4xl mx-auto">Tips:</p>
-          <ul class="list-disc list-inside text-xs mb-4 max-w-4xl mx-auto">
-            <li>Hover over a country to see its name and species counts.</li>
-            <li>Click on a country to see its species list.</li>
+          <p class="text-sm mb-2 max-w-4xl mx-auto">Tips:</p>
+          <ul class="list-disc list-inside text-sm mb-4 max-w-4xl mx-auto">
             <li>
-              Use the "Explore by Country" button for more detailed
-              country-level mammalian diversity.
+              Hover over or tap any country to view its name and number of
+              species.
+            </li>
+            <li>Darker shading indicates higher species diversity.</li>
+            <li>
+              Click "Explore country data" to view detailed statistics and full
+              species lists for each country.
             </li>
           </ul>
 
@@ -93,7 +96,7 @@ const mapClasses = cntl`
               isoCodeMap={countryCodeMap}
             />
           </div>
-          <ActionButton label="Show country data" uri="/country" />
+          <ActionButton label="Explore country data" uri="/country" />
         </div>
       </div>
       <div class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4">
