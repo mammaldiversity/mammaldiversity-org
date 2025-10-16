@@ -25,7 +25,8 @@ function splitCountryDistribution(
   // If ends with "?", it is a predicted distribution
   let known = countryList
     .filter((country: string) => !country.endsWith("?"))
-    .map((country: string) => getCountryRegionName(country));
+    .map((country: string) => getCountryRegionName(country))
+    .map((country: string) => country.toUpperCase());
 
   // If known distribution contains one info
   // listed domesticated (case insensitive),
@@ -36,7 +37,9 @@ function splitCountryDistribution(
 
   let predicted = countryList
     .filter((country: string) => country.endsWith("?"))
-    .map((country: string) => country.slice(0, -1)).map((country: string) => getCountryRegionName(country));
+    .map((country: string) => country.slice(0, -1))
+    .map((country: string) => getCountryRegionName(country))
+    .map((country: string) => country.toUpperCase());
 
   return { known, predicted };
 }
