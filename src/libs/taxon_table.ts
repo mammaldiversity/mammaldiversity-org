@@ -261,8 +261,8 @@ const taxonTableBuilder = new TaxonTableBuilder();
 
 /**
  * Builds the taxon table from a list of species data.
- * @param taxaList The list of species data.
- * @returns The taxon table.
+ * @param {SpeciesData[]} taxaList The list of species data.
+ * @returns {Record<string, OrderData>} The taxon table.
  */
 function buildTable(taxaList: SpeciesData[]) {
   return taxonTableBuilder.build(taxaList);
@@ -273,8 +273,8 @@ function buildTable(taxaList: SpeciesData[]) {
  * This function retrieves species data from the Mammal Diversity Database (MDD),
  * stored in the db directory: `db/data/ and parses it into a nested structure
  * of orders, families, genera, and species.
- * @returns The complete taxon table.
- * @throws An error if no taxa data is found.
+ * @returns {Record<string, OrderData>} The complete taxon table.
+ * @throws {Error} An error if no taxa data is found.
  */
 function getHierarchicalTaxonData(): Record<string, OrderData> {
   const taxa = getSpeciesData();
@@ -286,9 +286,9 @@ function getHierarchicalTaxonData(): Record<string, OrderData> {
 
 /**
  * Gets the taxon table for a specific list of MDD IDs.
- * @param mddIds A list of MDD IDs.
- * @returns The taxon table for the specified MDD IDs.
- * @throws An error if no taxa data is found for the provided IDs.
+ * @param {number[]} mddIds A list of MDD IDs.
+ * @returns {Record<string, OrderData>} The taxon table for the specified MDD IDs.
+ * @throws {Error} An error if no taxa data is found for the provided IDs.
  */
 function getTaxonDataByMddIds(mddIds: number[]): Record<string, OrderData> {
   const taxonList = getSpeciesDataByIds(mddIds);
