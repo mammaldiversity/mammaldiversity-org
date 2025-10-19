@@ -7,7 +7,7 @@ import PageHeader from "../../layouts/PageHeader.astro";
 import {
   getHierarchicalTaxonData,
   type OrderData,
-} from "../../scripts/taxon_table";
+} from "../../libs/taxon_table";
 
 const taxonData: Record<string, OrderData> = getHierarchicalTaxonData();
 
