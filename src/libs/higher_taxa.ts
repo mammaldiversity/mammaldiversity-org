@@ -1,11 +1,11 @@
 /*
 Higher taxa classification for mammals
 */
-import { getHierarchicalTaxonData, type OrderData } from "../scripts/taxon_table";
+import { getHierarchicalTaxonData, type OrderData } from "./taxon_table";
 
 export interface SubclassData {
-    subclass: string;
-    infraclass: InfraClassData[];
+  subclass: string;
+  infraclass: InfraClassData[];
 }
 
 interface InfraClassData {
