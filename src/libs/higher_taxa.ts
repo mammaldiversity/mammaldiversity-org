@@ -14,18 +14,34 @@ interface InfraClassData {
 }
 
 
+/**
+ * Filters a record of order data to retrieve orders belonging to a specific infraclass.
+ * @param {Record<string, OrderData>} data - A map of order names to order data.
+ * @param {string} infraClass - The name of the infraclass to filter by.
+ * @returns {OrderData[]} An array of order data that belongs to the specified infraclass.
+ */
 function getInfraClassData(data: Record<string, OrderData>, infraClass: string): OrderData[] {
   return Object.values(data).filter(
     (item: OrderData) => item.infraclass && item.infraclass.includes(infraClass)
   );
 }
 
+/**
+ * Filters a record of order data to retrieve orders belonging to a specific subclass.
+ * @param {Record<string, OrderData>} data - A map of order names to order data.
+ * @param {string} subclass - The name of the subclass to filter by.
+ * @returns {OrderData[]} An array of order data that belongs to the specified subclass.
+ */
 function getSubclassData(data: Record<string, OrderData>, subclass: string): OrderData[] {
   return Object.values(data).filter(
     (item: OrderData) => item.subclass && item.subclass.includes(subclass)
   );
 }
 
+/**
+ * Builds a hierarchical data structure of higher taxa, including subclasses, infraclasses, and orders.
+ * @returns {Record<string, SubclassData>} A map of subclass names to subclass data, which includes infraclasses and orders.
+ */
 function getHigherTaxonData(): Record<string, SubclassData> {
   const higherTaxaData: Record<string, SubclassData> = {};
 

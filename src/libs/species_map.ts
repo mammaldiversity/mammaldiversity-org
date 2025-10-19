@@ -12,6 +12,11 @@ interface CountryDistribution {
   predicted: string[];
 }
 
+/**
+ * Splits a country distribution string into known and predicted distributions.
+ * @param {string} countryDistribution - A string containing country distributions, separated by "|".
+ * @returns {CountryDistribution} An object with 'known' and 'predicted' arrays of country names.
+ */
 function splitCountryDistribution(
   countryDistribution: string
 ): CountryDistribution {
@@ -44,6 +49,11 @@ function splitCountryDistribution(
   return { known, predicted };
 }
 
+/**
+ * Downloads country geographic data as a GeoJSON feature collection.
+ * @returns {Promise<GeoJSON.FeatureCollection>} A promise that resolves to a GeoJSON feature collection of countries.
+ * @throws {Error} If the download fails or the data is not in the expected format.
+ */
 async function downloadCountryGeoJSON(): Promise<GeoJSON.FeatureCollection> {
   const response = await fetch(COUNTRY_MAP_URL);
   if (!response.ok) {
@@ -66,10 +76,20 @@ async function downloadCountryGeoJSON(): Promise<GeoJSON.FeatureCollection> {
   return worldGeoJson;
 }
 
+/**
+ * Converts a CountryDistribution object to a JSON string.
+ * @param {CountryDistribution} countryList - The CountryDistribution object to convert.
+ * @returns {string} A JSON string representation of the country distribution.
+ */
 function countryListToJson(countryList: CountryDistribution): string {
   return JSON.stringify(countryList);
 }
 
+/**
+ * Converts a JSON string to a CountryDistribution object.
+ * @param {string} jsonString - The JSON string to convert.
+ * @returns {CountryDistribution} The CountryDistribution object.
+ */
 function jsonToCountryList(jsonString: string): CountryDistribution {
   return JSON.parse(jsonString);
 }
