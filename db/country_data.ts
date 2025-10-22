@@ -58,6 +58,7 @@ const regionNameToMapName: Record<string, string> = {
   "Dominican Republic": "Dominican Rep.",
   "Equatorial Guinea": "Eq. Guinea",
   Eswatini: "eSwatini",
+  "Galápagos Islands": "Ecuador",
   "Falkland Islands": "Falkland Is.",
   "Falkland Islands (Malvinas)": "Falkland Is.",
   "Faroe Islands": "Faeroe Is.",
@@ -149,7 +150,6 @@ function getCountryRegionCode(name: string): string {
  * @returns The corresponding name used in the map data.
  */
 function getCountryRegionName(code: string): string {
-  // Assume parseCountryRegionCodeJson() is defined elsewhere and returns the parsed JSON content.
   const countryRegionCode = parseCountryRegionCodeJson();
   const regionName = countryRegionCode.codeToRegion[code] || code;
 
