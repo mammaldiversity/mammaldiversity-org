@@ -1,10 +1,7 @@
 // Module to handle country statistic generation and retrieval
 import fs from "fs";
 
-import type {
-  CountryData,
-  CountryMDDStats,
-} from "./country_stats_model";
+import type { CountryData, CountryMDDStats } from "./country_stats_model";
 
 const COUNTRY_STATS_PATH = "./db/data/country_stats.json";
 
@@ -43,14 +40,10 @@ function parseCountrySpeciesList(data: CountryData): Record<number, boolean> {
     return speciesList;
   }
   data.speciesList.forEach((speciesId) => {
-    const cleanId = speciesId.replace(/\?$/, "").replace(/ and /g, " & "); // Remove trailing '?' and replace ' and ' with ' & '
+    const cleanId = speciesId.replace(/\?$/, ""); // Remove trailing '?' and replace ' and ' with ' & '
     speciesList[cleanId] = speciesId.endsWith("?"); // Record if it was predicted
   });
   return speciesList;
 }
 
-export {
-  getDataByCountryCode,
-  getCountryData,
-  parseCountrySpeciesList,
-};
+export { getDataByCountryCode, getCountryData, parseCountrySpeciesList };
