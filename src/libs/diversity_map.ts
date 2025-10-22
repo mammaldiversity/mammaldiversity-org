@@ -9,7 +9,10 @@
  *  1. By ISO 3166-1 alpha-2 code (default for internal linking & URLs)
  *  2. By map-friendly display name (some mapping libraries expect region names instead of codes)
  */
-import { getCountryRegionCode, getCountryRegionName } from "../../db/country_data";
+import {
+  getCountryRegionCode,
+  getCountryRegionName,
+} from "../../db/country_data";
 import { getCountryData } from "../../db/country_stats";
 
 /**
@@ -45,13 +48,14 @@ function buildCountryDiversityStats(): CountryDiversityStats {
   return countryDiversityMap;
 }
 
-
 /**
  * Build country name and ISO code mapping for countries present in the stats.
  * @param {CountryDiversityStats} stats - A map of country names to diversity statistics.
  * @returns {Record<string, string>} A map where keys are country names and values are their corresponding ISO codes.
  */
-function getMappingCodeFromStats(stats: CountryDiversityStats): Record<string, string> {
+function getMappingCodeFromStats(
+  stats: CountryDiversityStats
+): Record<string, string> {
   const mapping: Record<string, string> = {};
   for (const name in stats) {
     const code = getCountryRegionCode(name);
@@ -66,7 +70,6 @@ function getMappingCodeFromStats(stats: CountryDiversityStats): Record<string, s
  * @returns {CountryDiversityStats} A record mapping the map-compatible country name to its species count.
  */
 function buildDiversityStatsByCountryName(): CountryDiversityStats {
-  // Assume getCountryData() is defined elsewhere and returns the species data.
   const data = getCountryData();
   const countryStats: CountryDiversityStats = {};
 
@@ -82,7 +85,6 @@ function buildDiversityStatsByCountryName(): CountryDiversityStats {
 
   return countryStats;
 }
-
 
 /**
  * Convenience helper that serializes the ISO code keyed diversity map to JSON.
