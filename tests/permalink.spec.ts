@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import {
   generateSpeciesLink,
   generateSpeciesPermalink,
-} from "../src/scripts/permalink";
+} from "../src/libs/permalink";
 
 test("Species link is correct", () => {
   const taxonId = 12345;

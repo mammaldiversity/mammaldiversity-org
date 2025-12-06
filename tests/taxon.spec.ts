@@ -3,7 +3,7 @@ import {
   cleanTaxonData,
   createSynonymName,
   isItalicText,
-} from "../src/scripts/taxon";
+} from "../src/libs/taxon";
 
 test("cleanTaxonData", () => {
   expect(cleanTaxonData("Mammalia|Rodentia")).toBe("Mammalia · Rodentia");
