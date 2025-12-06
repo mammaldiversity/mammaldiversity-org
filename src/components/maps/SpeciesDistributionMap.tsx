@@ -14,7 +14,7 @@ import {
   useState,
 } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
-import { downloadCountryGeoJSON } from "../../scripts/species_map";
+import { downloadCountryGeoJSON } from "../../libs/species_map";
 import cntl from "cntl";
 
 const KNOWN_COLOR = "#117554"; // Dark green

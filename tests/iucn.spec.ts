@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { matchIUCNRedlistStatus } from "../src/scripts/iucn";
+import { matchIUCNRedlistStatus } from "../src/libs/iucn";
 
 test("matchIUCNRedlistStatus", () => {
   expect(matchIUCNRedlistStatus("LC")).toBe("Least Concern");
