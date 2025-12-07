@@ -27,6 +27,10 @@ function splitCountryDistribution(
   }
 
   let countryList = countryDistribution.split("|");
+  // If countain Somalia, inlcude Somaliland as well.
+  if (countryList.includes("Somalia")) {
+    countryList.push("Somaliland");
+  }
   // If ends with "?", it is a predicted distribution
   let known = countryList
     .filter((country: string) => !country.endsWith("?"))
