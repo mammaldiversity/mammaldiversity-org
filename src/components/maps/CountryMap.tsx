@@ -2,8 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 import type { FeatureCollection, GeoJsonProperties } from "geojson";
 
-// --- Types ---
-
 interface CountryMapProps {
   /** Map of ISO 3166-1 alpha-2 codes to species count. */
   stats: Record<string, number>;
@@ -20,8 +18,6 @@ interface CountryMapProps {
   /** Fallback feature property names to attempt if the primary fails. */
   fallbackKeys?: string[];
 }
-
-// --- Hooks ---
 
 /**
  * reliable hook to measure the width of a container.
@@ -58,8 +54,6 @@ function useContainerWidth(
 
   return width;
 }
-
-// --- Helpers ---
 
 /**
  * Helper to normalize keys to uppercase for case-insensitive matching.
