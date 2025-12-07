@@ -18,6 +18,7 @@ import {
 import { getWorldGeoJson } from "../../../db/country_data";
 import CountryMap from "../../components/maps/CountryMap";
 import cntl from "cntl";
+import Link from "../../components/Link.astro";
 
 const countryStats = buildDiversityStatsByCountryName();
 
@@ -84,7 +85,24 @@ const mapClasses = cntl`
               diversity by country.
             </li>
           </ul>
-
+          <div>
+            <p class="text-sm mb-4 max-w-2xl mx-auto">
+              <strong>Notes:</strong> The map may not reflect disputed regions accurately.
+              Pointer positioning may not be precise due to some countries territorial
+              shapes. We recommend navigating to <Link
+                url="/country"
+                label="the explore country data page"
+              /> for precise data.
+            </p>
+          </div>
+          <div id="data-source" class="text-xs mb-4 max-w-2xl mx-auto">
+            Map source:{" "}
+            <Link
+              url="https://github.com/topojson/world-atlas"
+              label="World Atlas TopoJSON and Natural Earth"
+              openInNewTab={true}
+            />
+          </div>
           <div class="mb-4 mx-auto">
             <CountryMap
               client:load
