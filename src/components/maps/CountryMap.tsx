@@ -15,25 +15,20 @@
  *  1. Resolves a feature's ISO2 code, then joins with stats.
  *  2. Renders a continuous color scale (linear) for species counts.
  *  3. Provides tooltips (title) and navigation via /country/{ISO2} links.
- *  4. Displays labels only for countries that have data (to reduce clutter).
  *
  * Accessibility / UX:
  *  - Tooltips show Country Name: <count> species.
  *  - Countries without data are left unfilled (default map background).
+ *  - Tooltips anchor to cursor position to handle MultiPolygon geometries correctly.
  *
  * Extensibility notes:
  *  - For quantized classes, swap the color config to { type: "quantize", domain, range }.
  *  - For a legend domain clamp, compute min/max before constructing Plot.
- *  - To allow toggling labels, add a showLabels prop and conditionally push the Plot.text mark.
  */
 // components/DistributionMap.tsx
 import { useEffect, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 
-// Props:
-// - stats: object mapping ISO codes to counts, e.g. { US: 120, ID: 340, ... } (ISO2 or ISO3)
-// - world: GeoJSON FeatureCollection of countries with properties.iso_a2 and properties.iso_a3
-// - colors: optional [minColor, maxColor]
 interface Props {
   /** Map of ISO 3166-1 alpha-2 codes to species count. */
   stats: Record<string, number>;
@@ -155,16 +150,21 @@ function CountryMap({
             const v = country ? statMap.get(country) : undefined;
             return typeof v === "number" ? v : undefined;
           },
-          title: (d: any) => {
-            const country = getFeatureCountry(d.properties) || "?";
-            const name = d.properties?.name || "Unknown";
-            const v = statMap.get(country) ?? 0;
-            return `${name}: ${v} species`;
-          },
+          // Use tip with pointer positioning and channels for proper tooltip placement
           tip: {
             fontSize: 12,
             lineHeight: 1.3,
             fill: isDark ? "#000" : "#fff",
+            pointer: "xy", // Anchor tooltip to cursor position
+          },
+          // Define data channels for tooltip content
+          channels: {
+            Country: (d: any) => d.properties?.name || "Unknown",
+            // Species: (d: any) => {
+            //   const country = getFeatureCountry(d.properties);
+            //   const count = statMap.get(country || "") ?? 0;
+            //   return `${count} species`;
+            // },
           },
           href: (d: any) => {
             const country = getFeatureCountry(d.properties);
@@ -173,15 +173,7 @@ function CountryMap({
             return `/country/${d.properties?.iso_a2 || code}`;
           },
         }),
-        // Country code labels (force black text)
-        Plot.text(
-          (world as any).features.filter((f: any) => {
-            const country = getFeatureCountry(f.properties);
-            return (
-              country && statMap.has(country) && (statMap.get(country) ?? 0) > 0
-            );
-          })
-        ),
+
         // Thin borders
         Plot.geo(world as any, {
           stroke: "currentColor",
