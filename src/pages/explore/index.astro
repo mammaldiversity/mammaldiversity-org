@@ -95,6 +95,14 @@ const mapClasses = cntl`
               /> for precise data.
             </p>
           </div>
+          <div id="data-source" class="text-xs mb-4 max-w-2xl mx-auto">
+            Map source:{" "}
+            <Link
+              url="https://github.com/topojson/world-atlas"
+              label="World Atlas TopoJSON and Natural Earth"
+              openInNewTab={true}
+            />
+          </div>
           <div class="mb-4 mx-auto">
             <CountryMap
               client:load
