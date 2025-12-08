@@ -189,7 +189,7 @@ export default function CountryMap({
             const { iso2, id } = getFeatureData(d.properties);
             // Prefer ISO2 for URLs, fallback to ID if it looks like a code
             const urlCode = iso2 || id;
-            return urlCode ? `/country/${urlCode.toLowerCase()}` : undefined;
+            return urlCode ? `/country/${urlCode.toUpperCase()}` : undefined;
           },
 
           // Styling
