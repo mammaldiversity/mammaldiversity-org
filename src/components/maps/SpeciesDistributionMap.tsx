@@ -241,8 +241,6 @@ function SpeciesDistributionMap({
       style: { overflow: "visible" },
       marks: [
         // Single pass for all country fills and borders.
-        // Previously 4 separate geo passes (base, predicted, known, borders)
-        // — each iterated all 250+ features independently.
         Plot.geo(world.features, {
           fill: (d: GeoFeature) => {
             const status = featureCache.get(d)?.status;
