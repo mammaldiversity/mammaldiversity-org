@@ -67,6 +67,10 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
       <div className="mt-2 mx-2 text-sm text-gray-600">
         <p className="font-medium">{image.description}</p>
         <p>{image.location}</p>
+        <p>
+          Taken by {image.photographer}, on{" "}
+          {new Date(image.dateTaken).toLocaleDateString()}
+        </p>
       </div>
     </div>
   );
