@@ -8,15 +8,19 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
   const isLast = current === metadata.length - 1;
 
   return (
-    <div className="mil-images bg-spectra-100 dark:bg-spectra-800 rounded-xl pb-2 mt-2">
+    <div className="mil-images bg-gradient-to-r from-spectra-100 to-spicy-mix-100 dark:from-spectra-900 dark:to-spicy-mix-900 rounded-xl pb-2 mt-2">
       {/* Image container */}
       <div className="relative w-full">
-        <img
-          src={image.filePath}
-          alt={image.description}
-          className="w-full object-cover rounded-lg"
-        />
-
+        {/* Show empty state if no images */}
+        {!image ? (
+          <p className="text-gray-500">No images available</p>
+        ) : (
+          <img
+            src={image.filePath}
+            alt={image.description}
+            className="w-full object-cover rounded-lg"
+          />
+        )}
         {/* Prev button */}
         <button
           onClick={() => setCurrent((c) => c - 1)}
@@ -64,12 +68,26 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
       </div>
 
       {/* Caption */}
-      <div className="mt-2 mx-2 text-sm text-gray-600">
+      <div className="mt-2 ml-4 mr-2 text-sm text-gray-600">
         <p className="font-medium">{image.description}</p>
         <p>{image.location}</p>
         <p>
           Taken by {image.photographer}, on{" "}
-          {new Date(image.dateTaken).toLocaleDateString()}
+          {new Date(image.dateTaken).toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}{" "}
+          &middot;{" "}
+          <a
+            href="https://www.mammalogy.org/committees/mammal-images-library"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-spectra-600 dark:hover:text-spectra-300"
+          >
+            MIL
+          </a>{" "}
+          ID: {image.milId}
         </p>
       </div>
     </div>

@@ -41,13 +41,14 @@ const mddSpeciesLink = generateSpeciesPermalink(taxon?.id);
 const species = taxon?.genus + " " + taxon?.specificEpithet;
 
 const milMetadata = taxon ? getSpeciesMilImages(id) : [];
-
+// bg-gradient-to-r
+//   from-spectra-100
+//   to-spicy-mix-100
+//   dark:from-spectra-900
+//   dark:to-spicy-mix-900
 const taxonomyClasses = cntl`
-  bg-gradient-to-r
-  from-spectra-100
-  to-spicy-mix-100
-  dark:from-spectra-900
-  dark:to-spicy-mix-900
+  bg-spectra-100 
+  dark:bg-spectra-800
   pl-4 
   py-2 
   my-2 
