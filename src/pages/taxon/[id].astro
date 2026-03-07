@@ -14,6 +14,8 @@ import SpeciesStatus from "../../components/species-page/SpeciesStatus.astro";
 import DistributionMap from "../../components/species-page/DistributionMap.astro";
 import { generateSpeciesPermalink } from "../../libs/permalink";
 import SynonymSection from "../../components/species-page/SynonymSection.astro";
+import { getSpeciesMilImages } from "../../libs/mil";
+import MilImages from "../../components/mil/MilImages";
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
 // This approach allow us make sure the generated page is always up to date with the database
@@ -37,6 +39,8 @@ const iucnStatus = matchIUCNRedlistStatus(taxon?.iucnStatus ?? "NE");
 const mddSpeciesLink = generateSpeciesPermalink(taxon?.id);
 
 const species = taxon?.genus + " " + taxon?.specificEpithet;
+
+const milMetadata = taxon ? getSpeciesMilImages(id) : [];
 
 const taxonomyClasses = cntl`
   bg-gradient-to-r
@@ -74,6 +78,11 @@ const common_name_class = cntl`
     <PageDivider />
     <div class="grid grid-cols-1 lg:grid-cols-2 justify-between gap-4 mt-4">
       <div>
+        {
+          milMetadata.length > 0 && (
+            <MilImages metadata={milMetadata} client:load />
+          )
+        }
         <div class={taxonomyClasses}>
           <h3 class="font-semibold text-lg md:text-xl mb-2">Taxonomy</h3>
           <table class="table-auto">
