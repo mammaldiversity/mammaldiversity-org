@@ -32,3 +32,5 @@ country_stats.json
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+mil.json
+mil-images/
