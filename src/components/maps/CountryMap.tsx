@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 import type { Feature, FeatureCollection, GeoJsonProperties } from "geojson";

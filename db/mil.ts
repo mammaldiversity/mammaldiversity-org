@@ -1,12 +1,12 @@
-// Parser for parsing the MDD json file
+// Parser for parsing the MIL json file
 import fs from "fs";
 import type { MilMetadata } from "./mil_model";
 
-const MDD_PATH = "./db/data/mil.json";
+const MIL_PATH = "./db/data/mil.json";
 const META_PARENT_DIR = "/src/assets/mil-images/"; // Parent directory for MIL images
 
 function parseMilJson(): MilMetadata[] {
-    const rawData = fs.readFileSync(MDD_PATH, "utf8");
+    const rawData = fs.readFileSync(MIL_PATH, "utf8");
     const jsonData = JSON.parse(rawData);
     return jsonData.map((item: any) => ({
         milId: item.milId,
@@ -15,7 +15,7 @@ function parseMilJson(): MilMetadata[] {
         location: item.location,
         photographer: item.photographer,
         dateTaken: item.dateTaken,
-        filePath: `${META_PARENT_DIR}${item.milId}.webp`,
+        filePath: `${META_PARENT_DIR}/${item.milId}.webp`,
     }));
 }
 
