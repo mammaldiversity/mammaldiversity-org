@@ -124,7 +124,7 @@ class TaxonTableBuilder {
     // Update counts
     familyData.genus_count = familyData.genera.length;
     orderData.family_count = orderData.family_list.length;
-    
+
     // We sort all genus, the living and extinct species list in alphabetical order
     // For easier navigation and consistency
     familyData.genera.sort((a, b) => a.genus.localeCompare(b.genus));
@@ -261,8 +261,6 @@ const taxonTableBuilder = new TaxonTableBuilder();
 
 /**
  * Builds the taxon table from a list of species data.
- * @param {SpeciesData[]} taxaList The list of species data.
- * @returns {Record<string, OrderData>} The taxon table.
  */
 function buildTable(taxaList: SpeciesData[]) {
   return taxonTableBuilder.build(taxaList);
