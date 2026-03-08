@@ -31,58 +31,127 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
 <style is:global>
   :root {
     --pagefind-ui-scale: 1;
-    --pagefind-ui-primary: theme("colors.primary");
-    --pagefind-ui-text: theme("colors.base-content");
-    --pagefind-ui-background: theme("colors.primary");
-    --pagefind-ui-border: theme("colors.accent");
-    --pagefind-ui-tag: theme("colors.primary");
     --pagefind-ui-border-width: 2px;
-    --pagefind-ui-border-radius: 18px;
+    --pagefind-ui-border-radius: 12px;
     --pagefind-ui-font: sans-serif;
-    --pagefind-ui-scale: 1;
+
+    /* Light mode — spectra/spicy-mix palette */
+    --pagefind-ui-primary: #2c4243;
+    --pagefind-ui-text: #131f20;
+    --pagefind-ui-background: #f4f9f8;
+    --pagefind-ui-border: #b9d6d2;
+    --pagefind-ui-tag: #b9d6d2;
+    --pagefind-input-background: #dcebe9;
   }
+
+  /* Dark mode overrides */
+  .dark {
+    --pagefind-ui-primary: #679a98;
+    --pagefind-ui-text: #f8f6f2;
+    --pagefind-ui-background: #2c4243;
+    --pagefind-ui-border: #2c4243;
+    --pagefind-ui-tag: #2c4243;
+    --pagefind-input-background: #365858;
+  }
+
+  /* Search input + clear button */
   #search .pagefind-ui__search-input,
   #search .pagefind-ui__search-clear {
     background-color: var(--pagefind-input-background);
     color: var(--pagefind-ui-text);
-    border-color: theme("colors.primary");
+    border-color: var(--pagefind-ui-border);
     font-weight: normal;
   }
+
+  #search .pagefind-ui__search-input:hover {
+    border-color: #65453b;
+  }
+
+  #search .pagefind-ui__search-input:focus,
+  #search .pagefind-ui__search-input:active {
+    border-color: var(--pagefind-ui-primary);
+    outline: none;
+  }
+
   #search .pagefind-ui__search-clear:focus {
     background-color: var(--pagefind-ui-primary);
     color: var(--pagefind-ui-background);
     border-color: var(--pagefind-ui-primary);
   }
 
-  #search .pagefind-ui__search-input:focus,
-  #search .pagefind-ui__search-input:active,
-  #search .pagefind-ui__form:focus,
-  #search .pagefind-ui__form:active,
-  #search .pagefind-ui__form::after,
-  #search .pagefind-ui__form::before {
-    color: var(--pagefind-ui-text);
-    border-color: theme("colors.primary");
-    font-weight: normal;
-  }
-  #search .pagefind-ui__search-input:hover {
-    color: var(--pagefind-ui-text);
-    border-color: theme("colors.secondary");
-    font-weight: normal;
-  }
+  /* Result titles */
   #search .pagefind-ui__result-title,
   #search .pagefind-ui__result-link {
     display: inline-block;
-    color: var(--pagefind-ui-result-title-text);
+    color: var(--pagefind-ui-primary);
     font-style: italic;
     font-weight: bold;
   }
+
+  #search .pagefind-ui__result-title:hover,
+  #search .pagefind-ui__result-link:hover {
+    color: #65453b;
+  }
+
+  /* Result excerpt */
+  #search .pagefind-ui__result-excerpt {
+    color: var(--pagefind-ui-text);
+    opacity: 0.85;
+  }
+
+  /* Result container — p-2 equivalent spacing between cards */
+  #search .pagefind-ui__result {
+    border-color: var(--pagefind-ui-border);
+    background-color: var(--pagefind-ui-background);
+    border-radius: 12px;
+    padding: 0.5rem; /* p-2 */
+    margin-bottom: 0.5rem; /* gap between results */
+  }
+
+  #search .pagefind-ui__results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* consistent spacing between all result cards */
+  }
+
+  /* Filter panel */
+  #search .pagefind-ui__filter-panel {
+    background-color: var(--pagefind-input-background);
+    border-radius: 12px;
+    padding: 0.5rem;
+  }
+
+  #search .pagefind-ui__filter-name {
+    color: var(--pagefind-ui-text);
+    font-weight: 600;
+  }
+
+  #search .pagefind-ui__filter-value {
+    color: var(--pagefind-ui-text);
+  }
+
+  /* "{count} results for {query}" message */
+  #search .pagefind-ui__message {
+    color: #131f20;
+  }
+
+  .dark #search .pagefind-ui__message {
+    color: #f8f6f2;
+  }
+
+  /* Load more button */
   #search .pagefind-ui__button {
-    color: theme("colors.base-content");
+    color: var(--pagefind-ui-text);
+    border-color: var(--pagefind-ui-border);
+    background-color: var(--pagefind-input-background);
+    border-radius: 18px;
     font-weight: normal;
   }
+
   #search .pagefind-ui__button:hover {
-    color: theme("colors.primary");
-    font-weight: normal;
+    background-color: var(--pagefind-ui-primary);
+    color: var(--pagefind-ui-background);
+    border-color: var(--pagefind-ui-primary);
   }
 
   #search .pagefind-ui__results-area {
@@ -92,6 +161,7 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
 </style>
 
 <script src={pageFindPath} type="text/javascript" is:inline></script>
+
 <script>
   declare const PagefindUI: any;
   window.addEventListener("DOMContentLoaded", () => {
