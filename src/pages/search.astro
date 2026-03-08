@@ -118,7 +118,12 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
   #search .pagefind-ui__filter-panel {
     background-color: var(--pagefind-input-background);
     border-radius: 12px;
-    padding: 0.5rem;
+    padding: 1rem;
+  }
+
+  #search .pagefind-ui__drawer {
+    gap: 1rem; /* space between filter panel and results */
+    padding-right: 1rem; /* similar to tailwind p-4 on the right */
   }
 
   #search .pagefind-ui__filter-name {
@@ -132,11 +137,7 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
 
   /* "{count} results for {query}" message */
   #search .pagefind-ui__message {
-    color: #131f20;
-  }
-
-  .dark #search .pagefind-ui__message {
-    color: #f8f6f2;
+    color: #4d7f7e;
   }
 
   /* Load more button */
