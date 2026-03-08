@@ -4,8 +4,6 @@ import MainPage from "../layouts/MainPage.astro";
 import Page from "../layouts/Page.astro";
 import Link from "../components/Link.astro";
 import { join } from "path";
-import OneLineNotes from "../components/OneLineNotes.astro";
-
 const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
 ---
 
@@ -22,11 +20,11 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
         />.
       </p>
     </div>
-    <div id="search" class="mt-2"></div>
-    <OneLineNotes
+    <!-- <OneLineNotes
       class="mb-4"
       msg="Some query with large results may fail to be displayed properly. You can try /explore/taxon-list/ to find the taxon you are looking for."
-    />
+    /> -->
+    <div id="search" class="mt-2"></div>
   </MainPage>
 </Page>
 
@@ -55,13 +53,13 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
     color: var(--pagefind-ui-background);
     border-color: var(--pagefind-ui-primary);
   }
-  #search
-    .pagefind-ui__search-input:focus
-    .pagefind-ui__search-input:active
-    .pagefind-ui__form:focus
-    .pagefind-ui__form:active
-    .pagefind-ui__form::after
-    .pagefind-ui__form::before {
+
+  #search .pagefind-ui__search-input:focus,
+  #search .pagefind-ui__search-input:active,
+  #search .pagefind-ui__form:focus,
+  #search .pagefind-ui__form:active,
+  #search .pagefind-ui__form::after,
+  #search .pagefind-ui__form::before {
     color: var(--pagefind-ui-text);
     border-color: theme("colors.primary");
     font-weight: normal;
@@ -85,6 +83,11 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
   #search .pagefind-ui__button:hover {
     color: theme("colors.primary");
     font-weight: normal;
+  }
+
+  #search .pagefind-ui__results-area {
+    display: block !important;
+    visibility: visible !important;
   }
 </style>
 
