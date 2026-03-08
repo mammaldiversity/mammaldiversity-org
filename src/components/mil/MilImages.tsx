@@ -72,12 +72,17 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
         <p className="font-medium">{image.description}</p>
         <p>{image.location}</p>
         <p>
-          Taken by {image.photographer}, on{" "}
-          {new Date(image.dateTaken).toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}{" "}
+          {image.photographer && `Taken by ${image.photographer}`}
+          {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime()) && (
+            <>
+              , on{" "}
+              {new Date(image.dateTaken).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </>
+          )}{" "}
           &middot;{" "}
           <a
             href="https://www.mammalogy.org/committees/mammal-images-library"
