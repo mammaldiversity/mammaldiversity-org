@@ -2,31 +2,15 @@
  * Country/map data utilities
  *
  * This module provides helpers to:
- * - Load region↔code lookup data from JSON on disk (Node-only, sync read).
+ * - Load region↔code lookup data from imported JSON (Vite-native, works in browser).
  * - Normalize country/region names between our canonical data and the map
  *   vendor's naming used in the TopoJSON file.
  * - Convert the world TopoJSON into a GeoJSON FeatureCollection for mapping.
- *
- * Notes
- * - Functions here read from the filesystem using Node's `fs` and therefore
- *   must only run in a server/build context (not in the browser).
- * - Paths are relative to the repo root; keep them stable or plumb via config
- *   if you relocate data files.
  */
-import { readFileSync } from "fs";
 import { feature } from "topojson-client";
 import type { CountryRegionCode } from "./country_stats_model";
-// NOTE: Node's native ESM loader (used when Playwright runs tests in this repo because
-// package.json sets "type": "module") now requires an explicit import assertion for
-// JSON modules. Without `assert { type: "json" }`, Node throws:
-//   TypeError: Module ".../countries-50m.json" needs an import attribute of "type: json"
-// Vite/Astro's build pipeline handled this implicitly, but the raw Node runtime (as
-// exercised by Playwright) does not. Adding the assertion fixes the test-time import.
-// If TypeScript complains, ensure `resolveJsonModule` is enabled (included in Astro's
-// strict tsconfig) or add it explicitly in tsconfig.
-
-const COUNTRY_REGION_CODE_PATH = "./db/data/country_region_code.json";
-const TOPO_JSON_PATH = "./db/data/countries-50m.json";
+import countryRegionCodeData from "../db/data/country_region_code.json";
+import topoData from "../db/data/countries-50m.json";
 
 /**
  * Manual alias map from our canonical region names → the names used in the
@@ -103,37 +87,16 @@ const regionNameToMapName: Record<string, string> = {
   "Virgin Islands (British)": "British Virgin Is.",
 };
 
-/**
- * Parse and return the region↔code lookup JSON.
- *
- * IO
- * - Reads `COUNTRY_REGION_CODE_PATH` synchronously and JSON-parses the content.
- *
- * Error modes
- * - Will throw if the file cannot be read or contains invalid JSON.
- */
-function parseCountryRegionCodeJson(): CountryRegionCode {
-  const rawData = readFileSync(COUNTRY_REGION_CODE_PATH, "utf8");
-  const jsonData: CountryRegionCode = JSON.parse(rawData);
-  return jsonData;
-}
+const countryRegionCode = countryRegionCodeData as CountryRegionCode;
 
 /**
  * Resolve a canonical region name to its code, accounting for map-name aliases.
- *
- * The lookup first attempts an exact match in `regionToCode`. If a direct match
- * fails, it tries to find an alias in `regionNameToMapName` that maps from the
- * canonical name to the map's label, then resolves that back to the canonical
- * standard name before reading the code.
  *
  * @param name Canonical region/country name (from our data or map label).
  * @returns The region code (e.g., "US"), or `name` when no code is found.
  */
 function getCountryRegionCode(name: string): string {
-  const countryRegionCode = parseCountryRegionCodeJson();
   const code = countryRegionCode.regionToCode[name] || name;
-  // the name will be coming from the map, so we need to reverse map it
-  // to the standard region name first
   const standardName = Object.keys(regionNameToMapName).find(
     (key) => regionNameToMapName[key] === name
   );
@@ -146,15 +109,12 @@ function getCountryRegionCode(name: string): string {
 /**
  * Gets the region name for a given country code, resolving any mismatches
  * with the names used in the TopoJSON map file.
+ *
  * @param code The country code (e.g., "US").
  * @returns The corresponding name used in the map data.
  */
 function getCountryRegionName(code: string): string {
-  const countryRegionCode = parseCountryRegionCodeJson();
   const regionName = countryRegionCode.codeToRegion[code] || code;
-
-  // Apply the manual mapping to get the name that matches the map file.
-  // If no specific mapping exists, return the original region name.
   return regionNameToMapName[regionName] || regionName;
 }
 
@@ -163,10 +123,7 @@ function getCountryRegionName(code: string): string {
  */
 function isFeatureCollection(
   input: any
-): input is GeoJSON.FeatureCollection<
-  GeoJSON.Geometry,
-  GeoJSON.GeoJsonProperties
-> {
+): input is GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties> {
   return (
     input && input.type === "FeatureCollection" && Array.isArray(input.features)
   );
@@ -175,21 +132,13 @@ function isFeatureCollection(
 /**
  * Load the world TopoJSON and convert to a GeoJSON FeatureCollection.
  *
- * Data source
- * - Reads `TOPO_JSON_PATH` and expects an `objects.countries` topology.
- * - Uses topojson-client `feature()` to convert TopoJSON → GeoJSON.
- *
  * Error modes
- * - Throws if the converted result is not a FeatureCollection (unexpected
- *   schema/version in the source file).
+ * - Throws if the converted result is not a FeatureCollection.
  */
 function getWorldGeoJson(): GeoJSON.FeatureCollection {
-  // Load and parse the world TopoJSON data
-  const raw = readFileSync(TOPO_JSON_PATH, "utf8");
-  const topoJson = JSON.parse(raw);
   const worldCountriesResultUnknown = feature(
-    topoJson as any,
-    (topoJson as any).objects.countries
+    topoData as any,
+    (topoData as any).objects.countries
   ) as unknown;
 
   if (!isFeatureCollection(worldCountriesResultUnknown)) {
@@ -198,8 +147,7 @@ function getWorldGeoJson(): GeoJSON.FeatureCollection {
     );
   }
 
-  const worldGeoJson = worldCountriesResultUnknown as GeoJSON.FeatureCollection;
-  return worldGeoJson;
+  return worldCountriesResultUnknown as GeoJSON.FeatureCollection;
 }
 
 export {
