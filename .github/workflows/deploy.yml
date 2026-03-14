@@ -22,6 +22,8 @@ jobs:
           toolchain: stable
       - name: Setup Python
         uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
       - name: Install mil-kit
         run: pip install mil-kit
       - name: Install MDD CLI
@@ -47,7 +49,7 @@ jobs:
       - name: Copy MIL images to Astro assets
         working-directory: db/data
         run: |
-          MIL_DIRNAME=$(ls -d mil-v*)
+          MIL_DIRNAME=$(ls -d mil-v*/ | head -1 | tr -d '/')
           mkdir -p ../../src/assets/mil-images
           find "$MIL_DIRNAME/images-400px-webp" -name "*.webp" -exec mv {} ../../src/assets/mil-images/ \;
       - name: Cleaning up data files
