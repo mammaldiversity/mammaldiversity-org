@@ -9,10 +9,8 @@
  *  1. By ISO 3166-1 alpha-2 code (default for internal linking & URLs)
  *  2. By map-friendly display name (some mapping libraries expect region names instead of codes)
  */
-import {
-  getCountryRegionCode,
-  getCountryRegionName,
-} from "../../db/country_data";
+
+import { getCountryRegionCode, getCountryRegionName } from "../../db/country_data";
 import { getCountryData } from "../../db/country_stats";
 
 /**
