@@ -69,18 +69,28 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
 
       {/* Caption */}
       <div className="mt-2 ml-4 mr-2 text-spectra-800 dark:text-spectra-100 text-sm">
-        {image.location && <p>Location: {image.location}</p>}
-        {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime()) && (
-          <p>
-            Date taken:{" "}
-            {new Date(image.dateTaken).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-        )}
-        <p>
+        <div className="grid grid-cols-[auto_1fr] gap-x-2">
+          {image.location && (
+            <>
+              <span className="font-medium">Location</span>
+              <span>: {image.location}</span>
+            </>
+          )}
+          {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime()) && (
+            <>
+              <span className="font-medium">Date taken</span>
+              <span>
+                :{" "}
+                {new Date(image.dateTaken).toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+            </>
+          )}
+        </div>
+        <p className="italic">
           Image courtesy of the{" "}
           <a
             href="https://www.mammalogy.org/committees/mammal-images-library"
