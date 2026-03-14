@@ -2,7 +2,7 @@
 import { readFileSync } from "fs";
 import type { MilMetadata } from "./mil_model";
 
-const MIL_PATH = "../db/data/mil.json";
+const MIL_PATH = "./db/data/mil.json";
 const META_PARENT_DIR = "/src/assets/mil-images";
 
 function parseMilJson(): MilMetadata[] {
