@@ -2,7 +2,7 @@
 import type { MilMetadata } from "./mil_model";
 import milRaw from "../db/data/mil.json";
 
-const META_PARENT_DIR = "/src/assets/mil-images";
+const META_PARENT_DIR = "/mil-images";
 
 function parseMilJson(): MilMetadata[] {
     return (milRaw as any[]).map((item) => ({
