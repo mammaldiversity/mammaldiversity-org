@@ -13,7 +13,7 @@
  * - Paths are relative to the repo root; keep them stable or plumb via config
  *   if you relocate data files.
  */
-import fs from "fs";
+import { readFileSync } from "fs";
 import { feature } from "topojson-client";
 import type { CountryRegionCode } from "./country_stats_model";
 // NOTE: Node's native ESM loader (used when Playwright runs tests in this repo because
@@ -113,7 +113,7 @@ const regionNameToMapName: Record<string, string> = {
  * - Will throw if the file cannot be read or contains invalid JSON.
  */
 function parseCountryRegionCodeJson(): CountryRegionCode {
-  const rawData = fs.readFileSync(COUNTRY_REGION_CODE_PATH, "utf8");
+  const rawData = readFileSync(COUNTRY_REGION_CODE_PATH, "utf8");
   const jsonData: CountryRegionCode = JSON.parse(rawData);
   return jsonData;
 }
@@ -185,7 +185,7 @@ function isFeatureCollection(
  */
 function getWorldGeoJson(): GeoJSON.FeatureCollection {
   // Load and parse the world TopoJSON data
-  const raw = fs.readFileSync(TOPO_JSON_PATH, "utf8");
+  const raw = readFileSync(TOPO_JSON_PATH, "utf8");
   const topoJson = JSON.parse(raw);
   const worldCountriesResultUnknown = feature(
     topoJson as any,
