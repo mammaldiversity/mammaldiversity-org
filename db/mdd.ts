@@ -1,13 +1,15 @@
 // Parser for parsing the MDD json file
-import fs from "fs";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { join, dirname } from "path";
 
 import type { MddData, SpeciesData, Metadata, Synonym } from "./mdd_model";
 
-const MDD_PATH = "./db/data/mdd.json";
-// const MDD_PATH = "./db/data/test.json";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const MDD_PATH = join(__dirname, "../db/data/mdd.json");
 
 function parseMDDJson(): MddData {
-  const rawData = fs.readFileSync(MDD_PATH, "utf8");
+  const rawData = readFileSync(MDD_PATH, "utf8");
   const jsonData: MddData = JSON.parse(rawData);
   return jsonData;
 }

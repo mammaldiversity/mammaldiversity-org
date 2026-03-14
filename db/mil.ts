@@ -1,12 +1,15 @@
 // Parser for parsing the MIL json file
-import fs from "fs";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { join, dirname } from "path";
 import type { MilMetadata } from "./mil_model";
 
-const MIL_PATH = "./db/data/mil.json";
-const META_PARENT_DIR = "/src/assets/mil-images/"; // Parent directory for MIL images
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const MIL_PATH = join(__dirname, "../db/data/mil.json");
+const META_PARENT_DIR = "/src/assets/mil-images";
 
 function parseMilJson(): MilMetadata[] {
-    const rawData = fs.readFileSync(MIL_PATH, "utf8");
+    const rawData = readFileSync(MIL_PATH, "utf8");
     const jsonData = JSON.parse(rawData);
     return jsonData.map((item: any) => ({
         milId: item.milId,
