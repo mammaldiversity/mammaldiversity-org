@@ -33,7 +33,6 @@ function getTaxonomyData(data: SpeciesData[], speciesId: number): SpeciesData {
 
 function getSynonymOnly(): Synonym[] {
   const synonym = parseMDDJson().synonymOnly;
-  console.log("Synonym Only: ", synonym);
   return synonym;
 }
 
