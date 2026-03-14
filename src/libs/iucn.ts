@@ -1,3 +1,6 @@
+/**
+ * Matches an IUCN Red List status code to its full name.
+ */
 export function matchIUCNRedlistStatus(status: string) {
   switch (status) {
     case "LC":

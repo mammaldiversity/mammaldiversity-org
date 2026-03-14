@@ -14,10 +14,11 @@ import ResponsiveCard from "../../components/ResponsiveCard.astro";
 import {
   buildDiversityStatsByCountryName,
   getMappingCodeFromStats,
-} from "../../scripts/diversity_map";
+} from "../../libs/diversity_map";
 import { getWorldGeoJson } from "../../../db/country_data";
 import CountryMap from "../../components/maps/CountryMap";
 import cntl from "cntl";
+import Link from "../../components/Link.astro";
 
 const countryStats = buildDiversityStatsByCountryName();
 
@@ -77,17 +78,31 @@ const mapClasses = cntl`
           </h2>
           <p class="text-sm mb-2 max-w-4xl mx-auto">Tips:</p>
           <ul class="list-disc list-inside text-sm mb-4 max-w-4xl mx-auto">
+            <li>Hover or tap a country to see its name and species count.</li>
+            <li>Click a country to open its detailed species list.</li>
             <li>
-              Hover over or tap any country to view its name and number of
-              species.
-            </li>
-            <li>Darker shading indicates higher species diversity.</li>
-            <li>
-              Click "Explore country data" to view detailed statistics and full
-              species lists for each country.
+              Click "Explore country data" to view the full table of species
+              diversity by country.
             </li>
           </ul>
-
+          <div>
+            <p class="text-sm mb-4 max-w-2xl mx-auto">
+              <strong>Notes:</strong> The map may not reflect disputed regions accurately.
+              Pointer positioning may not be precise due to some countries territorial
+              shapes. We recommend navigating to <Link
+                url="/country"
+                label="the explore country data page"
+              /> for precise data.
+            </p>
+          </div>
+          <div id="data-source" class="text-xs mb-4 max-w-2xl mx-auto">
+            Map source:{" "}
+            <Link
+              url="https://github.com/topojson/world-atlas"
+              label="World Atlas TopoJSON and Natural Earth"
+              openInNewTab={true}
+            />
+          </div>
           <div class="mb-4 mx-auto">
             <CountryMap
               client:load

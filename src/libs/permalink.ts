@@ -5,10 +5,20 @@ const MDD_SPECIES_PERMALINK = "https://mammaldiversity.org";
 // based on the folder structure and the [id] slug in the file name.
 // This function is only useful for generating the link
 // for the section in the species page.
+/**
+ * Generates a full permalink URL for a species page.
+ * @param {number} taxonId - The ID of the taxon.
+ * @returns {string} The full permalink URL for the species page.
+ */
 function generateSpeciesPermalink(taxonId: number): string {
   return `${MDD_SPECIES_PERMALINK}${MDD_SPECIES_LINK}${taxonId}`;
 }
 
+/**
+ * Generates a relative link for a species page.
+ * @param {number} taxonId - The ID of the taxon.
+ * @returns {string} The relative link for the species page.
+ */
 function generateSpeciesLink(taxonId: number): string {
   return `${MDD_SPECIES_LINK}${taxonId}`;
 }

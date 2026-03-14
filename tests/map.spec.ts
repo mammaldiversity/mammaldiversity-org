@@ -3,7 +3,7 @@ import {
   splitCountryDistribution,
   countryListToJson,
   jsonToCountryList,
-} from "../src/scripts/species_map";
+} from "../src/libs/species_map";
 
 test("splitCountryDistribution with NA", () => {
   expect(splitCountryDistribution("NA")).toEqual(

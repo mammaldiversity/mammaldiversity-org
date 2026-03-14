@@ -1,8 +1,5 @@
 ---
-import {
-  createAuthorityCitation,
-  createSynonymName,
-} from "../../scripts/taxon";
+import { createAuthorityCitation, createSynonymName } from "../../libs/taxon";
 import PageDivider from "../PageDivider.astro";
 import TaxonData from "./TaxonData.astro";
 import cntl from "cntl";
@@ -48,12 +45,12 @@ const {
 const synonymText = createSynonymName(
   rootName,
   species,
-  originalNameCombination
+  originalNameCombination,
 );
 const authorityCitation = createAuthorityCitation(
   authoritySpeciesAuthor,
   authoritySpeciesYear,
-  authorityParentheses === 1
+  authorityParentheses === 1,
 );
 
 const dialogClasses = cntl`
@@ -94,7 +91,9 @@ const synonymTitleClasses = cntl`
 <button id="modal-btn">
   <div id="header" class={headerClasses}>
     <p class={buttonTextClasses}>
-      <span class="italic tracking-wide">{synonymText}</span>
+      <span class="italic tracking-wide" data-pagefind-weight="5"
+        >{synonymText}</span
+      >
       {authorityCitation}
     </p>
   </div>
@@ -103,7 +102,7 @@ const synonymTitleClasses = cntl`
 <dialog id="my_modal_5" class={dialogClasses}>
   <div class="modal-box">
     <div id="modal-header" class="text-center mb-2">
-      <h1 class={synonymTitleClasses}>
+      <h1 class={synonymTitleClasses} data-pagefind-weight="9">
         {synonymText}
       </h1>
       <h2 class="text-lg">
@@ -153,7 +152,7 @@ const synonymTitleClasses = cntl`
 
 <script>
   const dialogs = Array.from(
-    document.querySelectorAll("#my_modal_5")
+    document.querySelectorAll("#my_modal_5"),
   ) as HTMLDialogElement[];
   const modalBtn = document.querySelectorAll("#modal-btn");
 

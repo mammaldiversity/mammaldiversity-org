@@ -2,7 +2,7 @@
 
 This project is a complete rewrite of the [Mammal Diversity Database (MDD)](httpss://www.mammaldiversity.org/) website. The live site is available at [mammaldiversity.org](https://www.mammaldiversity.org/).
 
-Our primary goals for this rewrite are:
+## What's New in the Rewrite?
 
 - **Improve Performance:** Build a faster, more responsive website using modern web technologies.
 - **Modernize the Interface:** Create a clean, intuitive, accessible, and mobile-friendly user interface.
