@@ -1,14 +1,10 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Trigger the workflow every time you push to the `main` branch
-  # Using a different branch name? Replace `main` with your branch’s name
   push:
     branches: [main]
-  # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 
-# Allow this job to clone the repo and create a page deployment
 permissions:
   contents: read
   pages: write
@@ -20,15 +16,14 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
-      # - name: Create env file
-      #   run: |
-      #     touch .env
-      #     echo "ASTRO_DB_REMOTE_URL=${{secrets.TURSO_DB}}" >> .env
-      #     echo "ASTRO_DB_APP_TOKEN=${{secrets.TURSO_API_TOKEN}}" >> .env
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
+      - name: Setup Python
+        uses: actions/setup-python@v5
+      - name: Install mil-kit
+        run: pip install mil-kit
       - name: Install MDD CLI
         run: cargo install mdd_api
       - name: Extract MDD data
@@ -36,17 +31,30 @@ jobs:
         run: |
           curl -L -o MDD.zip https://github.com/mammaldiversity/mammaldiversity.github.io/raw/master/assets/data/MDD.zip
           mdd zip -i MDD.zip
+      - name: Extract MIL data
+        working-directory: db/data
+        run: |
+          MIL_URL=$(curl -s https://api.github.com/repos/mammaldiversity/asm-mil/releases/latest \
+            | grep -o '"browser_download_url": *"[^"]*\.tar\.gz"' \
+            | grep -o 'https://[^"]*')
+          MIL_FILENAME=$(basename "$MIL_URL")
+          MIL_DIRNAME="${MIL_FILENAME%.tar.gz}"
+          curl -L -o "$MIL_FILENAME" "$MIL_URL"
+          tar -xzf "$MIL_FILENAME"
+          MDD_FILE=$(ls MDD/MDD_v*.csv)
+          MIL_DATE="${MIL_DIRNAME#mil-v}"
+          mil-kit mdd --mil-file "$MIL_DIRNAME/metadata/mil-$MIL_DATE.xlsx" --mdd-file "$MDD_FILE" --output mil
+      - name: Copy MIL images to Astro assets
+        working-directory: db/data
+        run: |
+          mkdir -p ../../src/assets/mil-images
+          find "$MIL_DIRNAME/images-400px-webp" -name "*.webp" -exec mv {} ../../src/assets/mil-images/ \;
       - name: Cleaning up data files
         working-directory: db/data
         run: |
           rm MDD.zip
       - name: Install, build, and upload your site
         uses: withastro/action@v3
-        # with:
-        # path: . # The root location of your Astro project inside the repository. (optional)
-        # node-version: 20 # The specific version of Node that should be used to build your site. Defaults to 20. (optional)
-        # package-manager: pnpm@latest # The Node package manager that should be used to install dependencies and build your site. Automatically detected based on your lockfile. (optional)
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
