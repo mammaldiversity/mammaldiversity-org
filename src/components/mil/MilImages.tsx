@@ -68,31 +68,29 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
       </div>
 
       {/* Caption */}
-      <div className="mt-2 ml-4 mr-2 text-sm text-gray-600">
-        <p className="font-medium">{image.description}</p>
+      <div className="mt-2 ml-4 mr-2 text-spectra-800 dark:text-spectra-100 text-sm">
         <p>{image.location}</p>
+        {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime()) && (
+          <>
+            &middot; Taken on{" "}
+            {new Date(image.dateTaken).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </>
+        )}
         <p>
-          {image.photographer && `Taken by ${image.photographer}`}
-          {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime()) && (
-            <>
-              , on{" "}
-              {new Date(image.dateTaken).toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
-            </>
-          )}{" "}
-          &middot;{" "}
+          Courtesy of{" "}
           <a
             href="https://www.mammalogy.org/committees/mammal-images-library"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-spectra-600 dark:hover:text-spectra-300"
           >
-            MIL
+            the ASM Mammal Image Library
           </a>{" "}
-          ID: {image.milId}
+          &middot; MIL ID: {image.milId}
         </p>
       </div>
     </div>
