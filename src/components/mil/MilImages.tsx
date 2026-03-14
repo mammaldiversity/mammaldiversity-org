@@ -1,4 +1,4 @@
-import { useState, useRef } from "preact/hooks";
+import { useState } from "preact/hooks";
 import type { MilMetadata } from "../../../db/mil_model";
 
 export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
