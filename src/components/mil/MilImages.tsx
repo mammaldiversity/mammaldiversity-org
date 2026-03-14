@@ -1,4 +1,4 @@
-import { useState, useRef } from "preact/hooks";
+import { useState } from "preact/hooks";
 import type { MilMetadata } from "../../../db/mil_model";
 
 export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
@@ -89,14 +89,14 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
             <div className="grid grid-cols-[auto_1fr] gap-x-2">
               {image.location && (
                 <>
-                  <span className="font-medium">Location</span>
+                  <span>Location</span>
                   <span>: {image.location}</span>
                 </>
               )}
               {image.dateTaken &&
                 !isNaN(new Date(image.dateTaken).getTime()) && (
                   <>
-                    <span className="font-medium">Date taken</span>
+                    <span>Date taken</span>
                     <span>
                       :{" "}
                       {new Date(image.dateTaken).toLocaleDateString(undefined, {
