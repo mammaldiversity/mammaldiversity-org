@@ -83,7 +83,7 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
                 :{" "}
                 {new Date(image.dateTaken).toLocaleDateString(undefined, {
                   year: "numeric",
-                  month: "long",
+                  month: "short",
                   day: "numeric",
                 })}
               </span>
