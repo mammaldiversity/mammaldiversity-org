@@ -38,22 +38,22 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
     /* Light mode — spectra/spicy-mix palette */
     --pagefind-ui-primary: #2c4243;
     --pagefind-ui-text: #131f20;
-    --pagefind-ui-background: #f4f9f8;
+    --pagefind-ui-background: #dcebe9;
     --pagefind-ui-border: #b9d6d2;
     --pagefind-ui-tag: #b9d6d2;
     --pagefind-input-background: #dcebe9;
   }
 
   /* Dark mode overrides */
-  .dark {
+  html.dark #search,
+  html.dark .pagefind-ui {
     --pagefind-ui-primary: #679a98;
     --pagefind-ui-text: #f8f6f2;
     --pagefind-ui-background: #2c4243;
-    --pagefind-ui-border: #2c4243;
+    --pagefind-ui-border: #4d7f7e;
     --pagefind-ui-tag: #2c4243;
     --pagefind-input-background: #365858;
   }
-
   /* Search input + clear button */
   #search .pagefind-ui__search-input,
   #search .pagefind-ui__search-clear {
