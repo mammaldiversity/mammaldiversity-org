@@ -41,15 +41,21 @@ jobs:
             | grep -o 'https://[^"]*')
           MIL_FILENAME=$(basename "$MIL_URL")
           MIL_DIRNAME="${MIL_FILENAME%.tar.gz}"
+
+          echo "Downloading MIL data from $MIL_URL"
           curl -L -o "$MIL_FILENAME" "$MIL_URL"
+
+          echo "Extracting $MIL_FILENAME to $MIL_DIRNAME"
           tar -xzf "$MIL_FILENAME"
+
+          echo "MIL data extracted to $MIL_DIRNAME"
           MDD_FILE=$(ls MDD/MDD_v*.csv)
           MIL_DATE="${MIL_DIRNAME#mil-v}"
+
+          echo "Processing MIL data for date $MIL_DATE using MDD file $MDD_FILE"
           mil-kit mdd --mil-file "$MIL_DIRNAME/metadata/mil-$MIL_DATE.xlsx" --mdd-file "$MDD_FILE" --output mil
-      - name: Copy MIL images to Astro assets
-        working-directory: db/data
-        run: |
-          MIL_DIRNAME=$(ls -d mil-v*/ | head -1 | tr -d '/')
+
+          echo "Moving processed MIL images to src/assets/mil-images"
           mkdir -p ../../src/assets/mil-images
           mv "$MIL_DIRNAME/images-400px-webp/*.webp" ../../src/assets/mil-images/
       - name: Validate MIL images in assets
