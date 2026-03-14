@@ -1,8 +1,7 @@
 import { feature } from "topojson-client";
 import {
-  getCountryRegionName,
-  isFeatureCollection,
-} from "../../db/country_data";
+  isFeatureCollection
+} from "../../db/country_utils";
 
 const COUNTRY_MAP_URL =
   "https://raw.githubusercontent.com/mammaldiversity/mammaldiversity-org/refs/heads/main/db/data/countries-50m.json";
@@ -14,49 +13,43 @@ interface CountryDistribution {
 
 /**
  * Splits a country distribution string into known and predicted distributions.
- * @param {string} countryDistribution - A string containing country distributions, separated by "|".
- * @returns {CountryDistribution} An object with 'known' and 'predicted' arrays of country names.
+ * @param countryDistribution - A string containing country distributions, separated by "|".
+ * @param getRegionName - Optional resolver to map country names to map labels. Defaults to identity.
+ * @returns An object with 'known' and 'predicted' arrays of country names.
  */
 function splitCountryDistribution(
-  countryDistribution: string
+  countryDistribution: string,
+  getRegionName: (name: string) => string = (name) => name
 ): CountryDistribution {
-  // If countryDistribution is NA.
-  // Return empty known and predicted lists.
   if (countryDistribution === "NA") {
     return { known: [], predicted: [] };
   }
 
   let countryList = countryDistribution.split("|");
-  // If countain Somalia, inlcude Somaliland as well.
   if (countryList.includes("Somalia")) {
     countryList.push("Somaliland");
   }
-  // If ends with "?", it is a predicted distribution
-  let known = countryList
-    .filter((country: string) => !country.endsWith("?"))
-    .map((country: string) => getCountryRegionName(country))
-    .map((country: string) => country.toUpperCase());
 
-  // If known distribution contains one info
-  // listed domesticated (case insensitive),
-  // then we do not feed the list to the map.
+  const known = countryList
+    .filter((country) => !country.endsWith("?"))
+    .map((country) => getRegionName(country))
+    .map((country) => country.toUpperCase());
+
   if (known.length === 1 && known[0].toLowerCase().includes("domesticated")) {
     return { known: [], predicted: [] };
   }
 
-  let predicted = countryList
-    .filter((country: string) => country.endsWith("?"))
-    .map((country: string) => country.slice(0, -1))
-    .map((country: string) => getCountryRegionName(country))
-    .map((country: string) => country.toUpperCase());
+  const predicted = countryList
+    .filter((country) => country.endsWith("?"))
+    .map((country) => country.slice(0, -1))
+    .map((country) => getRegionName(country))
+    .map((country) => country.toUpperCase());
 
   return { known, predicted };
 }
 
 /**
  * Downloads country geographic data as a GeoJSON feature collection.
- * @returns {Promise<GeoJSON.FeatureCollection>} A promise that resolves to a GeoJSON feature collection of countries.
- * @throws {Error} If the download fails or the data is not in the expected format.
  */
 async function downloadCountryGeoJSON(): Promise<GeoJSON.FeatureCollection> {
   const response = await fetch(COUNTRY_MAP_URL);
@@ -76,14 +69,12 @@ async function downloadCountryGeoJSON(): Promise<GeoJSON.FeatureCollection> {
       "Expected 'countries' TopoJSON object to convert to a FeatureCollection."
     );
   }
-  const worldGeoJson = worldCountriesResultUnknown as GeoJSON.FeatureCollection;
-  return worldGeoJson;
+
+  return worldCountriesResultUnknown as GeoJSON.FeatureCollection;
 }
 
 /**
  * Converts a CountryDistribution object to a JSON string.
- * @param {CountryDistribution} countryList - The CountryDistribution object to convert.
- * @returns {string} A JSON string representation of the country distribution.
  */
 function countryListToJson(countryList: CountryDistribution): string {
   return JSON.stringify(countryList);
@@ -91,8 +82,6 @@ function countryListToJson(countryList: CountryDistribution): string {
 
 /**
  * Converts a JSON string to a CountryDistribution object.
- * @param {string} jsonString - The JSON string to convert.
- * @returns {CountryDistribution} The CountryDistribution object.
  */
 function jsonToCountryList(jsonString: string): CountryDistribution {
   return JSON.parse(jsonString);
