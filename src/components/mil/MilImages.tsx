@@ -90,7 +90,7 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
             </>
           )}
         </div>
-        <p className="italic">
+        <p>
           Image courtesy of the{" "}
           <a
             href="https://www.mammalogy.org/committees/mammal-images-library"
