@@ -57,7 +57,7 @@ jobs:
 
           echo "Moving processed MIL images to src/assets/mil-images"
           mkdir -p ../../src/assets/mil-images
-          mv "$MIL_DIRNAME/images-400px-webp/*.webp" ../../src/assets/mil-images/
+          find "$MIL_DIRNAME/images-400px-webp" -name "*.webp" -exec mv {} ../../src/assets/mil-images/ \;
       - name: Validate MIL images in assets
         run: |
           IMAGE_COUNT=$(find src/assets/mil-images -name "*.webp" | wc -l)
