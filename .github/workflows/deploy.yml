@@ -54,16 +54,19 @@ jobs:
 
           echo "Processing MIL data for date $MIL_DATE using MDD file $MDD_FILE"
           mil-kit mdd --mil-file "$MIL_DIRNAME/metadata/mil-$MIL_DATE.xlsx" --mdd-file "$MDD_FILE" --output mil
+      - name: Copy MIL images to Astro assets
+        working-directory: db/data
+        run: |
+          MIL_DIRNAME=$(ls -d mil-v*/ | head -1 | tr -d '/')
+          mkdir -p ../../public/mil-images
+          find "$MIL_DIRNAME/images-400px-webp" -name "*.webp" -exec mv {} ../../public/mil-images/ \;
 
-          echo "Moving processed MIL images to src/assets/mil-images"
-          mkdir -p ../../src/assets/mil-images
-          find "$MIL_DIRNAME/images-400px-webp" -name "*.webp" -exec mv {} ../../src/assets/mil-images/ \;
       - name: Validate MIL images in assets
         run: |
-          IMAGE_COUNT=$(find src/assets/mil-images -name "*.webp" | wc -l)
-          echo "Found $IMAGE_COUNT .webp files in src/assets/mil-images"
+          IMAGE_COUNT=$(find /public/mil-images -name "*.webp" | wc -l)
+          echo "Found $IMAGE_COUNT .webp files in /public/mil-images"
           if [ "$IMAGE_COUNT" -eq 0 ]; then
-            echo "ERROR: No .webp images found in src/assets/mil-images. Aborting."
+            echo "ERROR: No .webp images found in /public/mil-images. Aborting."
             exit 1
           fi
       - name: Cleaning up data files
