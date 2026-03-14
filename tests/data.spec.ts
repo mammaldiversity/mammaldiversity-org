@@ -3,11 +3,16 @@ import type { CountryMDDStats } from "../db/country_stats_model";
 import type { CountryRegionCode } from "../db/country_stats_model";
 import { test, expect } from "@playwright/test";
 import { readFileSync, existsSync } from "fs";
+import { join } from "path";
+import { fileURLToPath } from "url";
 
-const TEST_PATH = "./db/data/test.json";
-const MDD_PATH = "./db/data/mdd.json";
-const COUNTRY_STATS_PATH = "./db/data/test_country_stats.json";
-const COUNTRY_REGION_CODE_PATH = "./db/data/country_region_code.json";
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+const TEST_PATH = join(__dirname, "../db/data/test.json");
+const MDD_PATH = join(__dirname, "../db/data/mdd.json");
+const COUNTRY_STATS_PATH = join(__dirname, "../db/data/test_country_stats.json");
+const COUNTRY_REGION_CODE_PATH = join(__dirname, "../db/data/country_region_code.json");
+
 
 function getSpeciesDataPath(): string {
   return existsSync(TEST_PATH) ? TEST_PATH : MDD_PATH;
