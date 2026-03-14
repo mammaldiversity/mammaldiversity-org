@@ -16,23 +16,29 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+
       - name: Install mil-kit
         run: pip install mil-kit
+
       - name: Install MDD CLI
         run: cargo install mdd_api
+
       - name: Extract MDD data
         working-directory: db/data
         run: |
           curl -L -o MDD.zip https://github.com/mammaldiversity/mammaldiversity.github.io/raw/master/assets/data/MDD.zip
           mdd zip -i MDD.zip
+
       - name: Extract MIL data
         working-directory: db/data
         run: |
@@ -54,6 +60,7 @@ jobs:
 
           echo "Processing MIL data for date $MIL_DATE using MDD file $MDD_FILE"
           mil-kit mdd --mil-file "$MIL_DIRNAME/metadata/mil-$MIL_DATE.xlsx" --mdd-file "$MDD_FILE" --output mil
+
       - name: Copy MIL images to Astro assets
         working-directory: db/data
         run: |
@@ -63,18 +70,21 @@ jobs:
 
       - name: Validate MIL images in assets
         run: |
-          IMAGE_COUNT=$(find /public/mil-images -name "*.webp" | wc -l)
-          echo "Found $IMAGE_COUNT .webp files in /public/mil-images"
+          IMAGE_COUNT=$(find public/mil-images -name "*.webp" | wc -l)
+          echo "Found $IMAGE_COUNT .webp files in public/mil-images"
           if [ "$IMAGE_COUNT" -eq 0 ]; then
-            echo "ERROR: No .webp images found in /public/mil-images. Aborting."
+            echo "ERROR: No .webp images found in public/mil-images. Aborting."
             exit 1
           fi
+
       - name: Cleaning up data files
         working-directory: db/data
         run: |
           rm MDD.zip
+
       - name: Install, build, and upload your site
         uses: withastro/action@v3
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
