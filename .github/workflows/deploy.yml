@@ -51,7 +51,7 @@ jobs:
         run: |
           MIL_DIRNAME=$(ls -d mil-v*/ | head -1 | tr -d '/')
           mkdir -p ../../src/assets/mil-images
-          find "$MIL_DIRNAME/images-400px-webp" -name "*.webp" -exec mv {} ../../src/assets/mil-images/ \;
+          mv "$MIL_DIRNAME/images-400px-webp/*.webp" ../../src/assets/mil-images/
       - name: Cleaning up data files
         working-directory: db/data
         run: |
