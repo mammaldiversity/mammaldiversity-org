@@ -11,19 +11,14 @@ import tableImgDark from "../../assets/images/explore-cards/table-dark.png";
 import phyloImg from "../../assets/images/explore-cards/phylo.png";
 import phyloImgDark from "../../assets/images/explore-cards/phylo-dark.png";
 import ResponsiveCard from "../../components/ResponsiveCard.astro";
-import {
-  buildDiversityStatsByCountryName,
-  getMappingCodeFromStats,
-} from "../../libs/diversity_map";
+import { buildCountryDiversityStats } from "../../libs/diversity_map";
 import { getWorldGeoJson } from "../../../db/country_data";
 import CountryMap from "../../components/maps/CountryMap";
 import cntl from "cntl";
 import Link from "../../components/Link.astro";
 
-const countryStats = buildDiversityStatsByCountryName();
-
+const countryStats = buildCountryDiversityStats();
 const worldGeoJson = getWorldGeoJson();
-const countryCodeMap = getMappingCodeFromStats(countryStats);
 
 const mapClasses = cntl`
   w-full
@@ -98,18 +93,13 @@ const mapClasses = cntl`
           <div id="data-source" class="text-xs mb-4 max-w-2xl mx-auto">
             Map source:{" "}
             <Link
-              url="https://github.com/topojson/world-atlas"
-              label="World Atlas TopoJSON and Natural Earth"
+              url="https://www.naturalearthdata.com/"
+              label="Natural Earth"
               openInNewTab={true}
             />
           </div>
           <div class="mb-4 mx-auto">
-            <CountryMap
-              client:load
-              stats={countryStats}
-              world={worldGeoJson}
-              isoCodeMap={countryCodeMap}
-            />
+            <CountryMap client:load stats={countryStats} world={worldGeoJson} />
           </div>
           <ActionButton label="Explore country data" uri="/country" />
         </div>

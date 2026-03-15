@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -65,8 +65,9 @@ jobs:
         working-directory: db/data
         run: |
           MIL_DIRNAME=$(ls -d mil-v*/ | head -1 | tr -d '/')
+          IMAGES_DIR="$MIL_DIRNAME/images-400px-webp"
           mkdir -p ../../public/mil-images
-          find "$MIL_DIRNAME/images-400px-webp" -name "*.webp" -exec mv {} ../../public/mil-images/ \;
+          find "$IMAGES_DIR" -name "*.webp" -exec mv {} ../../public/mil-images/ \;
 
       - name: Validate MIL images in assets
         run: |
