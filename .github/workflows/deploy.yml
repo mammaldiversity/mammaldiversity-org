@@ -57,9 +57,18 @@ jobs:
           echo "MIL data extracted to $MIL_DIRNAME"
           MDD_FILE=$(ls MDD/MDD_v*.csv)
           MIL_DATE="${MIL_DIRNAME#mil-v}"
+          # Remove the decimal part from the date to get the base date
+          # We use the suffix .{digits} when MIL is updated other than the regular monthly update
+          MIL_BASE_DATE=$(echo "$MIL_DATE" | sed 's/\.[0-9]*$//')
 
-          echo "Processing MIL data for date $MIL_DATE using MDD file $MDD_FILE"
-          mil-kit mdd --mil-file "$MIL_DIRNAME/metadata/mil-$MIL_DATE.xlsx" --mdd-file "$MDD_FILE" --output mil
+          echo "Directory : $MIL_DIRNAME"
+          echo "Full date : $MIL_DATE"
+          echo "Base date : $MIL_BASE_DATE"
+          echo "Processing MIL data using MDD file $MDD_FILE"
+          mil-kit mdd \
+            --mil-file "$MIL_DIRNAME/metadata/mil-$MIL_BASE_DATE.xlsx" \
+            --mdd-file "$MDD_FILE" \
+            --output mil
 
       - name: Copy MIL images to Astro assets
         working-directory: db/data
