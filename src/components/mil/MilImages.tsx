@@ -30,12 +30,12 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
                 No image available
               </div>
             ) : (
-              <div className="w-full max-h-[400px] bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+              <div className="w-full max-h-[540px] bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
                 <img
                   src={image.filePath}
                   alt={image.description}
                   title={image.description}
-                  className="w-full h-full max-h-[400px] object-contain"
+                  className="w-full h-full max-h-[540px] object-contain"
                   onError={() => setImgError(true)}
                 />
               </div>
