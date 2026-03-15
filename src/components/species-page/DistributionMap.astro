@@ -7,7 +7,6 @@ import cntl from "cntl";
 const { countries, extendClass } = Astro.props;
 
 const countryList = splitCountryDistribution(countries ?? "");
-const worldGeoJson = getWorldGeoJson();
 
 const emptyDistribution =
   countryList.known.length === 0 && countryList.predicted.length === 0;
@@ -65,7 +64,6 @@ const emptyTextClasses = cntl`
     ) : (
       <SpeciesDistributionMap
         client:load
-        world={worldGeoJson}
         knownDistribution={countryList.known}
         predictedDistribution={countryList.predicted}
       />
