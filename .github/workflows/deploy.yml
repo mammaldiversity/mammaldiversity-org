@@ -65,7 +65,7 @@ jobs:
         working-directory: db/data
         run: |
           MIL_DIRNAME=$(ls -d mil-v*/ | head -1 | tr -d '/')
-          IMAGES_DIR="$MIL_DIRNAME/images-400px-webp"
+          IMAGES_DIR="$MIL_DIRNAME/images-540px-webp"
           mkdir -p ../../public/mil-images
           find "$IMAGES_DIR" -name "*.webp" -exec mv {} ../../public/mil-images/ \;
 
