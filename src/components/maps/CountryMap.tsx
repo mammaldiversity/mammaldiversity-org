@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 import type { Feature, FeatureCollection } from "geojson";
+import { convertTopoToGeoJson } from "../../libs/country_utils";
+
+const COUNTRY_MAP_URL = "/map/countries-50m.json";
 
 interface CountryMapProps {
   stats: Record<string, number>;
-  world: FeatureCollection;
   colors?: [string, string];
   projection?: string | Plot.ProjectionOptions;
 }
@@ -49,14 +51,48 @@ interface FeatureDatum {
   iso2: string | undefined;
 }
 
+// ─── Module-level GeoJSON cache ───────────────────────────────────────────────
+let cachedWorld: FeatureCollection | null = null;
+
 export default function CountryMap({
   stats,
-  world,
   colors = ["#FFEB00", "#117554"],
   projection = "equal-earth",
 }: CountryMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useContainerWidth(containerRef);
+  const [world, setWorld] = useState<FeatureCollection | null>(null);
+
+  useEffect(() => {
+    if (cachedWorld) {
+      setWorld(cachedWorld);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadWorld() {
+      try {
+        const response = await fetch(COUNTRY_MAP_URL);
+        if (!response.ok)
+          throw new Error(`Failed to fetch map: ${response.statusText}`);
+        const topoData = await response.json();
+        const geoData = convertTopoToGeoJson(topoData);
+        if (!cancelled) {
+          cachedWorld = geoData;
+          setWorld(geoData);
+        }
+      } catch (err) {
+        console.error("Failed to load country map:", err);
+      }
+    }
+
+    loadWorld();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const normalizedStats = useMemo(
     () => new Map(Object.entries(stats).map(([k, v]) => [k.toUpperCase(), v])),
