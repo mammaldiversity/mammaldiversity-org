@@ -26,11 +26,11 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
           {/* Image container */}
           <div className="relative w-full">
             {imgError ? (
-              <div className="w-full flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 text-sm py-10">
+              <div className="w-full flex items-center justify-center rounded-lg bg-spectra-50 dark:bg-spectra-900 text-gray-400 dark:text-gray-500 text-sm py-10">
                 No image available
               </div>
             ) : (
-              <div className="w-full max-h-[540px] bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+              <div className="w-full max-h-[540px] bg-spectra-50 dark:bg-spectra-900 rounded-lg overflow-hidden">
                 <img
                   src={image.filePath}
                   alt={image.description}
