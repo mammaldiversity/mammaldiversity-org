@@ -92,7 +92,7 @@ jobs:
         run: |
           rm MDD.zip
 
-      - name: Install, build, and upload your site
+      - name: Install, build, and upload MDD site
         uses: withastro/action@v3
 
   deploy:
