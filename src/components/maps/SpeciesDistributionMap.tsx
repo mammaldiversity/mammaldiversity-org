@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
-import { downloadCountryGeoJSON } from "../../libs/species_map";
+import type { FeatureCollection } from "geojson";
 import cntl from "cntl";
 
 const KNOWN_COLOR = "#117554";
@@ -13,16 +13,10 @@ const mapClasses = cntl`
   mx-auto
 `;
 
-// ─── Module-level GeoJSON cache ───────────────────────────────────────────────
-// Persists across mounts so back/forward navigation and remounts
-// never re-fetch or re-parse the GeoJSON blob.
-let cachedWorldGeoJSON: WorldGeoJSON | null = null;
-
 interface GeoFeatureProperties {
-  iso_a2?: string;
-  iso_a3?: string;
-  id?: string;
-  name?: string;
+  ISO_A2?: string;
+  mdd_name?: string;
+  NAME?: string;
   [key: string]: string | number | undefined;
 }
 
@@ -32,46 +26,35 @@ interface GeoFeature {
   geometry: unknown;
 }
 
-interface WorldGeoJSON {
-  type: "FeatureCollection";
-  features: GeoFeature[];
-}
-
 interface FeatureCacheEntry {
   status: "known" | "predicted" | null;
   name: string;
 }
 
 interface Props {
+  world: FeatureCollection;
   knownDistribution?: string[];
   predictedDistribution?: string[];
   knownColor?: string;
   predictedColor?: string;
   projection?: string | Plot.ProjectionOptions;
-  isoCodeMap?: Record<string, string>;
-  valueKey?: "iso_a2" | "iso_a3" | "id" | "name";
-  fallbackKeys?: string[];
   width?: number;
   height?: number;
 }
 
 function SpeciesDistributionMap({
+  world,
   knownDistribution = [],
   predictedDistribution = [],
   knownColor = KNOWN_COLOR,
   predictedColor = PREDICTED_COLOR,
   projection = "equal-earth",
-  isoCodeMap = {},
-  valueKey = "iso_a2",
-  fallbackKeys = ["iso_a3", "id", "name"],
   width,
   height,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const frameRef = useRef<number | null>(null);
-
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
-  const [world, setWorld] = useState<WorldGeoJSON | null>(null);
 
   const knownCountries = useMemo(
     () => new Set(knownDistribution),
@@ -83,15 +66,6 @@ function SpeciesDistributionMap({
     [predictedDistribution],
   );
 
-  /**
-   * Pre-compute status ("known" | "predicted" | null) and display name for
-   * every feature into a WeakMap. Also produces a pre-filtered array of
-   * highlighted features so the tooltip mark iterates only relevant countries.
-   *
-   * All country-resolution logic runs here (once, in useMemo) instead of
-   * inside Plot accessor functions, which would call it repeatedly per channel
-   * per feature on every render.
-   */
   const { featureCache, highlightedFeatures } = useMemo(() => {
     const cache = new WeakMap<GeoFeature, FeatureCacheEntry>();
     const highlighted: GeoFeature[] = [];
@@ -100,91 +74,27 @@ function SpeciesDistributionMap({
       return { featureCache: cache, highlightedFeatures: highlighted };
     }
 
-    // Normalize isoCodeMap once here rather than on every accessor call
-    const codeMap = new Map(
-      Object.entries(isoCodeMap).map(([k, v]) => [
-        k.toUpperCase(),
-        v.toUpperCase(),
-      ]),
-    );
-
-    for (const feature of world.features) {
+    for (const feature of world.features as GeoFeature[]) {
       const props = feature.properties;
-      let countryId: string | undefined;
-
-      if (props) {
-        const primary = props[valueKey];
-        if (typeof primary === "string" && primary.trim()) {
-          countryId = primary.trim().toUpperCase();
-        } else {
-          for (const fk of fallbackKeys) {
-            const val = props[fk];
-            if (typeof val === "string" && val.trim()) {
-              countryId = val.trim().toUpperCase();
-              break;
-            }
-          }
-        }
-      }
-
-      const resolvedId = countryId
-        ? codeMap.get(countryId) ?? countryId
-        : undefined;
+      const mddName = props?.mdd_name as string | undefined;
 
       let status: FeatureCacheEntry["status"] = null;
-      if (resolvedId) {
-        if (knownCountries.has(resolvedId)) status = "known";
-        else if (predictedCountries.has(resolvedId)) status = "predicted";
+      if (mddName) {
+        if (knownCountries.has(mddName)) status = "known";
+        else if (predictedCountries.has(mddName)) status = "predicted";
       }
 
-      const entry: FeatureCacheEntry = {
+      cache.set(feature, {
         status,
-        name: props?.name ?? "Unknown Country",
-      };
-
-      cache.set(feature, entry);
+        name: mddName ?? props?.NAME ?? "Unknown Country",
+      });
       if (status !== null) highlighted.push(feature);
     }
 
     return { featureCache: cache, highlightedFeatures: highlighted };
-  }, [
-    world,
-    valueKey,
-    fallbackKeys,
-    isoCodeMap,
-    knownCountries,
-    predictedCountries,
-  ]);
+  }, [world, knownCountries, predictedCountries]);
 
-  // Load GeoJSON — uses module-level cache to prevent re-fetching on remount
-  useEffect(() => {
-    if (cachedWorldGeoJSON) {
-      setWorld(cachedWorldGeoJSON);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadWorldData() {
-      try {
-        const worldData = await downloadCountryGeoJSON();
-        if (!cancelled && worldData && Array.isArray(worldData.features)) {
-          cachedWorldGeoJSON = worldData as WorldGeoJSON;
-          setWorld(cachedWorldGeoJSON);
-        }
-      } catch (err) {
-        console.error("Failed to load country GeoJSON:", err);
-      }
-    }
-
-    loadWorldData();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  // Responsive width — cancels pending animation frames on cleanup
+  // Responsive width
   useEffect(() => {
     if (!ref.current) return;
     const el = ref.current;
@@ -217,12 +127,7 @@ function SpeciesDistributionMap({
 
   // Create Observable Plot
   useEffect(() => {
-    if (
-      !ref.current ||
-      !world ||
-      !Array.isArray(world.features) ||
-      containerWidth === null
-    ) {
+    if (!ref.current || !world?.features?.length || containerWidth === null) {
       return;
     }
 
@@ -240,7 +145,6 @@ function SpeciesDistributionMap({
       height: plotHeight,
       style: { overflow: "visible" },
       marks: [
-        // Single pass for all country fills and borders.
         Plot.geo(world.features, {
           fill: (d: GeoFeature) => {
             const status = featureCache.get(d)?.status;
@@ -253,8 +157,6 @@ function SpeciesDistributionMap({
           strokeOpacity: 0.3,
         }),
 
-        // Tooltip pass — iterates only pre-filtered highlighted countries,
-        // transparent fill so the fill layer underneath remains visible.
         Plot.geo(highlightedFeatures, {
           fill: "transparent",
           stroke: "none",
