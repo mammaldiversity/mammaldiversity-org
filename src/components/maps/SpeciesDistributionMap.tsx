@@ -1,17 +1,23 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
-import type { FeatureCollection } from "geojson";
 import cntl from "cntl";
+import { convertTopoToGeoJson } from "../../libs/country_utils";
 
 const KNOWN_COLOR = "#117554";
 const PREDICTED_COLOR = "#FFEB00";
+const COUNTRY_MAP_URL = "/map/countries-50m.json";
 
 const mapClasses = cntl`
   min-w-lg 
   md:max-w-full 
   mx-auto
 `;
+
+// ─── Module-level GeoJSON cache ───────────────────────────────────────────────
+// Persists across mounts so back/forward navigation and remounts
+// never re-fetch or re-parse the TopoJSON blob.
+let cachedWorldGeoJSON: WorldGeoJSON | null = null;
 
 interface GeoFeatureProperties {
   ISO_A2?: string;
@@ -26,13 +32,17 @@ interface GeoFeature {
   geometry: unknown;
 }
 
+interface WorldGeoJSON {
+  type: "FeatureCollection";
+  features: GeoFeature[];
+}
+
 interface FeatureCacheEntry {
   status: "known" | "predicted" | null;
   name: string;
 }
 
 interface Props {
-  world: FeatureCollection;
   knownDistribution?: string[];
   predictedDistribution?: string[];
   knownColor?: string;
@@ -43,7 +53,6 @@ interface Props {
 }
 
 function SpeciesDistributionMap({
-  world,
   knownDistribution = [],
   predictedDistribution = [],
   knownColor = KNOWN_COLOR,
@@ -55,6 +64,7 @@ function SpeciesDistributionMap({
   const ref = useRef<HTMLDivElement>(null);
   const frameRef = useRef<number | null>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
+  const [world, setWorld] = useState<WorldGeoJSON | null>(null);
 
   const knownCountries = useMemo(
     () => new Set(knownDistribution),
@@ -74,7 +84,7 @@ function SpeciesDistributionMap({
       return { featureCache: cache, highlightedFeatures: highlighted };
     }
 
-    for (const feature of world.features as GeoFeature[]) {
+    for (const feature of world.features) {
       const props = feature.properties;
       const mddName = props?.mdd_name as string | undefined;
 
@@ -93,6 +103,40 @@ function SpeciesDistributionMap({
 
     return { featureCache: cache, highlightedFeatures: highlighted };
   }, [world, knownCountries, predictedCountries]);
+
+  // Load TopoJSON — uses module-level cache to prevent re-fetching on remount
+  useEffect(() => {
+    if (cachedWorldGeoJSON) {
+      setWorld(cachedWorldGeoJSON);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadWorldData() {
+      try {
+        const response = await fetch(COUNTRY_MAP_URL);
+        if (!response.ok)
+          throw new Error(`Failed to fetch map: ${response.statusText}`);
+        const topoData = await response.json();
+        const geoData = convertTopoToGeoJson(
+          topoData,
+        ) as unknown as WorldGeoJSON;
+        if (!cancelled && Array.isArray(geoData.features)) {
+          cachedWorldGeoJSON = geoData;
+          setWorld(geoData);
+        }
+      } catch (err) {
+        console.error("Failed to load country map:", err);
+      }
+    }
+
+    loadWorldData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Responsive width
   useEffect(() => {

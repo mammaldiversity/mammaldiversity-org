@@ -12,13 +12,11 @@ import phyloImg from "../../assets/images/explore-cards/phylo.png";
 import phyloImgDark from "../../assets/images/explore-cards/phylo-dark.png";
 import ResponsiveCard from "../../components/ResponsiveCard.astro";
 import { buildCountryDiversityStats } from "../../libs/diversity_map";
-import { getWorldGeoJson } from "../../../db/country_data";
 import CountryMap from "../../components/maps/CountryMap";
 import cntl from "cntl";
 import Link from "../../components/Link.astro";
 
 const countryStats = buildCountryDiversityStats();
-const worldGeoJson = getWorldGeoJson();
 
 const mapClasses = cntl`
   w-full
@@ -99,7 +97,7 @@ const mapClasses = cntl`
             />
           </div>
           <div class="mb-4 mx-auto">
-            <CountryMap client:load stats={countryStats} world={worldGeoJson} />
+            <CountryMap client:load stats={countryStats} />
           </div>
           <ActionButton label="Explore country data" uri="/country" />
         </div>
