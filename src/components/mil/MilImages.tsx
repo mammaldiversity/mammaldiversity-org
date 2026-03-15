@@ -30,12 +30,14 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
                 No image available
               </div>
             ) : (
-              <img
-                src={image.filePath}
-                alt={image.description}
-                className="w-full object-cover rounded-lg"
-                onError={() => setImgError(true)}
-              />
+              <div className="w-full max-h-[400px] bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+                <img
+                  src={image.filePath}
+                  alt={image.description}
+                  className="w-full h-full max-h-[400px] object-contain"
+                  onError={() => setImgError(true)}
+                />
+              </div>
             )}
 
             {/* Prev button */}
@@ -111,12 +113,12 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
             <p>
               Image courtesy of the{" "}
               <a
-                href="https://www.mammalogy.org/committees/mammal-images-library"
+                href="https://www.mammalsociety.org/image-library"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-spectra-600 dark:hover:text-spectra-300"
               >
-                ASM Mammal Image Library
+                ASM Mammal Images Library
               </a>{" "}
               &middot; MIL ID: {image.milId}
             </p>
