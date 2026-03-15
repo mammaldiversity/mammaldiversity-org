@@ -34,6 +34,7 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
                 <img
                   src={image.filePath}
                   alt={image.description}
+                  title={image.description}
                   className="w-full h-full max-h-[400px] object-contain"
                   onError={() => setImgError(true)}
                 />
