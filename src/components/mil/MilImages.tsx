@@ -1,7 +1,13 @@
 import { useState } from "preact/hooks";
 import type { MilMetadata } from "../../../db/mil_model";
 
-export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
+export default function MilImages({
+  metadata,
+  species,
+}: {
+  metadata: MilMetadata[];
+  species: string;
+}) {
   const [current, setCurrent] = useState(0);
   const [imgError, setImgError] = useState(false);
   const image = metadata[current];
@@ -26,14 +32,14 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
           {/* Image container */}
           <div className="relative w-full">
             {imgError ? (
-              <div className="w-full flex items-center justify-center rounded-lg bg-spectra-50 dark:bg-spectra-900 text-gray-400 dark:text-gray-500 text-sm py-10">
+              <div className="w-full flex items-center justify-center rounded-lg bg-spectra-100 dark:bg-spectra-900 text-gray-400 dark:text-gray-500 text-sm py-10">
                 No image available
               </div>
             ) : (
               <div className="w-full max-h-[400px] md:max-h-[520px] bg-spectra-50 dark:bg-spectra-900 rounded-lg overflow-hidden">
                 <img
                   src={image.filePath}
-                  alt={image.description}
+                  alt={image.description || `${species} image`}
                   title={image.description}
                   className="w-full h-full max-h-[400px] md:max-h-[520px] object-contain"
                   onError={() => setImgError(true)}
