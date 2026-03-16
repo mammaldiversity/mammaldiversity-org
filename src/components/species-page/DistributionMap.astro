@@ -62,7 +62,7 @@ const emptyTextClasses = cntl`
       <p class={emptyTextClasses}>No distribution data available.</p>
     ) : (
       <SpeciesDistributionMap
-        client:load
+        client:only
         knownDistribution={countryList.known}
         predictedDistribution={countryList.predicted}
       />
