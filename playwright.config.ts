@@ -1,11 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const isCI = !!process.env.CI;
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: isCI,
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 1 : undefined,
   reporter: "html",
   use: {
     baseURL: "http://localhost:4321/",
@@ -27,11 +29,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "yarn run dev",
+    command: "bun run dev",
     url: "http://localhost:4321/",
-    reuseExistingServer: !process.env.CI,
-    timeout: 60000, // wait up to 60s for dev server to be ready
-    stdout: "pipe", // surface server logs on failure
+    reuseExistingServer: !isCI,
+    timeout: 60000,
+    stdout: isCI ? "ignore" : "pipe",
     stderr: "pipe",
   },
 });
