@@ -8,6 +8,7 @@ function parseMilJson(): MilMetadata[] {
     return (milRaw as any[]).map((item) => ({
         milId: item.milId,
         mddId: item.mddId,
+        isUncertainIdentification: item.isUncertainIdentification,
         description: item.description,
         location: item.location,
         photographer: item.photographer,
