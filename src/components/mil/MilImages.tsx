@@ -1,7 +1,13 @@
 import { useState } from "preact/hooks";
 import type { MilMetadata } from "../../../db/mil_model";
 
-export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
+export default function MilImages({
+  metadata,
+  species,
+}: {
+  metadata: MilMetadata[];
+  species: string;
+}) {
   const [current, setCurrent] = useState(0);
   const [imgError, setImgError] = useState(false);
   const image = metadata[current];
@@ -26,14 +32,14 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
           {/* Image container */}
           <div className="relative w-full">
             {imgError ? (
-              <div className="w-full flex items-center justify-center rounded-lg bg-spectra-50 dark:bg-spectra-900 text-gray-400 dark:text-gray-500 text-sm py-10">
+              <div className="w-full flex items-center justify-center rounded-lg bg-spectra-100 dark:bg-spectra-900 text-gray-400 dark:text-gray-500 text-sm py-10">
                 No image available
               </div>
             ) : (
               <div className="w-full max-h-[400px] md:max-h-[520px] bg-spectra-50 dark:bg-spectra-900 rounded-lg overflow-hidden">
                 <img
                   src={image.filePath}
-                  alt={image.description}
+                  alt={image.description || `${species} image`}
                   title={image.description}
                   className="w-full h-full max-h-[400px] md:max-h-[520px] object-contain"
                   onError={() => setImgError(true)}
@@ -89,28 +95,23 @@ export default function MilImages({ metadata }: { metadata: MilMetadata[] }) {
 
           {/* Caption */}
           <div className="mt-2 ml-4 mr-2 text-spectra-800 dark:text-spectra-100 text-sm">
-            <div className="grid grid-cols-[auto_1fr] gap-x-2">
-              {image.location && (
-                <>
-                  <span>Location</span>
-                  <span>: {image.location}</span>
-                </>
-              )}
-              {image.dateTaken &&
-                !isNaN(new Date(image.dateTaken).getTime()) && (
-                  <>
-                    <span>Date taken</span>
-                    <span>
-                      :{" "}
-                      {new Date(image.dateTaken).toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </span>
-                  </>
-                )}
+            <div className="grid grid-cols-[auto_auto_1fr] gap-x-1">
+              <span>Location</span>
+              <span>:</span>
+              <span className="pl-1">{image.location ?? "Unknown"}</span>
+              <span>Date taken</span>
+              <span>:</span>
+              <span className="pl-1">
+                {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime())
+                  ? new Date(image.dateTaken).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })
+                  : "Unknown"}
+              </span>
             </div>
+
             <p>
               Image courtesy of the{" "}
               <a

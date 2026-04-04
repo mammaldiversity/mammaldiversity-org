@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build && yarn postbuild",
+    "build": "astro check && astro build && bun run postbuild",
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
@@ -34,10 +34,10 @@
     "topojson-client": "^3.1.0",
     "typescript": "^5.6.3"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "packageManager": "bun@1.2.8",
   "devDependencies": {
     "@babel/core": "^7.29.0",
-    "@playwright/test": "^1.50.1",
+    "@playwright/test": "^1.59.1",
     "@types/leaflet": "^1.9.15",
     "@types/topojson-client": "^3.1.5",
     "baseline-browser-mapping": "^2.10.8",

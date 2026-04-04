@@ -84,7 +84,7 @@ const common_name_class = cntl`
         <div>
           {
             milMetadata.length > 0 && (
-              <MilImages metadata={milMetadata} client:load />
+              <MilImages metadata={milMetadata} species={species} client:load />
             )
           }
           <div class={taxonomyClasses}>
