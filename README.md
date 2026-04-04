@@ -23,13 +23,13 @@ To get started with development, you will need to have Node.js and yarn installe
 #### Install dependencies
 
 ```bash
-yarn install
+bun install
 ```
 
 #### Run the development server
 
 ```bash
-yarn run dev
+bun run dev
 ```
 
    This will start the development server at `http://localhost:4321`.
@@ -41,19 +41,19 @@ The project uses Playwright for end-to-end testing. To run the tests, use the fo
 Install Playwright dependencies if you haven't already:
 
 ```bash
-yarn playwright install
+bun x playwright install
 ```
 
 Run the tests:
 
 ```bash
-yarn test
+bun x playwright test
 ```
 
 You can view the test report using:
 
 ```bash
-yarn show-report
+bun x playwright show-report
 ```
 
 ### Building for Production
@@ -61,7 +61,7 @@ yarn show-report
 To build the site for production, run the following command:
 
 ```bash
-yarn build
+bun run build
 ```
 
 ### Deployment
