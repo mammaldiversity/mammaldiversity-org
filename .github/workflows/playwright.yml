@@ -8,19 +8,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
+      - uses: oven-sh/setup-bun@v2
       - name: Install dependencies
-        run: npm install -g yarn && yarn
+        run: bun install
       - name: Install Playwright Browsers
-        run: yarn playwright install --with-deps
+        run: bun x playwright install --with-deps
       - name: Prepare test data
         working-directory: db/data
         run: |
           mv test.json mdd.json
       - name: Run Playwright tests
-        run: yarn playwright test
+        run: bun x playwright test
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
