@@ -7,13 +7,13 @@ const META_PARENT_DIR = "/mil-images";
 function parseMilJson(): MilMetadata[] {
     return (milRaw as any[]).map((item) => ({
         milId: item.milId,
-        mddId: Number.parseInt(item.mddId),
-        isUncertainIdentification: item.isUncertainIdentification,
-        description: item.description,
-        location: item.location,
-        distribution: item.distribution,
-        photographer: item.photographer,
-        dateTaken: item.dateTaken,
+        mddId: Number.parseInt(item.mddId, 10),
+        isUncertainIdentification: item.isUncertainIdentification ?? false,
+        description: item.description?.replace(/\|/g, ", ") ?? "",
+        location: item.location ?? "",
+        distribution: item.distribution ?? "",
+        photographer: item.photographer ?? "",
+        dateTaken: item.dateTaken ?? "",
         filePath: `${META_PARENT_DIR}/${item.milId}.webp`,
     }));
 }

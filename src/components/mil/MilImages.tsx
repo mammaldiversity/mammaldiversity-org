@@ -119,7 +119,7 @@ function ImageCaption({ image }: { image: MilMetadata }) {
         </span>
         <span>Description</span>
         <span>:</span>
-        <span>{image.description.replace(/\|/g, ", ") ?? "Unknown"}</span>
+        <span>{image.description ?? "Unknown"}</span>
         <span>Distribution</span>
         <span>:</span>
         <span>{image.distribution ?? "Unknown"}</span>
