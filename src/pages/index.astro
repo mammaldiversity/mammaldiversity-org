@@ -11,13 +11,13 @@ import DiversityStatTable from "../components/DiversityStatTable.astro";
 import desktopApp from "../assets/images/screenshots/desktopApp.png";
 import InstallButton from "../components/buttons/InstallButton.astro";
 import { getMetadata } from "../../db/mdd";
-import { getLastTenMilImages } from "../libs/mil";
 import {
   formatDate,
   cleanVersion,
   getCurrentYear,
   getCurrentDate,
 } from "../libs/metadata";
+import MilSlideshow from "../components/mil/MilSlideshow.astro";
 import { Image } from "astro:assets";
 
 const meta = getMetadata();
@@ -39,7 +39,6 @@ const doi = meta.doi ? meta.doi : "https://doi.org/10.5281/zenodo.17033774";
 // Define version description
 const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
 
-const milImages = getLastTenMilImages();
 const titleClasses = cntl`
   font-serif
   font-semibold
@@ -64,11 +63,11 @@ const heroClasses = cntl`
   grid
   grid-cols-1
   lg:grid-cols-2
+  gap-4
   mt-8
   lg:mt-14
   p-2
-  lg:px-8
-  lg:py-8
+  lg:p-8
   bg-spectra-100
   bg-gradient-to-r
   from-spectra-100
@@ -77,9 +76,7 @@ const heroClasses = cntl`
   dark:to-spicy-mix-900
   lg:max-w-7xl
   rounded-xl
-  lg:mx-2
-  xl:mx-auto
-  mx-4
+  mx-auto
 `;
 
 const sectionTitleClass = cntl`
@@ -136,28 +133,15 @@ const highlightedContainerClasses = cntl`
       <div
         class="flex flex-col items-center justify-center self-center order-first lg:order-last"
       >
-        {
-          milImages.map((image) => (
-            <a href={`/taxon/${image.mddId}`} class="block">
-              <Image
-                id="dynamic-image"
-                class="rounded-xl shadow-lg"
-                src={image.filePath}
-                alt={image.description}
-                title={image.description}
-                density={[1.5, 2]}
-                height={400}
-                width={600}
-              />
-            </a>
-          ))
-        }
+        <div class="relative">
+          <MilSlideshow />
+        </div>
       </div>
     </div>
-    <div id="content" class="mx-4">
+    <div id="content" class="lg:max-w-7xl mx-auto">
       <div
         id="what-new"
-        class="py-4 px-8 text-center mt-4 md:mt-8 max-w-4xl mx-auto rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
+        class="py-4 px-8 text-center mt-4 md:mt-8 rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
       >
         <h2 class={secondaryTitleClass}>What's New in the MDD2</h2>
         <ul class="text-left text-md ml-4 list-disc list-outside mb-4">
@@ -299,20 +283,3 @@ const highlightedContainerClasses = cntl`
     </div>
   </MainPage>
 </FrontPage>
-
-<script>
-  let images = document.querySelectorAll("#dynamic-image");
-  let currentImageIndex = 0;
-  images.forEach((image, index) => {
-    if (index !== 0) {
-      image.classList.add("hidden");
-    }
-  });
-
-  const changeImage = () => {
-    images[currentImageIndex].classList.add("hidden");
-    currentImageIndex = (currentImageIndex + 1) % images.length;
-    images[currentImageIndex].classList.remove("hidden");
-  };
-  setInterval(changeImage, 10000); // Change image every 10 seconds
-</script>
