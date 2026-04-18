@@ -11,6 +11,7 @@ function parseMilJson(): MilMetadata[] {
         isUncertainIdentification: item.isUncertainIdentification,
         description: item.description,
         location: item.location,
+        distribution: item.distribution,
         photographer: item.photographer,
         dateTaken: item.dateTaken,
         filePath: `${META_PARENT_DIR}/${item.milId}.webp`,
