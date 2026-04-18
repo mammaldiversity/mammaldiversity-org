@@ -92,41 +92,56 @@ export default function MilImages({
               {current + 1} / {metadata.length}
             </span>
           </div>
-
-          {/* Caption */}
-          <div className="mt-2 ml-4 mr-2 text-spectra-800 dark:text-spectra-100 text-sm">
-            <div className="grid grid-cols-[auto_auto_1fr] gap-x-1">
-              <span>Location</span>
-              <span>:</span>
-              <span className="pl-1">{image.location ?? "Unknown"}</span>
-              <span>Date taken</span>
-              <span>:</span>
-              <span className="pl-1">
-                {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime())
-                  ? new Date(image.dateTaken).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })
-                  : "Unknown"}
-              </span>
-            </div>
-
-            <p>
-              Image courtesy of the{" "}
-              <a
-                href="https://www.mammalsociety.org/image-library"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-spectra-600 dark:hover:text-spectra-300"
-              >
-                ASM Mammal Images Library
-              </a>{" "}
-              &middot; MIL ID: {image.milId}
-            </p>
-          </div>
+          <ImageCaption image={image} />
         </>
       )}
     </div>
+  );
+}
+
+function ImageCaption({ image }: { image: MilMetadata }) {
+  return (
+    <div className="mt-2 ml-4 mr-2 text-spectra-800 dark:text-spectra-100 text-sm">
+      <div className="grid grid-cols-[auto_auto_1fr] gap-x-1">
+        <span>Location</span>
+        <span>:</span>
+        <span className="pl-1">{image.location ?? "Unknown"}</span>
+        <span>Date taken</span>
+        <span>:</span>
+        <span className="pl-1">
+          {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime())
+            ? new Date(image.dateTaken).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })
+            : "Unknown"}
+        </span>
+        <span>Description</span>
+        <span>:</span>
+        <span>{image.description ?? "Unknown"}</span>
+        <span>Distribution</span>
+        <span>:</span>
+        <span>{image.distribution ?? "Unknown"}</span>
+      </div>
+      <ImageAttribution milId={image.milId} />
+    </div>
+  );
+}
+
+function ImageAttribution({ milId }: { milId: number }) {
+  return (
+    <p className="text-xs mt-2">
+      Image courtesy of the{" "}
+      <a
+        href="https://www.mammalsociety.org/image-library"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline hover:text-spectra-600 dark:hover:text-spectra-300"
+      >
+        ASM Mammal Images Library
+      </a>{" "}
+      &middot; MIL ID: {milId}
+    </p>
   );
 }

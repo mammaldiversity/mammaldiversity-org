@@ -51,7 +51,7 @@ const taxonClasses = cntl`
     ) : isUrl && textData.startsWith("http") ? (
       // If contain "|", split the content and create multiple links
       textData.includes("|") ? (
-        textData.split("|").map((link) => <Link url={link} label={link} />)
+        textData.split("|").map((link) => <Link url={link} />)
       ) : (
         <Link url={textData} />
       )

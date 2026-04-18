@@ -1,16 +1,11 @@
 ---
 import MainPage from "../layouts/MainPage.astro";
-import shrewImg from "../assets/images/mammal_images/1004046.jpg";
-import goldenMouse from "../assets/images/mammal_images/1002250.jpg";
-import solenodon from "../assets/images/mammal_images/1003840.jpg";
-import duiker from "../assets/images/mammal_images/1006226.jpg";
 import cntl from "cntl";
 import MainActionButtons from "../components/MainActionButtons.astro";
 import Zenodo from "../components/pubs/Zenodo.astro";
 import SpeciesCitation from "../components/pubs/SpeciesCitation.astro";
 import Journal from "../components/pubs/Journal.astro";
 import Link from "../components/Link.astro";
-import Image from "astro/components/Image.astro";
 import FrontPage from "../layouts/FrontPage.astro";
 import DiversityStatTable from "../components/DiversityStatTable.astro";
 import desktopApp from "../assets/images/screenshots/desktopApp.png";
@@ -22,6 +17,8 @@ import {
   getCurrentYear,
   getCurrentDate,
 } from "../libs/metadata";
+import MilSlideshow from "../components/mil/MilSlideshow.astro";
+import { Image } from "astro:assets";
 
 const meta = getMetadata();
 const currentVersion = cleanVersion(meta.version);
@@ -41,25 +38,6 @@ const mddDownloadLink =
 const doi = meta.doi ? meta.doi : "https://doi.org/10.5281/zenodo.17033774";
 // Define version description
 const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
-
-const allImages = [
-  {
-    src: shrewImg,
-    alt: "A palawan moss shrew. Courtesy of the ASM’s MIL",
-  },
-  {
-    src: goldenMouse,
-    alt: "A golden mouse. Courtesy of the ASM’s MIL",
-  },
-  {
-    src: solenodon,
-    alt: "A hispaniolan solenodon. Courtesy of the ASM’s MIL",
-  },
-  {
-    src: duiker,
-    alt: "An Abbott's duiker. Courtesy of the ASM’s MIL",
-  },
-];
 
 const titleClasses = cntl`
   font-serif
@@ -85,12 +63,11 @@ const heroClasses = cntl`
   grid
   grid-cols-1
   lg:grid-cols-2
+  gap-4
   mt-8
   lg:mt-14
-  px-4
-  lg:px-8
-  py-4
-  lg:py-8
+  p-2
+  lg:p-8
   bg-spectra-100
   bg-gradient-to-r
   from-spectra-100
@@ -99,9 +76,7 @@ const heroClasses = cntl`
   dark:to-spicy-mix-900
   lg:max-w-7xl
   rounded-xl
-  lg:mx-2
-  xl:mx-auto
-  mx-4
+  mx-auto
 `;
 
 const sectionTitleClass = cntl`
@@ -155,25 +130,18 @@ const highlightedContainerClasses = cntl`
           versionDescription={versionDescription}
         />
       </div>
-      <div class="justify-items-center order-first lg:order-last">
-        {
-          allImages.map((image) => (
-            <Image
-              id="dynamic-image"
-              class="rounded-xl shadow-lg"
-              src={image.src}
-              alt={image.alt}
-              width="600"
-              height="600"
-            />
-          ))
-        }
+      <div
+        class="flex flex-col items-center justify-center self-center order-first lg:order-last"
+      >
+        <div class="relative">
+          <MilSlideshow />
+        </div>
       </div>
     </div>
-    <div id="content" class="mx-4">
+    <div id="content" class="lg:max-w-7xl mx-auto">
       <div
         id="what-new"
-        class="py-4 px-8 text-center mt-4 md:mt-8 max-w-4xl mx-auto rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
+        class="py-4 px-8 text-center mt-4 md:mt-8 rounded-xl bg-spicy-mix-100 dark:bg-spicy-mix-900 p-4"
       >
         <h2 class={secondaryTitleClass}>What's New in the MDD2</h2>
         <ul class="text-left text-md ml-4 list-disc list-outside mb-4">
@@ -315,20 +283,3 @@ const highlightedContainerClasses = cntl`
     </div>
   </MainPage>
 </FrontPage>
-
-<script>
-  let images = document.querySelectorAll("#dynamic-image");
-  let currentImageIndex = 0;
-  images.forEach((image, index) => {
-    if (index !== 0) {
-      image.classList.add("hidden");
-    }
-  });
-
-  const changeImage = () => {
-    images[currentImageIndex].classList.add("hidden");
-    currentImageIndex = (currentImageIndex + 1) % images.length;
-    images[currentImageIndex].classList.remove("hidden");
-  };
-  setInterval(changeImage, 10000); // Change image every 10 seconds
-</script>

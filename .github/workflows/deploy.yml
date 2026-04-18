@@ -36,9 +36,6 @@ jobs:
       - name: Install MDD CLI
         run: cargo install mdd_api
 
-      - name: Install Astro dependencies
-        run: bun install
-
       - name: Extract MDD data
         working-directory: db/data
         run: |
@@ -60,14 +57,11 @@ jobs:
           echo "Extracting $MIL_FILENAME to $MIL_DIRNAME"
           tar -xzf "$MIL_FILENAME"
 
-          echo "MIL data extracted to $MIL_DIRNAME"
           MDD_FILE=$(ls MDD/MDD_v*.csv)
           MIL_DATE="${MIL_DIRNAME#mil-v}"
           MIL_BASE_DATE=$(echo "$MIL_DATE" | sed 's/\.[0-9]*$//')
 
-          echo "Directory : $MIL_DIRNAME"
-          echo "Full date : $MIL_DATE"
-          echo "Base date : $MIL_BASE_DATE"
+          echo "MIL_DIRNAME=$MIL_DIRNAME" >> $GITHUB_ENV
           echo "Processing MIL data using MDD file $MDD_FILE"
           mil-kit mdd \
             --mil-file "$MIL_DIRNAME/metadata/mil-$MIL_BASE_DATE.xlsx" \
@@ -77,7 +71,6 @@ jobs:
       - name: Copy MIL images to Astro assets
         working-directory: db/data
         run: |
-          MIL_DIRNAME=$(ls -d mil-v*/ | head -1 | tr -d '/')
           IMAGES_DIR="$MIL_DIRNAME/images-540px-webp"
           mkdir -p ../../public/mil-images
           find "$IMAGES_DIR" -name "*.webp" -exec mv {} ../../public/mil-images/ \;
@@ -96,7 +89,7 @@ jobs:
         run: rm MDD.zip
 
       - name: Build and upload Astro site
-        uses: withastro/action@v3
+        uses: withastro/action@v4
         with:
           package-manager: bun
 
