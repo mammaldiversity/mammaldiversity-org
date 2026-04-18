@@ -15,6 +15,7 @@ import { generateSpeciesPermalink } from "../../libs/permalink";
 import SynonymSection from "../../components/species-page/SynonymSection.astro";
 import { getSpeciesMilImages } from "../../libs/mil";
 import MilImages from "../../components/mil/MilImages";
+import SpeciesTaxonomy from "../../components/species-page/SpeciesTaxonomy.astro";
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
 // This approach allow us make sure the generated page is always up to date with the database
@@ -45,14 +46,6 @@ const milMetadata = taxon ? getSpeciesMilImages(id) : [];
 //   to-spicy-mix-100
 //   dark:from-spectra-900
 //   dark:to-spicy-mix-900
-const taxonomyClasses = cntl`
-  bg-spectra-100 
-  dark:bg-spectra-900
-  pl-4 
-  py-2 
-  my-2 
-  rounded-xl
-`;
 
 const common_name_class = cntl`
   text-xl 
@@ -87,113 +80,7 @@ const common_name_class = cntl`
               <MilImages metadata={milMetadata} species={species} client:load />
             )
           }
-          <div class={taxonomyClasses}>
-            <h3 class="font-semibold text-lg md:text-xl mb-2">Taxonomy</h3>
-            <table class="table-auto">
-              <tbody>
-                <tr>
-                  <td class="pr-2">Subclass</td>
-                  <td class="pl-2">: {taxon?.subclass}</td>
-                </tr>
-                <tr>
-                  <td class="pr-2">Infraclass</td>
-                  <td class="pl-2">: {taxon?.infraclass}</td>
-                </tr>
-                {
-                  taxon?.magnorder !== "NA" && (
-                    <tr>
-                      <td class="pr-2">Magnorder</td>
-                      <td class="pl-2">: {taxon?.magnorder}</td>
-                    </tr>
-                  )
-                }
-                {
-                  taxon?.superorder !== "NA" && (
-                    <tr>
-                      <td class="pr-2">Superorder</td>
-                      <td class="pl-2">: {taxon?.superorder}</td>
-                    </tr>
-                  )
-                }
-                <tr>
-                  <td class="pr-2">Order</td>
-                  <td class="pl-2">: {taxon?.taxonOrder}</td>
-                </tr>
-                {
-                  taxon?.suborder !== "NA" && (
-                    <tr>
-                      <td class="pr-2">Suborder</td>
-                      <td class="pl-2">: {taxon?.suborder}</td>
-                    </tr>
-                  )
-                }
-                {
-                  taxon?.infraorder !== "NA" && (
-                    <tr>
-                      <td class="pr-2">Infraorder</td>
-                      <td class="pl-2">: {taxon?.infraorder}</td>
-                    </tr>
-                  )
-                }
-                {
-                  taxon?.parvorder !== "NA" && (
-                    <tr>
-                      <td class="pr-2">Parvorder</td>
-                      <td class="pl-2">: {taxon?.parvorder}</td>
-                    </tr>
-                  )
-                }
-                {
-                  taxon?.superfamily !== "NA" && (
-                    <tr>
-                      <td class="pr-2">Superfamily</td>
-                      <td class="pl-2">: {taxon?.superfamily}</td>
-                    </tr>
-                  )
-                }
-                <tr>
-                  <td class="pr-2">Family</td>
-                  <td class="pl-2" data-pagefind-filter="family"
-                    >: {taxon?.family}</td
-                  >
-                </tr>
-                {
-                  taxon?.subfamily !== "NA" && (
-                    <tr>
-                      <td class="pr-2">Subfamily</td>
-                      <td class="pl-2">: {taxon?.subfamily}</td>
-                    </tr>
-                  )
-                }
-                {
-                  taxon?.tribe !== "NA" && (
-                    <tr>
-                      <td class="pr-2">Tribe</td>
-                      <td class="pl-2">: {taxon?.tribe}</td>
-                    </tr>
-                  )
-                }
-                <tr>
-                  <td class="pr-2">Genus</td>
-                  <td class="pl-2"
-                    >: <span class="italic" data-pagefind-filter="genus"
-                      >{taxon?.genus}</span
-                    ></td
-                  >
-                </tr>
-                {
-                  taxon?.subgenus !== "NA" && (
-                    <tr>
-                      <td class="pr-2">Subgenus</td>
-                      <td class="pl-2">
-                        : <span class="italic">{taxon?.subgenus}</span>
-                      </td>
-                    </tr>
-                  )
-                }
-              </tbody>
-            </table>
-          </div>
+          <SpeciesTaxonomy taxon={taxon} />
           <SpeciesStatus
             isDomesticated={taxon?.domestic == 1}
             isLiving={taxon?.extinct == 0}
