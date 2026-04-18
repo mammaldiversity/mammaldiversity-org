@@ -7,7 +7,8 @@ const META_PARENT_DIR = "/mil-images";
 function parseMilJson(): MilMetadata[] {
     return (milRaw as any[]).map((item) => ({
         milId: item.milId,
-        mddId: item.mddId,
+        mddId: Number.parseInt(item.mddId),
+        isUncertainIdentification: item.isUncertainIdentification,
         description: item.description,
         location: item.location,
         photographer: item.photographer,
@@ -17,7 +18,8 @@ function parseMilJson(): MilMetadata[] {
 }
 
 function getMilMetadataByMddId(mddId: number): MilMetadata[] {
-    return parseMilJson().filter((mil) => mil.mddId === mddId);
+    const allMilImages = parseMilJson();
+    return allMilImages.filter((mil) => mil.mddId === mddId);
 }
 
 export { getMilMetadataByMddId, parseMilJson };

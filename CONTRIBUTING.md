@@ -12,41 +12,36 @@ git clone [repo]
 
 For other contributors, you can fork the repository and clone it to your local machine.
 
-### Install Node.js using a Node Version Manager
+### Install Bun
 
-Two commonly used node version managers are [NVM](https://github.com/nvm-sh/nvm) and [fnm](https://github.com/Schniz/fnm). We recommend using [FNM](https://github.com/Schniz/fnm) because it is faster and cross-platform by default. You can follow the installation instructions on the [FNM GitHub page](https://github.com/Schniz/fnm).
+This project uses [Bun](https://bun.sh/) as the package manager and JavaScript runtime. You can install Bun with a single command:
 
-Briefly, you can install `fnm` and `Node.js` using the following command:
+**macOS / Linux:**
 
 ```bash
-# installs fnm (Fast Node Manager)
-curl -fsSL https://fnm.vercel.app/install | bash
-
-# activate fnm
-source ~/.bashrc
-
-# download and install Node.js
-fnm use --install-if-missing 22
-
-# verifies the correct Node.js version is in the environment
-node -v # should print `v22.11.0`
-
-# verifies the correct npm version is in the environment
-npm -v # should print `10.9.0`
+curl -fsSL https://bun.sh/install | bash
 ```
 
-Follow the instructions on the [Node.js website](https://nodejs.org/en/download/) for other installation methods.
+**Windows:**
 
-### Enable Corepack and install dependencies
+```powershell
+powershell -c "irm bun.sh/install.ps1 | iex"
+```
 
-We use [yarn](https://yarnpkg.com/) to manage the website dependencies. Yarn comes with a plugin called [Corepack](https://yarnpkg.com/features/corepack) and is available by default when you install Node.js. First, we need to enable Corepack and install the dependencies.
+Verify the installation:
 
 ```bash
-corepack enable
+bun --version
+```
 
+For other installation methods, check out the [Bun installation docs](https://bun.sh/docs/installation).
+
+### Install dependencies
+
+```bash
 cd mammaldiversity-org
 
-yarn install
+bun install
 ```
 
 ### Start the development server
@@ -54,7 +49,7 @@ yarn install
 This command will start the development server. You can view the website by visiting the URL provided in the terminal.
 
 ```bash
-yarn run dev
+bun run dev
 ```
 
 ### Make changes
@@ -83,9 +78,21 @@ After you have created a pull request, the MDD Web Development team will review 
 
 ## How-to guides
 
+### Run tests locally
+
+This project uses [Playwright](https://playwright.dev/) for end-to-end tests. To run tests locally:
+
+```bash
+# Install Playwright browsers (required once after install or Playwright updates)
+bun x playwright install
+
+# Run the test suite
+bun run test
+```
+
 ### Release a new version of MDD
 
->Note: The release section is only relevant for the MDD Web Development team.
+> Note: The release section is only relevant for the MDD Web Development team.
 
 The data release process is managed by a GitHub Actions workflow defined in [.github/workflows/deploy.yml](https://github.com/mammaldiversity/mammaldiversity-org/blob/main/.github/workflows/deploy.yml).
 
@@ -119,6 +126,7 @@ The workflow will automatically fetch the latest data from the [assets directory
 ├── tests/
 ├── .gitignore
 ├── astro.config.mjs
+├── bun.lock
 ├── CITATION.cff
 ├── CNAME
 ├── CONTRIBUTING.md
@@ -127,8 +135,7 @@ The workflow will automatically fetch the latest data from the [assets directory
 ├── playwright.config.ts
 ├── README.md
 ├── tailwind.config.mjs
-├── tsconfig.json
-└── yarn.lock
+└── tsconfig.json
 ```
 
 - **`.github/`**: Contains GitHub Actions workflows for continuous integration and deployment.
@@ -159,13 +166,13 @@ The website is automatically built and deployed using a GitHub Actions workflow 
 The build process consists of the following steps:
 
 1. **Checkout Repository**: The workflow begins by checking out the latest version of the repository.
-2. **Setup Environment**: It sets up the necessary environment, including Node.js and Rust.
+2. **Setup Environment**: It sets up the necessary environment, including Bun and Rust.
 3. **Install MDD CLI**: A command-line tool, `mdd_api`, is installed using `cargo`. This tool is used to process the raw MDD data.
 4. **Data Extraction**: The latest Mammal Diversity Database data is downloaded as a ZIP file. The `mdd` CLI is then used to extract the data into the `db/data` directory.
 5. **Build Site**: The `withastro/action` is used to build the Astro site. This action performs the following sub-steps:
-    - Installs Node.js dependencies using `yarn install`.
+    - Installs dependencies using `bun install`.
     - Runs the `build` script from `package.json`, which executes `astro check && astro build`. This command type-checks the code and generates the static HTML, CSS, and JavaScript files in the `dist/` directory.
-    - Runs the `postbuild` script, which executes `pagefind --site dist` to create a search index for the generated site.
+    - Runs the `postbuild` script automatically, which executes `pagefind --site dist` to create a search index for the generated site.
 6. **Deployment**: Once the build is complete, the contents of the `dist/` directory are deployed to GitHub Pages.
 
 ### ISO 3166-1 alpha-2 Country Codes
