@@ -4,6 +4,7 @@ interface MilMetadata {
     isUncertainIdentification: boolean;
     description: string;
     location: string;
+    distribution: string;
     photographer: string;
     dateTaken: string;
     filePath: string;
