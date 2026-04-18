@@ -1,27 +1,24 @@
 ---
 import MainPage from "../layouts/MainPage.astro";
-import shrewImg from "../assets/images/mammal_images/1004046.jpg";
-import goldenMouse from "../assets/images/mammal_images/1002250.jpg";
-import solenodon from "../assets/images/mammal_images/1003840.jpg";
-import duiker from "../assets/images/mammal_images/1006226.jpg";
 import cntl from "cntl";
 import MainActionButtons from "../components/MainActionButtons.astro";
 import Zenodo from "../components/pubs/Zenodo.astro";
 import SpeciesCitation from "../components/pubs/SpeciesCitation.astro";
 import Journal from "../components/pubs/Journal.astro";
 import Link from "../components/Link.astro";
-import Image from "astro/components/Image.astro";
 import FrontPage from "../layouts/FrontPage.astro";
 import DiversityStatTable from "../components/DiversityStatTable.astro";
 import desktopApp from "../assets/images/screenshots/desktopApp.png";
 import InstallButton from "../components/buttons/InstallButton.astro";
 import { getMetadata } from "../../db/mdd";
+import { getLastTenMilImages } from "../libs/mil";
 import {
   formatDate,
   cleanVersion,
   getCurrentYear,
   getCurrentDate,
 } from "../libs/metadata";
+import { Image } from "astro:assets";
 
 const meta = getMetadata();
 const currentVersion = cleanVersion(meta.version);
@@ -42,25 +39,7 @@ const doi = meta.doi ? meta.doi : "https://doi.org/10.5281/zenodo.17033774";
 // Define version description
 const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
 
-const allImages = [
-  {
-    src: shrewImg,
-    alt: "A palawan moss shrew. Courtesy of the ASM’s MIL",
-  },
-  {
-    src: goldenMouse,
-    alt: "A golden mouse. Courtesy of the ASM’s MIL",
-  },
-  {
-    src: solenodon,
-    alt: "A hispaniolan solenodon. Courtesy of the ASM’s MIL",
-  },
-  {
-    src: duiker,
-    alt: "An Abbott's duiker. Courtesy of the ASM’s MIL",
-  },
-];
-
+const milImages = getLastTenMilImages();
 const titleClasses = cntl`
   font-serif
   font-semibold
@@ -87,9 +66,8 @@ const heroClasses = cntl`
   lg:grid-cols-2
   mt-8
   lg:mt-14
-  px-4
+  p-2
   lg:px-8
-  py-4
   lg:py-8
   bg-spectra-100
   bg-gradient-to-r
@@ -155,17 +133,23 @@ const highlightedContainerClasses = cntl`
           versionDescription={versionDescription}
         />
       </div>
-      <div class="justify-items-center order-first lg:order-last">
+      <div
+        class="flex flex-col items-center justify-center self-center order-first lg:order-last"
+      >
         {
-          allImages.map((image) => (
-            <Image
-              id="dynamic-image"
-              class="rounded-xl shadow-lg"
-              src={image.src}
-              alt={image.alt}
-              width="600"
-              height="600"
-            />
+          milImages.map((image) => (
+            <a href={`/taxon/${image.mddId}`} class="block">
+              <Image
+                id="dynamic-image"
+                class="rounded-xl shadow-lg"
+                src={image.filePath}
+                alt={image.description}
+                title={image.description}
+                density={[1.5, 2]}
+                height={400}
+                width={600}
+              />
+            </a>
           ))
         }
       </div>
