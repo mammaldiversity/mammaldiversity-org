@@ -21,16 +21,18 @@ import SpeciesTaxonomy from "../../components/species-page/SpeciesTaxonomy.astro
 // This approach allow us make sure the generated page is always up to date with the database
 // It also ensure that the links to the taxon pages are always available
 export const getStaticPaths = async () => {
-  // const taxonIDs = await db.select({ id: Taxonomy.id }).from(Taxonomy);
   const data = getSpeciesData();
   const taxonIDs = filterSpeciesId(data);
-  return taxonIDs.map((id: number) => ({ params: { id } }));
+  return taxonIDs.map((id: number) => ({
+    params: { id: id.toString() },
+    props: { mddId: id },
+  }));
 };
 
-const { id } = Astro.params;
+const { mddId } = Astro.props;
 
 const data = getSpeciesData();
-const species_data: SpeciesData = getTaxonomyData(data, Number(id));
+const species_data: SpeciesData = getTaxonomyData(data, mddId);
 const synonyms: Synonym[] = species_data.synonyms ?? [];
 const taxon: Taxonomy = species_data.speciesData;
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
@@ -40,12 +42,7 @@ const mddSpeciesLink = generateSpeciesPermalink(taxon?.id);
 
 const species = taxon?.genus + " " + taxon?.specificEpithet;
 
-const milMetadata = taxon ? getSpeciesMilImages(id) : [];
-// bg-gradient-to-r
-//   from-spectra-100
-//   to-spicy-mix-100
-//   dark:from-spectra-900
-//   dark:to-spicy-mix-900
+const milMetadata = taxon ? getSpeciesMilImages(mddId) : [];
 
 const common_name_class = cntl`
   text-xl 
