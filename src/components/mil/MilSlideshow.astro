@@ -13,11 +13,10 @@ const milImages = getLastTenMilImages();
     >
       <Image
         id={`mil-image-${image.mddId}`}
-        class="rounded-xl shadow-lg"
+        class="rounded-xl shadow-lg w-full h-auto"
         src={image.filePath}
         alt={image.description}
         title={image.description}
-        density={[1.5, 2]}
         height={400}
         width={600}
       />
