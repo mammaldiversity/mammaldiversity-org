@@ -117,13 +117,16 @@ function ImageCaption({ image }: { image: MilMetadata }) {
               })
             : "Unknown"}
         </span>
-        <span>Description</span>
-        <span>:</span>
-        <span>{image.description ?? "Unknown"}</span>
-        <span>Distribution</span>
-        <span>:</span>
-        <span>{image.distribution ?? "Unknown"}</span>
+        {image.description && (
+          <>
+            <span>Description</span>
+            <span> : </span>
+            <span>{image.description}</span>
+          </>
+        )}
       </div>
+      <p className="mt-2">Distribution :</p>
+      <p>{image.distribution ?? "Unknown"}</p>
       <ImageAttribution milId={image.milId} />
     </div>
   );
