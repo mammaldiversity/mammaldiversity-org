@@ -5,52 +5,40 @@ import { getLastTenMilImages } from "../../libs/mil";
 const milImages = getLastTenMilImages();
 ---
 
-{
-  milImages.map((image, index) => (
-    <div
-      class={`mil-slide ${index === 0 ? "block" : "hidden"}`}
-      data-index={index}
-    >
-      <Image
-        id={`mil-image-${image.mddId}`}
-        class="rounded-xl shadow-lg w-full h-auto"
-        src={image.filePath}
-        alt={image.description}
-        title={image.description}
-        height={400}
-        width={600}
-      />
-      <a
-        href={`/taxon/${image.mddId}`}
-        class="absolute top-2 right-2 bg-black/50 hover:bg-black/75 text-white rounded-full p-1.5 transition-colors"
-        title="Learn more about this species"
-        aria-label="Learn more about this species"
+<div>
+  {
+    milImages.map((image, index) => (
+      <div
+        class={`mil-slide ${index === 0 ? "block" : "hidden"}`}
+        data-index={index}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
-      </a>
-    </div>
-  ))
-}
+        <a href={`/taxon/${image.mddId}`}>
+          <Image
+            id={`mil-image-${image.mddId}`}
+            class="rounded-xl shadow-lg w-full h-auto"
+            src={image.filePath}
+            alt={image.description}
+            title="Click to learn more about this species"
+            height={400}
+            width={600}
+          />
+        </a>
+      </div>
+    ))
+  }
+</div>
 
 <script>
   const slides = document.querySelectorAll<HTMLElement>(".mil-slide");
+  const caption = document.getElementById("mil-caption");
+  const captionLink = document.getElementById(
+    "mil-caption-link",
+  ) as HTMLAnchorElement;
   let current = 0;
 
   setInterval(() => {
+    // hide caption on slide change
+    caption?.classList.add("hidden");
     slides[current].classList.replace("block", "hidden");
     current = (current + 1) % slides.length;
     slides[current].classList.replace("hidden", "block");

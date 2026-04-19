@@ -20,6 +20,8 @@ const navClasses = cntl`
   justify-between
   p-6
   lg:px-8
+  relative
+  z-[100]
 `;
 
 const largeNavClasses = cntl`
@@ -120,7 +122,7 @@ const indicatorClasses = cntl`
 <!-- Mobile menu, show/hide based on menu open state. -->
 <div id="mobile-menu" class="lg:hidden hidden" role="dialog" aria-modal="true">
   <!-- Background backdrop, show/hide based on slide-over state. -->
-  <div class="fixed inset-0 z-50">
+  <div class="fixed inset-0 z-[100]">
     <div id="close-button" class={closeMenuButtonClasses}>
       <div class="flex items-center justify-between">
         <a href="/" class="-m-1.5 p-1.5">
