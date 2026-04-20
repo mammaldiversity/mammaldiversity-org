@@ -121,7 +121,6 @@ export default function CountryMap({
     const isDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
     const plot = Plot.plot({
-      projection,
       width,
       height: width * 0.52,
       style: { background: "transparent" },

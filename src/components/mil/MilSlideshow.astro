@@ -31,9 +31,6 @@ const milImages = getLastTenMilImages();
 <script>
   const slides = document.querySelectorAll<HTMLElement>(".mil-slide");
   const caption = document.getElementById("mil-caption");
-  const captionLink = document.getElementById(
-    "mil-caption-link",
-  ) as HTMLAnchorElement;
   let current = 0;
 
   setInterval(() => {

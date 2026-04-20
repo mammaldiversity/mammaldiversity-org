@@ -184,7 +184,6 @@ function SpeciesDistributionMap({
     const plotHeight = height ?? plotWidth * 0.52;
 
     const plot = Plot.plot({
-      projection,
       width: plotWidth,
       height: plotHeight,
       style: { overflow: "visible" },
