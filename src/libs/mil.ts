@@ -7,8 +7,10 @@ function getSpeciesMilImages(mddId: number): MilMetadata[] {
 }
 
 function getLastTenMilImages(): MilMetadata[] {
-    const milMetadata = parseMilJson();
-    const last50 = milMetadata.slice(-50);
+    // sort by milId descending
+    const milMetadata = parseMilJson().sort((a, b) => b.milId - a.milId);
+
+    const last50 = milMetadata.slice(0, 50);
 
     const seen = new Set<number>();
     const result: MilMetadata[] = [];
