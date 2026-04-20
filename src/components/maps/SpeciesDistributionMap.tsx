@@ -4,9 +4,11 @@ import * as Plot from "@observablehq/plot";
 import cntl from "cntl";
 import { convertTopoToGeoJson } from "../../libs/country_utils";
 
+
 const KNOWN_COLOR = "#117554";
 const PREDICTED_COLOR = "#FFEB00";
 const COUNTRY_MAP_URL = "/map/countries-50m.json";
+type ProjectionOption = Plot.PlotOptions["projection"];
 
 const mapClasses = cntl`
   min-w-lg 
@@ -14,9 +16,6 @@ const mapClasses = cntl`
   mx-auto
 `;
 
-// ─── Module-level GeoJSON cache ───────────────────────────────────────────────
-// Persists across mounts so back/forward navigation and remounts
-// never re-fetch or re-parse the TopoJSON blob.
 let cachedWorldGeoJSON: WorldGeoJSON | null = null;
 
 interface GeoFeatureProperties {
@@ -184,6 +183,7 @@ function SpeciesDistributionMap({
     const plotHeight = height ?? plotWidth * 0.52;
 
     const plot = Plot.plot({
+      projection: projection as ProjectionOption,
       width: plotWidth,
       height: plotHeight,
       style: { overflow: "visible" },

@@ -4,6 +4,7 @@ import type { Feature, FeatureCollection } from "geojson";
 import { convertTopoToGeoJson } from "../../libs/country_utils";
 
 const COUNTRY_MAP_URL = "/map/countries-50m.json";
+type ProjectionOption = Plot.PlotOptions["projection"];
 
 interface CountryMapProps {
   stats: Record<string, number>;
@@ -51,7 +52,6 @@ interface FeatureDatum {
   iso2: string | undefined;
 }
 
-// ─── Module-level GeoJSON cache ───────────────────────────────────────────────
 let cachedWorld: FeatureCollection | null = null;
 
 export default function CountryMap({
@@ -121,6 +121,7 @@ export default function CountryMap({
     const isDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
     const plot = Plot.plot({
+      projection: projection as ProjectionOption,
       width,
       height: width * 0.52,
       style: { background: "transparent" },
