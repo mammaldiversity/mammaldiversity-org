@@ -119,6 +119,18 @@ const mapClasses = cntl`
               label="us-atlas"
               openInNewTab={true}
             />
+            <span class="inline -ml-1">, based on the </span>
+            <Link
+              url="http://www.census.gov/"
+              label="U.S. Census Bureau"
+              openInNewTab={true}
+            />
+            {" "}
+            <Link
+              url="https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html"
+              label="cartographic boundary files"
+              openInNewTab={true}
+            /><span class="inline">.</span>
           </div>
           <div class="mb-4 mx-auto">
             <UnitedStatesMap client:load stats={unitedStatesStats} />

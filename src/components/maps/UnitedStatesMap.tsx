@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 import type { Feature, FeatureCollection } from "geojson";
 import { convertUSTopoToGeoJson } from "../../libs/country_utils";
+import { stateNameToCode } from "../../libs/state_map";
 
 const US_MAP_URL = "/map/states-albers-10m.json";
 
@@ -56,7 +57,7 @@ let cachedUSMap: FeatureCollection | null = null;
 export default function UnitedStatesMap({
   stats,
   colors = ["#FFEB00", "#117554"],
-  projection = "albers-usa",
+  projection = "identity",
 }: UnitedStatesMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useContainerWidth(containerRef);
@@ -97,7 +98,8 @@ export default function UnitedStatesMap({
     if (!usMap?.features?.length) return cache;
 
     for (const feature of usMap.features) {
-      const stateId = feature.properties?.STATE as string | undefined;
+      const stateName = feature.properties?.name as string | undefined;
+      const stateId = stateName ? stateNameToCode[stateName] : undefined;
       const count = stateId
         ? (stats[stateId] as number | undefined)
         : undefined;
@@ -113,7 +115,10 @@ export default function UnitedStatesMap({
     const isDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
     const plot = Plot.plot({
-      projection,
+      projection:
+        typeof projection === "string"
+          ? { type: projection as any, reflectY: false, domain: usMap }
+          : projection,
       width,
       height: width * 0.52,
       style: { background: "transparent" },
