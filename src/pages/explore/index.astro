@@ -11,12 +11,14 @@ import tableImgDark from "../../assets/images/explore-cards/table-dark.png";
 import phyloImg from "../../assets/images/explore-cards/phylo.png";
 import phyloImgDark from "../../assets/images/explore-cards/phylo-dark.png";
 import ResponsiveCard from "../../components/ResponsiveCard.astro";
-import { buildCountryDiversityStats } from "../../libs/diversity_map";
+import { buildCountryDiversityStats, buildUnitedStatesDiversityStats } from "../../libs/diversity_map";
 import CountryMap from "../../components/maps/CountryMap";
+import UnitedStatesMap from "../../components/maps/UnitedStatesMap";
 import cntl from "cntl";
 import Link from "../../components/Link.astro";
 
 const countryStats = buildCountryDiversityStats();
+const unitedStatesStats = buildUnitedStatesDiversityStats();
 
 const mapClasses = cntl`
   w-full
@@ -100,6 +102,16 @@ const mapClasses = cntl`
             <CountryMap client:load stats={countryStats} />
           </div>
           <ActionButton label="Explore country data" uri="/country" />
+        </div>
+      </div>
+      <div class="my-4 text-center">
+        <div class={mapClasses}>
+          <h2 class="text-3xl font-semibold mb-4">
+            Mammal Diversity in the United States
+          </h2>
+          <div class="mb-4 mx-auto">
+            <UnitedStatesMap client:load stats={unitedStatesStats} />
+          </div>
         </div>
       </div>
       <div class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4">
