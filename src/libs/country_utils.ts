@@ -26,3 +26,18 @@ export function convertTopoToGeoJson(topoData: any): GeoJSON.FeatureCollection {
 
     return result as GeoJSON.FeatureCollection;
 }
+
+export function convertUSTopoToGeoJson(topoData: any): GeoJSON.FeatureCollection {
+    const result = feature(
+        topoData,
+        topoData.objects.data
+    ) as unknown;
+
+    if (!isFeatureCollection(result)) {
+        throw new Error(
+            "Expected 'data' TopoJSON object to convert to a FeatureCollection."
+        );
+    }
+
+    return result as GeoJSON.FeatureCollection;
+}
