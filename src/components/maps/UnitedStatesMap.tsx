@@ -121,7 +121,9 @@ export default function UnitedStatesMap({
           : projection,
       width,
       height: width * 0.52,
-      style: { background: "transparent" },
+      margin: 0,
+      marginTop: 16,
+      style: { background: "transparent", overflow: "visible" },
       color: {
         type: "linear",
         range: colors,
@@ -133,7 +135,7 @@ export default function UnitedStatesMap({
         Plot.geo(usMap, {
           fill: (d: Feature) => featureCache.get(d)?.count,
           stroke: "currentColor",
-          strokeWidth: 0.5,
+          strokeWidth: 0.45,
           strokeOpacity: 0.3,
 
           tip: {
