@@ -11,7 +11,10 @@ import tableImgDark from "../../assets/images/explore-cards/table-dark.png";
 import phyloImg from "../../assets/images/explore-cards/phylo.png";
 import phyloImgDark from "../../assets/images/explore-cards/phylo-dark.png";
 import ResponsiveCard from "../../components/ResponsiveCard.astro";
-import { buildCountryDiversityStats, buildUnitedStatesDiversityStats } from "../../libs/diversity_map";
+import {
+  buildCountryDiversityStats,
+  buildUnitedStatesDiversityStats,
+} from "../../libs/diversity_map";
 import CountryMap from "../../components/maps/CountryMap";
 import UnitedStatesMap from "../../components/maps/UnitedStatesMap";
 import cntl from "cntl";
@@ -109,6 +112,14 @@ const mapClasses = cntl`
           <h2 class="text-3xl font-semibold mb-4">
             Mammal Diversity in the United States
           </h2>
+          <div id="data-source" class="text-xs mb-4 max-w-2xl mx-auto">
+            Map source:{" "}
+            <Link
+              url="https://github.com/topojson/us-atlas"
+              label="us-atlas"
+              openInNewTab={true}
+            />
+          </div>
           <div class="mb-4 mx-auto">
             <UnitedStatesMap client:load stats={unitedStatesStats} />
           </div>

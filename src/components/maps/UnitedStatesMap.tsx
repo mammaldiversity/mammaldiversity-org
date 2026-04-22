@@ -3,7 +3,7 @@ import * as Plot from "@observablehq/plot";
 import type { Feature, FeatureCollection } from "geojson";
 import { convertUSTopoToGeoJson } from "../../libs/country_utils";
 
-const US_MAP_URL = "/map/united_states.json";
+const US_MAP_URL = "/map/states-albers-10m.json";
 
 interface UnitedStatesMapProps {
   stats: Record<string, number>;
