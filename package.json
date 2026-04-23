@@ -6,23 +6,23 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build && yarn postbuild",
+    "build": "astro check && astro build && bun run postbuild",
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "playwright test",
-    "show-report": "playwright show-report"
+    "test": "bun x playwright test",
+    "show-report": "bun x playwright show-report"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
-    "@astrojs/partytown": "^2.1.4",
-    "@astrojs/preact": "^4.1.1",
+    "@astrojs/check": "0.9.8",
+    "@astrojs/partytown": "2.1.7",
+    "@astrojs/preact": "5.1.1",
     "@astrojs/tailwind": "6.0.2",
     "@observablehq/plot": "^0.6.17",
     "@types/node": "^22.13.4",
     "@types/react": "^19.1.15",
     "@types/react-dom": "^19.1.9",
-    "astro": "5.14.1",
+    "astro": "6.1.8",
     "astro-pagefind": "^1.8.0",
     "cntl": "^1.0.0",
     "leaflet": "^1.9.4",
@@ -34,11 +34,13 @@
     "topojson-client": "^3.1.0",
     "typescript": "^5.6.3"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "packageManager": "bun@1.2.8",
   "devDependencies": {
-    "@playwright/test": "^1.50.1",
+    "@babel/core": "^7.29.0",
+    "@playwright/test": "^1.59.1",
     "@types/leaflet": "^1.9.15",
     "@types/topojson-client": "^3.1.5",
+    "baseline-browser-mapping": "^2.10.8",
     "daisyui": "^4.12.22"
   }
 }

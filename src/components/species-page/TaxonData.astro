@@ -1,6 +1,6 @@
 ---
 import Link from "../Link.astro";
-import { cleanTaxonData } from "../../scripts/taxon";
+import { cleanTaxonData } from "../../libs/taxon";
 import cntl from "cntl";
 import MixedLink from "./MixedLink.astro";
 import TaxonDataList from "./TaxonDataList.astro";
@@ -51,7 +51,7 @@ const taxonClasses = cntl`
     ) : isUrl && textData.startsWith("http") ? (
       // If contain "|", split the content and create multiple links
       textData.includes("|") ? (
-        textData.split("|").map((link) => <Link url={link} label={link} />)
+        textData.split("|").map((link) => <Link url={link} />)
       ) : (
         <Link url={textData} />
       )

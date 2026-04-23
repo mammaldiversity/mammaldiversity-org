@@ -1,0 +1,115 @@
+---
+import type { Synonym } from "../../../db/mdd_model"
+import SynonymPage from "./SynonymPage.astro";
+import cntl from "cntl";
+
+
+interface Props {
+  synonyms: Synonym[];
+}
+const { synonyms } = Astro.props as Props;
+
+
+const INITIAL_COUNT = 10;
+const initialSynonyms = synonyms.slice(0, INITIAL_COUNT);
+const remainingSynonyms = synonyms.slice(INITIAL_COUNT);
+
+
+const containerClasses = cntl`
+  bg-spectra-100 
+  dark:bg-spectra-900 
+  my-4
+  max-h-[calc(100svh-60px)] 
+  rounded-xl 
+  overflow-y-auto
+`;
+
+
+const captionTextClasses = cntl`
+  text-spectra-800 
+  dark:text-spectra-100 
+  text-sm 
+  mx-4
+`;
+---
+<div class="sticky top-0 bg-spectra-100 dark:bg-spectra-900 rounded-xl py-2">
+{
+  synonyms.length > 0 && (
+<div class={containerClasses}>
+    
+    <h2 class="text-lg md:text-xl font-semibold mx-4">
+      Names and synonyms
+    </h2>
+    <h3 class={captionTextClasses}>
+      Present and past (if available) associated names to the species. Click on
+    a name to view its details. 
+    </h3>
+    <p class={captionTextClasses}>Total: {synonyms.length} name{synonyms.length !== 1 ? "s" : ""} and synonym{synonyms.length !== 1 ? "s" : ""}.</p>
+    </div>
+    <div class="flex flex-wrap items-center justify-center gap-2 p-2">
+    {initialSynonyms.map((s) => (
+    <SynonymPage
+        originalNameCombination={s.originalCombination}
+        species={s.species}
+        rootName={s.rootName}
+        family={s.family}
+        authoritySpeciesAuthor={s.author}
+        authoritySpeciesYear={s.year}
+        authorityParentheses={s.authorityParentheses}
+        validityStatus={s.validity}
+        nomenclaturalStatus={s.nomenclatureStatus}
+        type={s.holotype}
+        typeKind={s.typeKind}
+        typeSpecimenLink={s.typeSpecimenLink}
+        authorityPage={s.authorityPage}
+        authorityPageLink={s.authorityPageLink}
+        authorityPublication={s.citationGroup}
+        nameUsages={s.nameUsages}
+    />
+    ))}
+    </div>
+    <div>
+    {remainingSynonyms.length > 0 && (
+      <>
+        {/* Mobile: prompt users to switch to desktop because large synonyms will cause out-of-memory errors */}
+        <p class="md:hidden text-sm text-spectra-700 dark:text-spectra-300 text-center px-4 pt-2 pb-4">
+          {remainingSynonyms.length} more name{remainingSynonyms.length !== 1 ? "s" : ""} and synonym{remainingSynonyms.length !== 1 ? "s" : ""} available —
+          use the desktop version to see them all.
+        </p>
+
+        {/* Desktop: deferred behind a <details> element.
+            The browser skips layout of hidden <details> content on initial parse,
+            directly reducing the DOM node count. */}
+        <details class="hidden md:block mt-2">
+          <summary class="cursor-pointer select-none text-sm text-spectra-700 dark:text-spectra-300 hover:text-spectra-900 dark:hover:text-spectra-100 transition-colors pt-2 pb-4 px-4">
+            <span class="ml-2">Show {remainingSynonyms.length} more name{remainingSynonyms.length !== 1 ? "s" : ""} and synonym{remainingSynonyms.length !== 1 ? "s" : ""}</span>
+          </summary>
+          <div class="flex flex-wrap items-center justify-center gap-2 p-2">
+          {remainingSynonyms.map((s) => (
+              <SynonymPage
+              originalNameCombination={s.originalCombination}
+              species={s.species}
+              rootName={s.rootName}
+              family={s.family}
+              authoritySpeciesAuthor={s.author}
+              authoritySpeciesYear={s.year}
+              authorityParentheses={s.authorityParentheses}
+              validityStatus={s.validity}
+              nomenclaturalStatus={s.nomenclatureStatus}
+              type={s.holotype}
+              typeKind={s.typeKind}
+              typeSpecimenLink={s.typeSpecimenLink}
+              authorityPage={s.authorityPage}
+              authorityPageLink={s.authorityPageLink}
+              authorityPublication={s.citationGroup}
+              nameUsages={s.nameUsages}
+              />
+          ))}
+          </div>
+        </details>
+      </>
+    )}
+</div>
+  )
+}
+</div>

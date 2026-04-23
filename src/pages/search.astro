@@ -4,7 +4,6 @@ import MainPage from "../layouts/MainPage.astro";
 import Page from "../layouts/Page.astro";
 import Link from "../components/Link.astro";
 import { join } from "path";
-
 const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
 ---
 
@@ -21,6 +20,10 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
         />.
       </p>
     </div>
+    <!-- <OneLineNotes
+      class="mb-4"
+      msg="Some query with large results may fail to be displayed properly. You can try /explore/taxon-list/ to find the taxon you are looking for."
+    /> -->
     <div id="search" class="mt-2"></div>
   </MainPage>
 </Page>
@@ -28,62 +31,138 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
 <style is:global>
   :root {
     --pagefind-ui-scale: 1;
-    --pagefind-ui-primary: theme("colors.primary");
-    --pagefind-ui-text: theme("colors.base-content");
-    --pagefind-ui-background: theme("colors.primary");
-    --pagefind-ui-border: theme("colors.accent");
-    --pagefind-ui-tag: theme("colors.primary");
     --pagefind-ui-border-width: 2px;
-    --pagefind-ui-border-radius: 18px;
+    --pagefind-ui-border-radius: 12px;
     --pagefind-ui-font: sans-serif;
-    --pagefind-ui-scale: 1;
+
+    /* Light mode — spectra/spicy-mix palette */
+    --pagefind-ui-primary: #2c4243;
+    --pagefind-ui-text: #131f20;
+    --pagefind-ui-background: #dcebe9;
+    --pagefind-ui-border: #b9d6d2;
+    --pagefind-ui-tag: #b9d6d2;
+    --pagefind-input-background: #dcebe9;
   }
+
+  /* Dark mode overrides */
+  html.dark #search,
+  html.dark .pagefind-ui {
+    --pagefind-ui-primary: #679a98;
+    --pagefind-ui-text: #f8f6f2;
+    --pagefind-ui-background: #2c4243;
+    --pagefind-ui-border: #4d7f7e;
+    --pagefind-ui-tag: #2c4243;
+    --pagefind-input-background: #365858;
+  }
+  /* Search input + clear button */
   #search .pagefind-ui__search-input,
   #search .pagefind-ui__search-clear {
     background-color: var(--pagefind-input-background);
     color: var(--pagefind-ui-text);
-    border-color: theme("colors.primary");
+    border-color: var(--pagefind-ui-border);
     font-weight: normal;
   }
+
+  #search .pagefind-ui__search-input:hover {
+    border-color: #65453b;
+  }
+
+  #search .pagefind-ui__search-input:focus,
+  #search .pagefind-ui__search-input:active {
+    border-color: var(--pagefind-ui-primary);
+    outline: none;
+  }
+
   #search .pagefind-ui__search-clear:focus {
     background-color: var(--pagefind-ui-primary);
     color: var(--pagefind-ui-background);
     border-color: var(--pagefind-ui-primary);
   }
-  #search
-    .pagefind-ui__search-input:focus
-    .pagefind-ui__search-input:active
-    .pagefind-ui__form:focus
-    .pagefind-ui__form:active
-    .pagefind-ui__form::after
-    .pagefind-ui__form::before {
-    color: var(--pagefind-ui-text);
-    border-color: theme("colors.primary");
-    font-weight: normal;
-  }
-  #search .pagefind-ui__search-input:hover {
-    color: var(--pagefind-ui-text);
-    border-color: theme("colors.secondary");
-    font-weight: normal;
-  }
+
+  /* Result titles */
   #search .pagefind-ui__result-title,
   #search .pagefind-ui__result-link {
     display: inline-block;
-    color: var(--pagefind-ui-result-title-text);
+    color: var(--pagefind-ui-primary);
     font-style: italic;
     font-weight: bold;
   }
+
+  #search .pagefind-ui__result-title:hover,
+  #search .pagefind-ui__result-link:hover {
+    color: #65453b;
+  }
+
+  /* Result excerpt */
+  #search .pagefind-ui__result-excerpt {
+    color: var(--pagefind-ui-text);
+    opacity: 0.85;
+  }
+
+  /* Result container — p-2 equivalent spacing between cards */
+  #search .pagefind-ui__result {
+    border-color: var(--pagefind-ui-border);
+    background-color: var(--pagefind-ui-background);
+    border-radius: 12px;
+    padding: 0.5rem; /* p-2 */
+    margin-bottom: 0.5rem; /* gap between results */
+  }
+
+  #search .pagefind-ui__results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* consistent spacing between all result cards */
+  }
+
+  /* Filter panel */
+  #search .pagefind-ui__filter-panel {
+    background-color: var(--pagefind-input-background);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+
+  #search .pagefind-ui__drawer {
+    gap: 1rem; /* space between filter panel and results */
+    padding-right: 1rem; /* similar to tailwind p-4 on the right */
+  }
+
+  #search .pagefind-ui__filter-name {
+    color: var(--pagefind-ui-text);
+    font-weight: 600;
+  }
+
+  #search .pagefind-ui__filter-value {
+    color: var(--pagefind-ui-text);
+  }
+
+  /* "{count} results for {query}" message */
+  #search .pagefind-ui__message {
+    color: #4d7f7e;
+  }
+
+  /* Load more button */
   #search .pagefind-ui__button {
-    color: theme("colors.base-content");
+    color: var(--pagefind-ui-text);
+    border-color: var(--pagefind-ui-border);
+    background-color: var(--pagefind-input-background);
+    border-radius: 18px;
     font-weight: normal;
   }
+
   #search .pagefind-ui__button:hover {
-    color: theme("colors.primary");
-    font-weight: normal;
+    background-color: var(--pagefind-ui-primary);
+    color: var(--pagefind-ui-background);
+    border-color: var(--pagefind-ui-primary);
+  }
+
+  #search .pagefind-ui__results-area {
+    display: block !important;
+    visibility: visible !important;
   }
 </style>
 
 <script src={pageFindPath} type="text/javascript" is:inline></script>
+
 <script>
   declare const PagefindUI: any;
   window.addEventListener("DOMContentLoaded", () => {

@@ -1,0 +1,43 @@
+---
+import { Image } from "astro:assets";
+import { getLastTenMilImages } from "../../libs/mil";
+
+const milImages = getLastTenMilImages();
+---
+
+<div class="w-full h-auto">
+  {
+    milImages.map((image, index) => (
+      <div
+        class={`mil-slide ${index === 0 ? "block" : "hidden"}`}
+        data-index={index}
+      >
+        <a href={`/taxon/${image.mddId}`}>
+          <Image
+            id={`mil-image-${image.mddId}`}
+            class="rounded-xl shadow-lg w-full h-auto"
+            src={image.filePath}
+            alt={image.description}
+            title="Click to learn more about this species"
+            height={400}
+            width={600}
+          />
+        </a>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  const slides = document.querySelectorAll<HTMLElement>(".mil-slide");
+  const caption = document.getElementById("mil-caption");
+  let current = 0;
+
+  setInterval(() => {
+    // hide caption on slide change
+    caption?.classList.add("hidden");
+    slides[current].classList.replace("block", "hidden");
+    current = (current + 1) % slides.length;
+    slides[current].classList.replace("hidden", "block");
+  }, 5000);
+</script>

@@ -18,8 +18,10 @@ const navClasses = cntl`
   flex
   items-center
   justify-between
-  p-6
-  lg:px-8
+  p-2
+  xl:px-4
+  relative
+  z-[100]
 `;
 
 const largeNavClasses = cntl`
@@ -27,11 +29,11 @@ const largeNavClasses = cntl`
   justify-items-center
   hidden
   lg:flex
-  lg:gap-x-12
+  lg:gap-x-8
   mx-auto
   bg-spicy-mix-200
   py-2
-  px-8
+  px-4
   dark:bg-spicy-mix-800
   rounded-full
 `;
@@ -45,8 +47,8 @@ const closeMenuButtonClasses = cntl`
   z-50
   w-full
   overflow-y-auto
-  px-6
-  py-6
+  px-2
+  py-2
   sm:max-w-sm
   sm:ring-1
   sm:ring-gray-900/10
@@ -116,42 +118,47 @@ const indicatorClasses = cntl`
       ))
     }
   </div>
-</nav>
-<!-- Mobile menu, show/hide based on menu open state. -->
-<div id="mobile-menu" class="lg:hidden hidden" role="dialog" aria-modal="true">
-  <!-- Background backdrop, show/hide based on slide-over state. -->
-  <div class="fixed inset-0 z-50">
-    <div id="close-button" class={closeMenuButtonClasses}>
-      <div class="flex items-center justify-between">
-        <a href="/" class="-m-1.5 p-1.5">
-          <span class="sr-only">MDD</span>
-          <Icons />
-        </a>
-        <CloseMenuButton />
-      </div>
-      <div class="mt-6 flow-root">
-        <div class="-my-6 divide-y divide-gray-500/10">
-          <div class="space-y-2 py-6 font-semibold">
-            {
-              navItems.map(({ path, label }) => (
-                <>
-                  <div class="flex items-center space-x-2">
-                    <div
-                      class={`w-2 h-2 rounded-full bg-transparent -mr-2 ml-2 ${currentPath === path || currentPath === `${path}/` ? `${navIndicatorColorClasses}` : ""}`}
-                    />
-                    <a href={path} class={mobileItemClasses}>
-                      {label}
-                    </a>
-                  </div>
-                </>
-              ))
-            }
+  <!-- Mobile menu, show/hide based on menu open state. -->
+  <div
+    id="mobile-menu"
+    class="lg:hidden hidden"
+    role="dialog"
+    aria-modal="true"
+  >
+    <!-- Background backdrop, show/hide based on slide-over state. -->
+    <div class="fixed inset-0 z-[100]">
+      <div id="close-button" class={closeMenuButtonClasses}>
+        <div class="flex items-center justify-between">
+          <a href="/" class="-m-1.5 p-1.5">
+            <span class="sr-only">MDD</span>
+            <Icons />
+          </a>
+          <CloseMenuButton />
+        </div>
+        <div class="mt-6 flow-root">
+          <div class="-my-6 divide-y divide-gray-500/10">
+            <div class="space-y-2 py-6 font-semibold">
+              {
+                navItems.map(({ path, label }) => (
+                  <>
+                    <div class="flex items-center space-x-2">
+                      <div
+                        class={`w-2 h-2 rounded-full bg-transparent -mr-2 ml-2 ${currentPath === path || currentPath === `${path}/` ? `${navIndicatorColorClasses}` : ""}`}
+                      />
+                      <a href={path} class={mobileItemClasses}>
+                        {label}
+                      </a>
+                    </div>
+                  </>
+                ))
+              }
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</nav>
 
 <script>
   const menuButton = document.getElementById("menu-button");

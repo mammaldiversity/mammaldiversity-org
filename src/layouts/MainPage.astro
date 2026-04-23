@@ -11,6 +11,8 @@ const mainPageClasses = cntl`
   mx-auto 
   min-h-screen
   item-center
+  max-w-screen-2xl
+  p-2
 `;
 ---
 
@@ -22,7 +24,7 @@ const mainPageClasses = cntl`
       </div>
     </main>
   ) : (
-    <main>
+    <main data-pagefind-ignore>
       <div class={mainPageClasses}>
         <slot />
       </div>

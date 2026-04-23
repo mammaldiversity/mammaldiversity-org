@@ -1,10 +1,8 @@
 ---
 import MainPage from "../../layouts/MainPage.astro";
 import cntl from "cntl";
-import SynonymPage from "../../components/species-page/SynonymPage.astro";
-import SynonymList from "../../layouts/SynonymList.astro";
 import TaxonData from "../../components/species-page/TaxonData.astro";
-import { matchIUCNRedlistStatus } from "../../scripts/iucn";
+import { matchIUCNRedlistStatus } from "../../libs/iucn";
 import Page from "../../layouts/Page.astro";
 import PageDivider from "../../components/PageDivider.astro";
 import SupportNotice from "../../components/species-page/SupportNotice.astro";
@@ -13,22 +11,28 @@ import type { SpeciesData, Synonym, Taxonomy } from "../../../db/mdd_model";
 import { getSpeciesData } from "../../../db/mdd";
 import SpeciesStatus from "../../components/species-page/SpeciesStatus.astro";
 import DistributionMap from "../../components/species-page/DistributionMap.astro";
-import { generateSpeciesPermalink } from "../../scripts/permalink";
+import { generateSpeciesPermalink } from "../../libs/permalink";
+import SynonymSection from "../../components/species-page/SynonymSection.astro";
+import { getSpeciesMilImages } from "../../libs/mil";
+import MilImages from "../../components/mil/MilImages";
+import SpeciesTaxonomy from "../../components/species-page/SpeciesTaxonomy.astro";
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
 // This approach allow us make sure the generated page is always up to date with the database
 // It also ensure that the links to the taxon pages are always available
 export const getStaticPaths = async () => {
-  // const taxonIDs = await db.select({ id: Taxonomy.id }).from(Taxonomy);
   const data = getSpeciesData();
   const taxonIDs = filterSpeciesId(data);
-  return taxonIDs.map((id: number) => ({ params: { id } }));
+  return taxonIDs.map((id: number) => ({
+    params: { id: id.toString() },
+    props: { mddId: id },
+  }));
 };
 
-const { id } = Astro.params;
+const { mddId } = Astro.props;
 
 const data = getSpeciesData();
-const species_data: SpeciesData = getTaxonomyData(data, Number(id));
+const species_data: SpeciesData = getTaxonomyData(data, mddId);
 const synonyms: Synonym[] = species_data.synonyms ?? [];
 const taxon: Taxonomy = species_data.speciesData;
 const authority = `${taxon?.authoritySpeciesAuthor}, ${taxon?.authoritySpeciesYear}`;
@@ -38,17 +42,7 @@ const mddSpeciesLink = generateSpeciesPermalink(taxon?.id);
 
 const species = taxon?.genus + " " + taxon?.specificEpithet;
 
-const taxonomyClasses = cntl`
-  bg-gradient-to-r
-  from-spectra-100
-  to-spicy-mix-100
-  dark:from-spectra-900
-  dark:to-spicy-mix-900
-  pl-4 
-  py-2 
-  my-2 
-  rounded-xl
-`;
+const milMetadata = taxon ? getSpeciesMilImages(mddId) : [];
 
 const common_name_class = cntl`
   text-xl 
@@ -60,220 +54,97 @@ const common_name_class = cntl`
 
 <Page title={`${species} • ${taxon?.mainCommonName}`}>
   <MainPage isIndexed={true}>
-    <div class="text-center item-center mt-8 md:mt-16 mb-4">
-      <h1 class="font-serif text-3xl md:text-5xl italic mb-2">
-        {species}
-      </h1>
-      <h2 class="text-xl md:text-2xl">
-        {taxon?.authorityParentheses === 1 ? `(${authority})` : authority}
-      </h2>
-      <h2 class={common_name_class}>
-        {taxon?.mainCommonName}
-      </h2>
-    </div>
-    <PageDivider />
-    <div class="grid grid-cols-1 lg:grid-cols-2 justify-between gap-4 mt-4">
-      <div>
-        <div class={taxonomyClasses}>
-          <h3 class="font-semibold text-lg md:text-xl mb-2">Taxonomy</h3>
-          <table class="table-auto">
-            <tbody>
-              <tr>
-                <td class="pr-2">Subclass</td>
-                <td class="pl-2">: {taxon?.subclass}</td>
-              </tr>
-              <tr>
-                <td class="pr-2">Infraclass</td>
-                <td class="pl-2">: {taxon?.infraclass}</td>
-              </tr>
-              {
-                taxon?.magnorder !== "NA" && (
-                  <tr>
-                    <td class="pr-2">Magnorder</td>
-                    <td class="pl-2">: {taxon?.magnorder}</td>
-                  </tr>
-                )
-              }
-              {
-                taxon?.superorder !== "NA" && (
-                  <tr>
-                    <td class="pr-2">Superorder</td>
-                    <td class="pl-2">: {taxon?.superorder}</td>
-                  </tr>
-                )
-              }
-              <tr>
-                <td class="pr-2">Order</td>
-                <td class="pl-2" data-pagefind-filter="order"
-                  >: {taxon?.taxonOrder}</td
-                >
-              </tr>
-              {
-                taxon?.suborder !== "NA" && (
-                  <tr>
-                    <td class="pr-2">Suborder</td>
-                    <td class="pl-2">: {taxon?.suborder}</td>
-                  </tr>
-                )
-              }
-              {
-                taxon?.infraorder !== "NA" && (
-                  <tr>
-                    <td class="pr-2">Infraorder</td>
-                    <td class="pl-2">: {taxon?.infraorder}</td>
-                  </tr>
-                )
-              }
-              {
-                taxon?.parvorder !== "NA" && (
-                  <tr>
-                    <td class="pr-2">Parvorder</td>
-                    <td class="pl-2">: {taxon?.parvorder}</td>
-                  </tr>
-                )
-              }
-              {
-                taxon?.superfamily !== "NA" && (
-                  <tr>
-                    <td class="pr-2">Superfamily</td>
-                    <td class="pl-2">: {taxon?.superfamily}</td>
-                  </tr>
-                )
-              }
-              <tr>
-                <td class="pr-2">Family</td>
-                <td class="pl-2" data-pagefind-filter="family"
-                  >: {taxon?.family}</td
-                >
-              </tr>
-              {
-                taxon?.subfamily !== "NA" && (
-                  <tr>
-                    <td class="pr-2">Subfamily</td>
-                    <td class="pl-2">: {taxon?.subfamily}</td>
-                  </tr>
-                )
-              }
-              {
-                taxon?.tribe !== "NA" && (
-                  <tr>
-                    <td class="pr-2">Tribe</td>
-                    <td class="pl-2">: {taxon?.tribe}</td>
-                  </tr>
-                )
-              }
-              <tr>
-                <td class="pr-2">Genus</td>
-                <td class="pl-2"
-                  >: <span class="italic" data-pagefind-filter="genus"
-                    >{taxon?.genus}</span
-                  ></td
-                >
-              </tr>
-              {
-                taxon?.subgenus !== "NA" && (
-                  <tr>
-                    <td class="pr-2">Subgenus</td>
-                    <td class="pl-2">
-                      : <span class="italic">{taxon?.subgenus}</span>
-                    </td>
-                  </tr>
-                )
-              }
-            </tbody>
-          </table>
+    <div class="mx-auto">
+      <div class="text-center item-center mt-8 md:mt-16 mb-4">
+        <h1
+          class="font-serif text-3xl md:text-5xl italic mb-2"
+          data-pagefind-weight="7"
+        >
+          {species}
+        </h1>
+        <h2 class="text-xl md:text-2xl">
+          {taxon?.authorityParentheses === 1 ? `(${authority})` : authority}
+        </h2>
+        <h2 class={common_name_class}>
+          {taxon?.mainCommonName}
+        </h2>
+      </div>
+      <PageDivider />
+      <div class="grid grid-cols-1 lg:grid-cols-2 justify-between gap-4 mt-4">
+        <div>
+          {
+            milMetadata.length > 0 && (
+              <MilImages metadata={milMetadata} species={species} client:load />
+            )
+          }
+          <SpeciesTaxonomy taxon={taxon} />
+          <SpeciesStatus
+            isDomesticated={taxon?.domestic == 1}
+            isLiving={taxon?.extinct == 0}
+            isExtinct={taxon?.extinct == 1}
+            isInTheWild={taxon?.domestic == 0}
+            isMSW3={taxon?.diffSinceMSW3 == 0}
+          />
+          <TaxonData
+            label="Authority citation"
+            content={taxon.authoritySpeciesCitation}
+          />
+          <TaxonData
+            label="Authority publication link"
+            content={taxon?.authoritySpeciesLink}
+            isUrl
+          />
+          <TaxonData
+            label="Original name as described"
+            content={taxon?.originalNameCombination}
+            isItalic
+          />
+          <TaxonData
+            label="Other common names"
+            content={taxon?.otherCommonNames}
+          />
+          <TaxonData label="Type material" content={taxon?.typeVoucher} />
+          <TaxonData label="Type kind" content={taxon?.typeKind} />
+          <TaxonData
+            label="Type specimen URI"
+            content={taxon?.typeVoucherURIs}
+            isUrl
+          />
+          <TaxonData label="Type locality" content={taxon?.typeLocality} />
+          <TaxonData
+            label="Biogeographic realm"
+            content={taxon?.biogeographicRealm}
+          />
+          <TaxonData
+            label="Country distribution"
+            content={taxon?.countryDistribution}
+          />
+          <TaxonData
+            label="Subregion distribution"
+            content={taxon?.subregionDistribution}
+          />
+          <TaxonData
+            label="Distribution notes"
+            content={taxon?.distributionNotes}
+          />
+          <TaxonData
+            label="Distribution references"
+            content={taxon?.distributionNotesCitation}
+          />
+          <TaxonData label="Taxonomy notes" content={taxon?.taxonomyNotes} />
+          <TaxonData
+            label="Taxonomy notes citation"
+            content={taxon?.taxonomyNotesCitation}
+          />
+          <TaxonData label="IUCN Red List status" content={iucnStatus} />
+          <TaxonData label="Species Permalink" content={mddSpeciesLink} isUrl />
         </div>
-        <SpeciesStatus
-          isDomesticated={taxon?.domestic == 1}
-          isLiving={taxon?.extinct == 0}
-          isExtinct={taxon?.extinct == 1}
-          isInTheWild={taxon?.domestic == 0}
-          isMSW3={taxon?.diffSinceMSW3 == 0}
-        />
-        <TaxonData
-          label="Authority citation"
-          content={taxon.authoritySpeciesCitation}
-        />
-        <TaxonData
-          label="Authority publication link"
-          content={taxon?.authoritySpeciesLink}
-          isUrl
-        />
-        <TaxonData
-          label="Original name as described"
-          content={taxon?.originalNameCombination}
-          isItalic
-        />
-        <TaxonData
-          label="Other common names"
-          content={taxon?.otherCommonNames}
-        />
-        <TaxonData label="Type material" content={taxon?.typeVoucher} />
-        <TaxonData label="Type kind" content={taxon?.typeKind} />
-        <TaxonData
-          label="Type specimen URI"
-          content={taxon?.typeVoucherURIs}
-          isUrl
-        />
-        <TaxonData label="Type locality" content={taxon?.typeLocality} />
-        <TaxonData
-          label="Biogeographic realm"
-          content={taxon?.biogeographicRealm}
-        />
-        <TaxonData
-          label="Country distribution"
-          content={taxon?.countryDistribution}
-        />
-        <TaxonData
-          label="Subregion distribution"
-          content={taxon?.subregionDistribution}
-        />
-        <TaxonData
-          label="Distribution notes"
-          content={taxon?.distributionNotes}
-        />
-        <TaxonData
-          label="Distribution references"
-          content={taxon?.distributionNotesCitation}
-        />
-        <TaxonData label="Taxonomy notes" content={taxon?.taxonomyNotes} />
-        <TaxonData
-          label="Taxonomy notes citation"
-          content={taxon?.taxonomyNotesCitation}
-        />
-        <TaxonData label="IUCN Red List status" content={iucnStatus} />
-        <TaxonData label="Species Permalink" content={mddSpeciesLink} isUrl />
+        <div>
+          <DistributionMap countries={taxon?.countryDistribution} />
+          <SynonymSection synonyms={synonyms} />
+        </div>
       </div>
-      <div>
-        <DistributionMap countries={taxon?.countryDistribution} />
-        {
-          synonyms.length > 0 && (
-            <SynonymList>
-              {synonyms.map((s) => (
-                <SynonymPage
-                  originalNameCombination={s.originalCombination}
-                  species={s.species}
-                  rootName={s.rootName}
-                  family={s.family}
-                  authoritySpeciesAuthor={s.author}
-                  authoritySpeciesYear={s.year}
-                  authorityParentheses={s.authorityParentheses}
-                  validityStatus={s.validity}
-                  nomenclaturalStatus={s.nomenclatureStatus}
-                  type={s.holotype}
-                  typeKind={s.typeKind}
-                  typeSpecimenLink={s.typeSpecimenLink}
-                  authorityPage={s.authorityPage}
-                  authorityPageLink={s.authorityPageLink}
-                  authorityPublication={s.citationGroup}
-                  nameUsages={s.nameUsages}
-                />
-              ))}
-            </SynonymList>
-          )
-        }
-      </div>
+      <SupportNotice />
     </div>
-    <SupportNotice />
   </MainPage>
 </Page>

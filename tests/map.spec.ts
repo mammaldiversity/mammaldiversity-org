@@ -3,7 +3,7 @@ import {
   splitCountryDistribution,
   countryListToJson,
   jsonToCountryList,
-} from "../src/scripts/species_map";
+} from "../src/libs/species_map";
 
 test("splitCountryDistribution with NA", () => {
   expect(splitCountryDistribution("NA")).toEqual(
@@ -15,9 +15,9 @@ test("splitCountryDistribution with NA", () => {
 });
 
 test("splitCountryDistribution", () => {
-  expect(splitCountryDistribution("Indonesia|USA")).toEqual(
+  expect(splitCountryDistribution("Indonesia|United States")).toEqual(
     expect.objectContaining({
-      known: ["INDONESIA", "USA"],
+      known: ["Indonesia", "United States of America"],
       predicted: [],
     })
   );
@@ -25,21 +25,21 @@ test("splitCountryDistribution", () => {
 
 test("countryListToJson", () => {
   expect(
-    countryListToJson({ known: ["INDONESIA", "USA"], predicted: [] })
-  ).toEqual('{"known":["INDONESIA","USA"],"predicted":[]}');
+    countryListToJson({ known: ["Indonesia", "United States of America"], predicted: [] })
+  ).toEqual('{"known":["Indonesia","United States of America"],"predicted":[]}');
 });
 
 test("jsonToCountryList", () => {
   expect(
-    jsonToCountryList('{"known":["INDONESIA","USA"],"predicted":[]}')
+    jsonToCountryList('{"known":["Indonesia","United States of America"],"predicted":[]}')
   ).toEqual({
-    known: ["INDONESIA", "USA"],
+    known: ["Indonesia", "United States of America"],
     predicted: [],
   });
   expect(
-    jsonToCountryList('{"known":["INDONESIA"],"predicted":["USA"]}')
+    jsonToCountryList('{"known":["Indonesia"],"predicted":["United States of America"]}')
   ).toEqual({
-    known: ["INDONESIA"],
-    predicted: ["USA"],
+    known: ["Indonesia"],
+    predicted: ["United States of America"],
   });
 });
