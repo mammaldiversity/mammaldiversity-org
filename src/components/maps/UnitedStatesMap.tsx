@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 import type { Feature, FeatureCollection } from "geojson";
 import { convertUSTopoToGeoJson } from "../../libs/country_utils";
+import { stateNameToCode } from "../../libs/state_map";
 
-const US_MAP_URL = "/map/united_states.json";
-type ProjectionOption = Plot.PlotOptions["projection"];
+const US_MAP_URL = "/map/states-albers-10m.json";
 
 interface UnitedStatesMapProps {
   stats: Record<string, number>;
@@ -49,82 +49,81 @@ function useContainerWidth(
 
 interface FeatureDatum {
   count: number | undefined;
-  stateAbbr: string | undefined;
+  state: string | undefined;
 }
 
-let cachedUS: FeatureCollection | null = null;
+let cachedUSMap: FeatureCollection | null = null;
 
 export default function UnitedStatesMap({
   stats,
   colors = ["#FFEB00", "#117554"],
-  projection = "albers-usa",
+  projection = "identity",
 }: UnitedStatesMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useContainerWidth(containerRef);
-  const [us, setUS] = useState<FeatureCollection | null>(null);
+  const [usMap, setUSMap] = useState<FeatureCollection | null>(null);
 
   useEffect(() => {
-    if (cachedUS) {
-      setUS(cachedUS);
+    if (cachedUSMap) {
+      setUSMap(cachedUSMap);
       return;
     }
 
     let cancelled = false;
 
-    async function loadUS() {
+    async function loadMap() {
       try {
         const response = await fetch(US_MAP_URL);
         if (!response.ok)
           throw new Error(`Failed to fetch map: ${response.statusText}`);
         const topoData = await response.json();
-        const geoData = convertUSTopoToGeoJson(topoData);
         if (!cancelled) {
-          cachedUS = geoData;
-          setUS(geoData);
+          cachedUSMap = convertUSTopoToGeoJson(topoData);
+          setUSMap(cachedUSMap);
         }
       } catch (err) {
         console.error("Failed to load US map:", err);
       }
     }
 
-    loadUS();
+    loadMap();
 
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const normalizedStats = useMemo(
-    () => new Map(Object.entries(stats).map(([k, v]) => [k.toUpperCase(), v])),
-    [stats],
-  );
-
   const featureCache = useMemo<WeakMap<Feature, FeatureDatum>>(() => {
     const cache = new WeakMap<Feature, FeatureDatum>();
-    if (!us?.features?.length) return cache;
+    if (!usMap?.features?.length) return cache;
 
-    for (const feature of us.features) {
-      const stateAbbr = feature.properties?.STATE as string | undefined;
-      const key = stateAbbr?.toUpperCase();
-      const count = key
-        ? (normalizedStats.get(key) as number | undefined)
+    for (const feature of usMap.features) {
+      const stateName = feature.properties?.name as string | undefined;
+      const stateId = stateName ? stateNameToCode[stateName] : undefined;
+      const count = stateId
+        ? (stats[stateId] as number | undefined)
         : undefined;
-      cache.set(feature, { count, stateAbbr: key });
+      cache.set(feature, { count, state: stateId });
     }
 
     return cache;
-  }, [us, normalizedStats]);
+  }, [usMap, stats]);
 
   useEffect(() => {
-    if (!width || !us?.features?.length || !containerRef.current) return;
+    if (!width || !usMap?.features?.length || !containerRef.current) return;
 
     const isDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
     const plot = Plot.plot({
-      projection: projection as ProjectionOption,
+      projection:
+        typeof projection === "string"
+          ? { type: projection as any, reflectY: false, domain: usMap }
+          : projection,
       width,
       height: width * 0.52,
-      style: { background: "transparent" },
+      margin: 0,
+      marginTop: 16,
+      style: { background: "transparent", overflow: "visible" },
       color: {
         type: "linear",
         range: colors,
@@ -133,15 +132,16 @@ export default function UnitedStatesMap({
         unknown: isDark ? "#374151" : "#d1d5db",
       },
       marks: [
-        Plot.geo(us, {
+        Plot.geo(usMap, {
           fill: (d: Feature) => featureCache.get(d)?.count,
           stroke: "currentColor",
-          strokeWidth: 0.5,
+          strokeWidth: 0.45,
           strokeOpacity: 0.3,
 
           tip: {
             channels: {
-              State: (d: Feature) => d.properties?.NAME ?? "Unknown",
+              State: (d: Feature) =>
+                d.properties?.NAME ?? d.properties?.name ?? "Unknown",
               "Species Count": (d: Feature) =>
                 featureCache.get(d)?.count ?? "No data",
             },
@@ -149,11 +149,6 @@ export default function UnitedStatesMap({
             pointer: "xy",
             fill: isDark ? "#1f2937" : "#ffffff",
             stroke: "currentColor",
-          },
-
-          href: (d: Feature) => {
-            const { stateAbbr } = featureCache.get(d) ?? {};
-            return stateAbbr ? `/country/US/state/${stateAbbr}` : undefined;
           },
         }),
       ],
@@ -164,7 +159,7 @@ export default function UnitedStatesMap({
     container.append(plot);
 
     return () => plot.remove();
-  }, [width, us, colors, projection, featureCache]);
+  }, [width, usMap, colors, projection, featureCache]);
 
   return <div ref={containerRef} className="w-full relative min-h-[300px]" />;
 }

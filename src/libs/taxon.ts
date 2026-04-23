@@ -46,7 +46,7 @@ function isItalicText(text: string): boolean {
 function createSynonymName(
   rootName: string,
   species: string,
-  originalNameCombination?: string
+  originalNameCombination?: string,
 ): string {
   return originalNameCombination
     ? originalNameCombination
@@ -63,9 +63,9 @@ function createSynonymName(
 function createAuthorityCitation(
   authority: string,
   year: number,
-  withParentheses: boolean
+  withParentheses: boolean,
 ): string {
-  let citation = `${authority}, ${year}`;
+  const citation = `${authority}, ${year}`;
   return withParentheses ? `(${citation})` : citation;
 }
 

@@ -10,6 +10,7 @@
  */
 
 import { getCountryData } from "../../db/country_stats";
+import { getUnitedStatesData } from "../../db/united_states";
 
 /**
  * Map of a country identifier to number of living species recorded.
@@ -39,6 +40,24 @@ function buildCountryDiversityStats(): CountryDiversityStats {
 }
 
 /**
+ * Build a map keyed by state abbreviation to total living species count.
+ */
+function buildUnitedStatesDiversityStats(): CountryDiversityStats {
+  const data = getUnitedStatesData();
+  const stateDiversityMap: CountryDiversityStats = {};
+
+  for (const stateCode in data) {
+    const state = data[stateCode];
+    const totalSpecies = state.totalLivingSpecies;
+    if (totalSpecies > 0) {
+      stateDiversityMap[stateCode] = totalSpecies;
+    }
+  }
+
+  return stateDiversityMap;
+}
+
+/**
  * Convenience helper that serializes the ISO code keyed diversity map to JSON.
  * Useful when embedding data as an attribute (e.g. in a custom element) to avoid
  * hydration timing issues.
@@ -62,6 +81,7 @@ function jsonToCountryDiversityMap(jsonString: string): CountryDiversityStats {
 
 export {
   buildCountryDiversityStats,
+  buildUnitedStatesDiversityStats,
   getCountryDiversityJson,
   jsonToCountryDiversityMap,
 };
