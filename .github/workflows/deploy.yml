@@ -40,7 +40,7 @@ jobs:
         working-directory: db/data
         run: |
           curl -L -o MDD.zip https://github.com/mammaldiversity/mammaldiversity.github.io/raw/master/assets/data/MDD.zip
-          mdd zip -i MDD.zip
+          mdd unpack -i MDD.zip
 
       - name: Extract MIL data
         working-directory: db/data
@@ -66,6 +66,7 @@ jobs:
           mil-kit mdd \
             --mil-file "$MIL_DIRNAME/metadata/mil-$MIL_BASE_DATE.xlsx" \
             --mdd-file "$MDD_FILE" \
+            --mil-img-dir "$MIL_DIRNAME/images-540px-webp" \
             --output mil
 
       - name: Copy MIL images to Astro assets

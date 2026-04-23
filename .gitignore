@@ -34,3 +34,4 @@ country_stats.json
 /playwright/.cache/
 mil.json
 mil-images/
+usa_states.json
