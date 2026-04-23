@@ -7,8 +7,8 @@ import preact from "@astrojs/preact";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://www.mammaldiversity.org/",
-  // site: "https://www.mdd.hhandika.com/",
+  // site: "https://www.mammaldiversity.org/",
+  site: "https://www.mdd.hhandika.com/",
   integrations: [
     tailwind(),
     preact(),

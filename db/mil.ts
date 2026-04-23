@@ -1,6 +1,6 @@
 // Parser for parsing the MIL json file
 import type { MilMetadata } from "./mil_model";
-import milRaw from "../db/data/mil.json";
+import milRaw from "./data/mil.json";
 
 const META_PARENT_DIR = "/mil-images";
 

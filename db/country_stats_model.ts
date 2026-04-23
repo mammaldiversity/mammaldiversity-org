@@ -32,4 +32,25 @@ interface CountryRegionCode {
   codeToRegion: Record<string, string>;
 }
 
-export type { CountryData, CountryMDDStats, CountryRegionCode };
+interface UnitedStatesData {
+  stateCode: string;
+  totalOrder: number;
+  totalFamily: number;
+  totalGenus: number;
+  totalLivingSpecies: number;
+  totalExtinctSpecies: number;
+  speciesList: string[];
+}
+
+interface UnitedStatesStats {
+  totalStates: number;
+  stateData: Record<string, UnitedStatesData>;
+}
+
+export type {
+  CountryData,
+  CountryMDDStats,
+  CountryRegionCode,
+  UnitedStatesData,
+  UnitedStatesStats,
+};
