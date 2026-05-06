@@ -22,15 +22,35 @@ function getSpeciesMilImages(mddId: number): MilMetadata[] {
 }
 
 /**
+ * Retrieves MIL (Mammal Images Library) images that do not contain "skeleton" in the description.
+ * The images are sorted by their MIL ID in descending order.
+ * 
+ * @returns An array of MIL metadata that do not contain "skeleton" in the description.
+ */
+function getNonSkeletonMilImage(): MilMetadata[] {
+  return getLandscapeImages().filter((item) => !isContainSkeleton(item.description));
+}
+
+/**
+ * Checks if the description contains the word "skeleton".
+ *
+ * @param description - The image description to check.
+ * @returns True if the description contains "skeleton", false otherwise.
+ */
+function isContainSkeleton(description: string): boolean {
+  const str = description.toLowerCase();
+  return str.includes("skeleton");
+}
+
+/**
  * Retrieves the last ten unique MIL images, excluding those that contain "skeleton" in the description.
  * The images are sorted by their MIL ID in descending order.
  *
  * @returns An array of the ten most recent unique species MIL metadata.
  */
 function getLastTenMilImages(): MilMetadata[] {
-  // sort by milId descending
-  const milMetadata = getLandscapeImages().sort((a, b) => b.milId - a.milId);
-  const last100 = milMetadata.slice(0, 100).filter((item) => !isContainSkeleton(item.description));
+  const milMetadata = getNonSkeletonMilImage().sort((a, b) => b.milId - a.milId);
+  const last100 = milMetadata.slice(0, 100);
 
   const seen = new Set<number>();
   const result: MilMetadata[] = [];
@@ -44,17 +64,6 @@ function getLastTenMilImages(): MilMetadata[] {
   }
 
   return result;
-}
-
-/**
- * Checks if the description contains the word "skeleton".
- *
- * @param description - The image description to check.
- * @returns True if the description contains "skeleton", false otherwise.
- */
-function isContainSkeleton(description: string): boolean {
-  const str = description.toLowerCase();
-  return str.includes("skeleton");
 }
 
 export { getSpeciesMilImages, getLastTenMilImages };
