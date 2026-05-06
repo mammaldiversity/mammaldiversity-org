@@ -1,7 +1,4 @@
-import type {
-  UnitedStatesData,
-  UnitedStatesStats,
-} from "./country_stats_model";
+import type { UnitedStatesData } from "./country_stats_model";
 import unitedStatsRaw from "./data/usa_states.json";
 
 function getUnitedStatesData(): Record<string, UnitedStatesData> {
