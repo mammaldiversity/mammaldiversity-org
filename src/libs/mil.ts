@@ -3,11 +3,7 @@
  * This library provides utility functions for fetching and filtering MIL images and metadata.
  */
 
-import {
-  getLandscapeImages,
-  getMilMetadataByMddId,
-  parseMilJson,
-} from "../../db/mil";
+import { getLandscapeImages, getMilMetadataByMddId } from "../../db/mil";
 import type { MilMetadata } from "../../db/mil_model";
 
 /**
