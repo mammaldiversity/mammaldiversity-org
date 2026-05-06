@@ -4,6 +4,12 @@
  */
 import { feature } from "topojson-client";
 
+/**
+ * Checks if the input is a GeoJSON FeatureCollection.
+ *
+ * @param input - The input to check.
+ * @returns True if the input is a GeoJSON FeatureCollection, false otherwise.
+ */
 export function isFeatureCollection(
   input: any,
 ): input is GeoJSON.FeatureCollection<
@@ -15,6 +21,12 @@ export function isFeatureCollection(
   );
 }
 
+/**
+ * Converts TopoJSON data to GeoJSON FeatureCollection.
+ *
+ * @param topoData - The TopoJSON data to convert.
+ * @returns The converted GeoJSON FeatureCollection.
+ */
 export function convertTopoToGeoJson(topoData: any): GeoJSON.FeatureCollection {
   const result = feature(topoData, topoData.objects.countries_mdd) as unknown;
 
@@ -27,6 +39,12 @@ export function convertTopoToGeoJson(topoData: any): GeoJSON.FeatureCollection {
   return result as GeoJSON.FeatureCollection;
 }
 
+/**
+ * Converts US TopoJSON data to GeoJSON FeatureCollection.
+ *
+ * @param topoData - The US TopoJSON data to convert.
+ * @returns The converted GeoJSON FeatureCollection.
+ */
 export function convertUSTopoToGeoJson(
   topoData: any,
 ): GeoJSON.FeatureCollection {
