@@ -21,21 +21,21 @@ function getSpeciesMilImages(mddId: number): MilMetadata[] {
  * Retrieves MIL (Mammal Images Library) images that do not contain "skeleton" in the description.
  * The images are sorted by their MIL ID in descending order.
  * 
- * @returns An array of MIL metadata that do not contain "skeleton" in the description.
+ * @returns An array of MIL metadata that do not contain "skull" or "skeleton" in the description.
  */
-function getNonSkeletonMilImage(): MilMetadata[] {
-  return getLandscapeImages().filter((item) => !isContainSkeleton(item.description));
+function getNonSkullSkeletonMilImage(): MilMetadata[] {
+  return getLandscapeImages().filter((item) => !isContainSkullSkeleton(item.description));
 }
 
 /**
- * Checks if the description contains the word "skeleton".
+ * Checks if the description contains the word "skull" or "skeleton".
  *
  * @param description - The image description to check.
- * @returns True if the description contains "skeleton", false otherwise.
+ * @returns True if the description contains "skull" or "skeleton", false otherwise.
  */
-function isContainSkeleton(description: string): boolean {
+function isContainSkullSkeleton(description: string): boolean {
   const str = description.toLowerCase();
-  return str.includes("skeleton");
+  return str.includes("skeleton") || str.includes("skull");
 }
 
 /**
@@ -45,7 +45,7 @@ function isContainSkeleton(description: string): boolean {
  * @returns An array of the ten most recent unique species MIL metadata.
  */
 function getLastTenMilImages(): MilMetadata[] {
-  const milMetadata = getNonSkeletonMilImage().sort((a, b) => b.milId - a.milId);
+  const milMetadata = getNonSkullSkeletonMilImage().sort((a, b) => b.milId - a.milId);
   const last100 = milMetadata.slice(0, 100);
 
   const seen = new Set<number>();
