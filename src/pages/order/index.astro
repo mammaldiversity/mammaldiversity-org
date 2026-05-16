@@ -1,4 +1,5 @@
 ---
+import PageDivider from "../../components/PageDivider.astro";
 import TreeTips from "../../components/phylo/TreeTips.astro";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
@@ -13,11 +14,11 @@ const taxonData: Record<string, OrderData> = getHierarchicalTaxonData();
 
 // We filter the taxon order that value contains subclass: Prototheria
 const prototheria = Object.values(taxonData).filter(
-  (item: OrderData) => item.subclass && item.subclass.includes("Prototheria")
+  (item: OrderData) => item.subclass && item.subclass.includes("Prototheria"),
 );
 
 const theria = Object.values(taxonData).filter(
-  (item: OrderData) => item.subclass && item.subclass.includes("Theria")
+  (item: OrderData) => item.subclass && item.subclass.includes("Theria"),
 );
 ---
 
@@ -27,121 +28,41 @@ const theria = Object.values(taxonData).filter(
 >
   <MainPage>
     <PageHeader>
-      <Title slot="title">Mammalian Orders</Title>
+      <Title slot="title" bottomPadding={8}>Mammalian Orders</Title>
       <div slot="description">
-        <p>
-          List of orders in the Mammal Diversity Database (MDD). The ❌ symbol
-          indicates extinct species.
-        </p>
+        <p>List of orders in the Mammal Diversity Database (MDD)</p>
       </div>
     </PageHeader>
-    <div>
-      <h2 class="text-lg font-bold">Subclass: Prototheria</h2>
+    <PageDivider />
+    <div class="mt-4 ml-4">
+      <h2 class="text-lg font-semibold">Subclass: Prototheria</h2>
       {
         prototheria.map((order, idx) => (
           <TreeTips
+            label="Order"
             taxonName={order.order}
             idx={idx}
             length={prototheria.length}
             expanded={true}
-          >
-            {order.family_list.map((family, idx) => (
-              <TreeTips
-                taxonName={family.family}
-                idx={idx}
-                length={order.family_list.length}
-                childCount={family.genera.length}
-                expanded={false}
-              >
-                {family.genera.map((genus, idx) => (
-                  <TreeTips
-                    taxonName={genus.genus}
-                    idx={idx}
-                    length={family.genera.length}
-                    italic={true}
-                    expanded={false}
-                  >
-                    {genus.species.living_species.map((species, idx) => (
-                      <TreeTips
-                        taxonName={genus.genus + " " + species.epithet}
-                        idx={idx}
-                        length={genus.species.living_species.length}
-                        italic={true}
-                        expanded={false}
-                      />
-                    ))}
-                    {genus.species.extinct_species.map((species, idx) => (
-                      <TreeTips
-                        taxonName={genus.genus + " " + species.epithet}
-                        idx={idx}
-                        length={genus.species.extinct_species.length}
-                        italic={true}
-                        expanded={false}
-                      />
-                    ))}
-                  </TreeTips>
-                ))}
-              </TreeTips>
-            ))}
-          </TreeTips>
+            url={"/order/" + order.order.toLowerCase()}
+          />
         ))
       }
-    </div>
-    <div class="mt-4">
-      <h2 class="text-lg font-bold">Subclass: Theria</h2>
-      {
-        theria.map((order, idx) => (
-          <TreeTips
-            taxonName={order.order}
-            idx={idx}
-            length={theria.length}
-            childCount={order.family_list.length}
-            expanded={true}
-          >
-            {order.family_list.map((family, idx) => (
-              <TreeTips
-                taxonName={family.family}
-                idx={idx}
-                length={order.family_list.length}
-                childCount={family.genera.length}
-                expanded={false}
-              >
-                {family.genera.map((genus, idx) => (
-                  <TreeTips
-                    taxonName={genus.genus}
-                    idx={idx}
-                    length={family.genera.length}
-                    childCount={
-                      genus.living_species_count + genus.extinct_species_count
-                    }
-                    italic={true}
-                    expanded={false}
-                  >
-                    {genus.species.living_species.map((species, idx) => (
-                      <TreeTips
-                        taxonName={genus.genus + " " + species.epithet}
-                        idx={idx}
-                        length={genus.species.living_species.length}
-                        italic={true}
-                        expanded={false}
-                      />
-                    ))}
-                    {genus.species.extinct_species.map((species, idx) => (
-                      <TreeTips
-                        taxonName={genus.genus + " " + species.epithet + " ❌"}
-                        idx={idx}
-                        length={genus.species.extinct_species.length}
-                        italic={true}
-                        expanded={false}
-                      />
-                    ))}
-                  </TreeTips>
-                ))}
-              </TreeTips>
-            ))}
-          </TreeTips>
-        ))
-      }
+      <div class="mt-4">
+        <h2 class="text-lg font-semibold">Subclass: Theria</h2>
+        {
+          theria.map((order, idx) => (
+            <TreeTips
+              label="Order"
+              taxonName={order.order}
+              idx={idx}
+              length={theria.length}
+              expanded={true}
+              url={"/order" + order.order.toLowerCase()}
+            />
+          ))
+        }
+      </div>
     </div>
   </MainPage>
 </Page>
