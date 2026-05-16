@@ -69,6 +69,15 @@ const mapClasses = cntl`
           buttonUri="/explore/taxonomy-table"
         />
       </div>
+      <ResponsiveCard
+        title="Tree View"
+        description="Dive into an interactive phylogenetic tree of mammals."
+        imageSrc={phyloImg}
+        imageSrcDark={phyloImgDark}
+        imageAlt="Phylogenetic Tree"
+        buttonLabel="View Tree"
+        buttonUri="/explore/tree"
+      />
       <div class="my-4 text-center">
         <div class={mapClasses}>
           <h2 class="text-3xl font-semibold mb-4">
@@ -139,15 +148,6 @@ const mapClasses = cntl`
       </div>
       <div class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4">
       </div>
-      <ResponsiveCard
-        title="Tree View"
-        description="Dive into an interactive phylogenetic tree of mammals."
-        imageSrc={phyloImg}
-        imageSrcDark={phyloImgDark}
-        imageAlt="Phylogenetic Tree"
-        buttonLabel="View Tree"
-        buttonUri="/explore/tree"
-      />
     </div>
   </MainPage>
 </Page>
