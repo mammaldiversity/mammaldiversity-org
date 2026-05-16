@@ -1,5 +1,5 @@
 // Parser for parsing the MDD json file
-import type { MddData, SpeciesData, Metadata, Synonym, Taxonomy, Phylo } from "./mdd_model";
+import type { MddData, SpeciesData, Metadata, Synonym, Phylo } from "./mdd_model";
 import mddRaw from "../db/data/mdd.json";
 
 function parseMDDJson(): MddData {
