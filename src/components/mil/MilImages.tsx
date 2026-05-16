@@ -24,7 +24,7 @@ export default function MilImages({
   };
 
   return (
-    <div className="mil-images bg-gradient-to-r from-spectra-100 to-spicy-mix-100 dark:from-spectra-900 dark:to-spicy-mix-900 rounded-xl pb-2 mt-2">
+    <div className="mil-images bg-gradient-to-r from-spectra-50 to-spicy-mix-50 dark:from-spectra-950 dark:to-spicy-mix-950 rounded-xl pb-2 mt-2">
       {!image ? (
         <p className="text-gray-500 p-4">No images available</p>
       ) : (
