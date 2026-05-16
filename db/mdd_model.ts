@@ -53,7 +53,8 @@ interface Taxonomy {
   diffSinceMSW3: number;
 }
 
-interface TaxonomyColumns {
+interface Phylo {
+  id: number;
   subclass: string;
   infraclass: string;
   magnorder: string;
@@ -150,4 +151,4 @@ interface SynonymName {
   citation: string;
 }
 
-export type { Taxonomy, Synonym, MddData, SpeciesData, SynonymName, Metadata, TaxonomyColumns };
+export type { Taxonomy, Synonym, MddData, SpeciesData, SynonymName, Metadata, Phylo };

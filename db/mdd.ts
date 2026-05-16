@@ -1,5 +1,5 @@
 // Parser for parsing the MDD json file
-import type { MddData, SpeciesData, Metadata, Synonym, Taxonomy, TaxonomyColumns } from "./mdd_model";
+import type { MddData, SpeciesData, Metadata, Synonym, Taxonomy, Phylo } from "./mdd_model";
 import mddRaw from "../db/data/mdd.json";
 
 function parseMDDJson(): MddData {
@@ -45,15 +45,16 @@ function getTaxonomyData(data: SpeciesData[], speciesId: number): SpeciesData {
  * - family
  * - subfamily
  * - tribe
- * - genus
+ * * - genus
  * - subgenus
  * - specificEpithet
  */
-function getMddTaxonomyColumns(): TaxonomyColumns[] {
+function getMddTaxonomyColumns(): Phylo[] {
   const taxonomy = getSpeciesData();
   const taxonomyColumns = taxonomy.map((species) => species.speciesData);
   const columns = taxonomyColumns.map((taxonomy) => {
     return {
+      id: taxonomy.id,
       subclass: taxonomy.subclass,
       infraclass: taxonomy.infraclass,
       magnorder: taxonomy.magnorder,

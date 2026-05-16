@@ -22,25 +22,7 @@
  */
 
 import { getMddTaxonomyColumns } from "../../db/mdd";
-
-interface Phylo {
-    id: number;
-    subclass: string;
-    infraclass: string;
-    magnorder: string;
-    superorder: string;
-    taxonOrder: string;
-    suborder: string;
-    infraorder: string;
-    parvorder: string;
-    superfamily: string;
-    family: string;
-    subfamily: string;
-    tribe: string;
-    genus: string;
-    subgenus: string;
-    specificEpithet: string;
-}
+import type { Phylo } from "../../db/mdd_model";
 
 export interface PhyloTree {
     root: PhyloNode;
@@ -49,6 +31,7 @@ export interface PhyloTree {
 export interface PhyloNode {
     rank: string;
     name: string;
+    mddId?: number;
     children: PhyloNode[];
 }
 
@@ -107,6 +90,9 @@ export function buildPhylogeneticTree(filterRanks?: string[]): PhyloTree {
                         name: taxonName,
                         children: [],
                     };
+                    if (rank === "species") {
+                        childNode.mddId = taxon.id;
+                    }
                     currentNode.children.push(childNode);
                 }
                 currentNode = childNode;
