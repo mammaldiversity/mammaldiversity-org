@@ -7,6 +7,7 @@ import Page from "../../layouts/Page.astro";
 import cntl from "cntl";
 import { buildPhylogeneticTree } from "../../libs/phylogeny";
 import RecursiveTreeTips from "../../components/phylo/RecursiveTreeTips.astro";
+import PhyloContainer from "../../layouts/PhyloContainer.astro";
 
 const headerClasses = cntl`
   text-center
@@ -40,13 +41,15 @@ const { root } = buildPhylogeneticTree({
       <Title bottomPadding={8}>{taxonFamily}</Title>
       <PageDivider />
     </div>
-    {
-      root.children.map((child, i) => (
-        <>
-          <h2 class="mt-8 mb-2 font-bold">{child.name}</h2>
-          <RecursiveTreeTips nodes={child.children} />
-        </>
-      ))
-    }
+    <PhyloContainer>
+      {
+        root.children.map((child, i) => (
+          <>
+            <h2 class="mb-2 font-bold text-xl">{child.name}</h2>
+            <RecursiveTreeTips nodes={child.children} />
+          </>
+        ))
+      }
+    </PhyloContainer>
   </MainPage>
 </Page>

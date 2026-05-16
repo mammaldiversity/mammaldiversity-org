@@ -5,6 +5,7 @@ import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import Page from "../../layouts/Page.astro";
 import PageHeader from "../../layouts/PageHeader.astro";
+import PhyloContainer from "../../layouts/PhyloContainer.astro";
 import {
   getHierarchicalTaxonData,
   type OrderData,
@@ -34,7 +35,7 @@ const theria = Object.values(taxonData).filter(
       </div>
     </PageHeader>
     <PageDivider />
-    <div class="mt-4 ml-4">
+    <PhyloContainer>
       <h2 class="text-lg font-semibold">Subclass: Prototheria</h2>
       {
         prototheria.map((order, idx) => (
@@ -63,6 +64,6 @@ const theria = Object.values(taxonData).filter(
           ))
         }
       </div>
-    </div>
+    </PhyloContainer>
   </MainPage>
 </Page>
