@@ -116,7 +116,7 @@ const buttonDivClasses = cntl`
     <HorizontalLines />
     <div id="taxon-label" class={itemClasses}>
       {
-        childCount && (
+        childCount !== undefined && childCount > 0 && (
           <div class={buttonDivClasses}>
             <button
               id={`toggle-${idx}`}

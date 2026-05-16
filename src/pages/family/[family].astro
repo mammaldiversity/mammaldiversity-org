@@ -5,6 +5,8 @@ import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import Page from "../../layouts/Page.astro";
 import cntl from "cntl";
+import { buildPhylogeneticTree } from "../../libs/phylogeny";
+import RecursiveTreeTips from "../../components/phylo/RecursiveTreeTips.astro";
 
 const headerClasses = cntl`
   text-center
@@ -24,6 +26,11 @@ export const getStaticPaths = async () => {
 };
 
 const { taxonFamily } = Astro.props;
+
+const { root } = buildPhylogeneticTree({
+  filterByRank: "family",
+  filterByName: taxonFamily,
+});
 ---
 
 <Page title={`${taxonFamily} Family`} isIndexed={false}>
@@ -33,5 +40,13 @@ const { taxonFamily } = Astro.props;
       <Title bottomPadding={8}>{taxonFamily}</Title>
       <PageDivider />
     </div>
+    {
+      root.children.map((child, i) => (
+        <>
+          <h2 class="mt-8 mb-2 font-bold">{child.name}</h2>
+          <RecursiveTreeTips nodes={child.children} />
+        </>
+      ))
+    }
   </MainPage>
 </Page>

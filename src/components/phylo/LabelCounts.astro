@@ -7,7 +7,7 @@ const { childCount } = Astro.props as Props;
 ---
 
 {
-  childCount && (
+  childCount !== undefined && childCount > 0 && (
     <p
       class="text-md text-spicy-mix-700 dark:text-spicy-mix-400"
       aria-hidden="true"

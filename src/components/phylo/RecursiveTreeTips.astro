@@ -1,0 +1,45 @@
+---
+import TreeTips from "./TreeTips.astro";
+import type { PhyloNode } from "../../libs/phylogeny";
+import { generateSpeciesLink } from "../../libs/permalink";
+
+interface Props {
+  nodes: PhyloNode[];
+}
+
+const { nodes } = Astro.props;
+
+function getUrl(node: PhyloNode) {
+  if (node.rank === "order") return `/order/${node.name.toLowerCase()}`;
+  if (node.rank === "family") return `/family/${node.name.toLowerCase()}`;
+  if (node.rank === "species" && node.mddId)
+    return generateSpeciesLink(node.mddId);
+  return undefined;
+}
+
+function getLabel(node: PhyloNode) {
+  if (node.rank === "species") return "Species";
+  return node.rank.charAt(0).toUpperCase() + node.rank.slice(1);
+}
+---
+
+{
+  nodes.map((node, i) => (
+    <TreeTips
+      label={getLabel(node)}
+      taxonName={node.name}
+      idx={i}
+      length={nodes.length}
+      childCount={node.children.length > 0 ? node.children.length : undefined}
+      expanded={node.rank === "family" || node.rank === "order"}
+      url={getUrl(node)}
+      italic={
+        node.rank === "species" ||
+        node.rank === "genus" ||
+        node.rank === "subgenus"
+      }
+    >
+      {node.children.length > 0 ? <Astro.self nodes={node.children} /> : null}
+    </TreeTips>
+  ))
+}

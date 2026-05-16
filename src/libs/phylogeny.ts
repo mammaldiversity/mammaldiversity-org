@@ -35,8 +35,19 @@ export interface PhyloNode {
     children: PhyloNode[];
 }
 
-export function buildPhylogeneticTree(filterRanks?: string[]): PhyloTree {
-    const taxa = getMddTaxonomyColumns();
+export interface TreeOptions {
+    filterByRank?: string;
+    filterByName?: string;
+    maxDepth?: number;
+}
+
+export function buildPhylogeneticTree(options?: TreeOptions | string[]): PhyloTree {
+    let opts: TreeOptions = {};
+    if (options && !Array.isArray(options)) {
+        opts = options;
+    }
+
+    let taxa = getMddTaxonomyColumns();
     const tree: PhyloTree = {
         root: {
             rank: "root",
@@ -63,31 +74,51 @@ export function buildPhylogeneticTree(filterRanks?: string[]): PhyloTree {
         "specificEpithet",
     ];
 
-    const lowerFilterRanks = filterRanks?.map((r) => r.toLowerCase());
-
-    const activeRanks = rankKeys
+    let activeRanks = rankKeys
         .map((key) => {
             let rank = key.toLowerCase();
             if (key === "taxonOrder") rank = "order";
             if (key === "specificEpithet") rank = "species";
             return { key, rank };
-        })
-        .filter((r) => !lowerFilterRanks || lowerFilterRanks.includes(r.rank));
+        });
+
+    if (opts.filterByRank && opts.filterByName) {
+        const filterRankObj = activeRanks.find(r => r.rank === opts.filterByRank);
+        if (filterRankObj) {
+            const lowerTarget = opts.filterByName.toLowerCase();
+            taxa = taxa.filter(taxon => {
+                const val = taxon[filterRankObj.key as keyof typeof taxon];
+                return typeof val === "string" && val.toLowerCase() === lowerTarget;
+            });
+
+            const startIndex = activeRanks.findIndex(r => r.rank === opts.filterByRank);
+            if (startIndex !== -1) {
+                activeRanks = activeRanks.slice(startIndex);
+            }
+        }
+    }
 
     taxa.forEach((taxon) => {
         let currentNode = tree.root;
+        let depth = 0;
 
         activeRanks.forEach(({ key, rank }) => {
+            if (opts.maxDepth !== undefined && depth > opts.maxDepth) {
+                return;
+            }
+
             const taxonName = taxon[key as keyof typeof taxon];
             if (typeof taxonName === "string" && taxonName.trim() !== "" && taxonName !== "NA") {
+                const nodeName = rank === "species" ? `${taxon.genus} ${taxonName}` : taxonName;
+
                 let childNode = currentNode.children.find(
-                    (child) => child.name === taxonName && child.rank === rank
+                    (child) => child.name === nodeName && child.rank === rank
                 );
 
                 if (!childNode) {
                     childNode = {
                         rank,
-                        name: taxonName,
+                        name: nodeName,
                         children: [],
                     };
                     if (rank === "species") {
@@ -96,6 +127,7 @@ export function buildPhylogeneticTree(filterRanks?: string[]): PhyloTree {
                     currentNode.children.push(childNode);
                 }
                 currentNode = childNode;
+                depth++;
             }
         });
     });
