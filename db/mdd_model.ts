@@ -53,6 +53,24 @@ interface Taxonomy {
   diffSinceMSW3: number;
 }
 
+interface TaxonomyColumns {
+  subclass: string;
+  infraclass: string;
+  magnorder: string;
+  superorder: string;
+  taxonOrder: string;
+  suborder: string;
+  infraorder: string;
+  parvorder: string;
+  superfamily: string;
+  family: string;
+  subfamily: string;
+  tribe: string;
+  genus: string;
+  subgenus: string;
+  specificEpithet: string;
+}
+
 interface Synonym {
   synId: number;
   hespId: number;
@@ -132,4 +150,4 @@ interface SynonymName {
   citation: string;
 }
 
-export type { Taxonomy, Synonym, MddData, SpeciesData, SynonymName, Metadata };
+export type { Taxonomy, Synonym, MddData, SpeciesData, SynonymName, Metadata, TaxonomyColumns };
