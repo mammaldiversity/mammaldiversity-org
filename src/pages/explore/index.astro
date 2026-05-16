@@ -69,20 +69,23 @@ const mapClasses = cntl`
           buttonUri="/explore/taxonomy-table"
         />
       </div>
-      <ResponsiveCard
-        title="Tree View"
-        description="Dive into an interactive phylogenetic tree of mammals."
-        imageSrc={phyloImg}
-        imageSrcDark={phyloImgDark}
-        imageAlt="Phylogenetic Tree"
-        buttonLabel="View Tree"
-        buttonUri="/explore/tree"
-      />
+      <div class="mt-4">
+        <ResponsiveCard
+          title="Tree View"
+          description="Dive into an interactive phylogenetic tree of mammals."
+          imageSrc={phyloImg}
+          imageSrcDark={phyloImgDark}
+          imageAlt="Phylogenetic Tree"
+          buttonLabel="View Tree"
+          buttonUri="/explore/tree"
+        />
+      </div>
+      <h2 class="text-4xl font-semibold mt-12 mb-8 text-center">
+        Mammal Diversity Statistics
+      </h2>
       <div class="my-4 text-center">
         <div class={mapClasses}>
-          <h2 class="text-3xl font-semibold mb-4">
-            Mammal Diversity by Country and Region
-          </h2>
+          <h2 class="text-2xl font-semibold mb-4">By Country and Region</h2>
           <p class="text-sm mb-2 max-w-4xl mx-auto">Tips:</p>
           <ul class="list-disc list-inside text-sm mb-4 max-w-4xl mx-auto">
             <li>Hover or tap a country to see its name and species count.</li>
@@ -118,9 +121,7 @@ const mapClasses = cntl`
       </div>
       <div class="my-4 text-center">
         <div class={mapClasses}>
-          <h2 class="text-3xl font-semibold mb-4">
-            Mammal Diversity in the United States
-          </h2>
+          <h2 class="text-2xl font-semibold mb-4">In the United States</h2>
           <div id="data-source" class="text-xs mb-4 max-w-2xl mx-auto">
             Map source:{" "}
             <Link
@@ -141,12 +142,11 @@ const mapClasses = cntl`
               openInNewTab={true}
             /><span class="inline">.</span>
           </div>
-          <div class="mb-4 mx-auto">
+          <div class="mb-8 mx-auto">
             <UnitedStatesMap client:load stats={unitedStatesStats} />
           </div>
+          <ActionButton label="Explore United States data" uri="/country/US" />
         </div>
-      </div>
-      <div class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center gap-4">
       </div>
     </div>
   </MainPage>
