@@ -14,10 +14,18 @@ const INITIAL_COUNT = 10;
 const initialSynonyms = synonyms.slice(0, INITIAL_COUNT);
 const remainingSynonyms = synonyms.slice(INITIAL_COUNT);
 
+const PanelClasses = cntl`
+  sticky 
+  top-0 
+  bg-spectra-50 
+  dark:bg-spectra-950 
+  rounded-xl 
+  py-2
+`;
 
 const containerClasses = cntl`
-  bg-spectra-100 
-  dark:bg-spectra-900 
+  bg-spectra-50 
+  dark:bg-spectra-950 
   my-4
   max-h-[calc(100svh-60px)] 
   rounded-xl 
@@ -32,7 +40,7 @@ const captionTextClasses = cntl`
   mx-4
 `;
 ---
-<div class="sticky top-0 bg-spectra-100 dark:bg-spectra-900 rounded-xl py-2">
+<div class={PanelClasses}>
 {
   synonyms.length > 0 && (
 <div class={containerClasses}>
