@@ -1,9 +1,19 @@
 ---
 import { getFamily } from "../../../db/mdd";
+import PageDivider from "../../components/PageDivider.astro";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
 import Page from "../../layouts/Page.astro";
-import PageHeader from "../../layouts/PageHeader.astro";
+import cntl from "cntl";
+
+const headerClasses = cntl`
+  text-center
+  text-xl 
+  md:text-2xl 
+  text-spectra-800 
+  dark:text-spectra-200 
+  mb-2
+`;
 
 export const getStaticPaths = async () => {
   const data = getFamily();
@@ -18,8 +28,10 @@ const { taxonFamily } = Astro.props;
 
 <Page title={`${taxonFamily} Family`} isIndexed={false}>
   <MainPage isIndexed={false}>
-    <PageHeader>
-      <Title slot="title">{taxonFamily}</Title>
-    </PageHeader>
+    <div class="mt-8 md:mt-16">
+      <p class={headerClasses}>Family</p>
+      <Title bottomPadding={8}>{taxonFamily}</Title>
+      <PageDivider />
+    </div>
   </MainPage>
 </Page>
