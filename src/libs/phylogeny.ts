@@ -95,6 +95,13 @@ export function buildPhylogeneticTree(options?: TreeOptions | string[]): PhyloTr
             if (startIndex !== -1) {
                 activeRanks = activeRanks.slice(startIndex);
             }
+
+            if (opts.filterByRank === "order") {
+                const familyIndex = activeRanks.findIndex(r => r.rank === "family");
+                if (familyIndex !== -1) {
+                    activeRanks = activeRanks.slice(0, familyIndex + 1);
+                }
+            }
         }
     }
 
