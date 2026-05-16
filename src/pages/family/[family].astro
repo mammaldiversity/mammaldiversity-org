@@ -1,0 +1,25 @@
+---
+import { getFamily } from "../../../db/mdd";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
+
+export const getStaticPaths = async () => {
+  const data = getFamily();
+  return data.map((taxonFamily: string) => ({
+    params: { family: taxonFamily.toLowerCase() },
+    props: { taxonFamily },
+  }));
+};
+
+const { taxonFamily } = Astro.props;
+---
+
+<Page title={`${taxonFamily} Family`} isIndexed={false}>
+  <MainPage isIndexed={false}>
+    <PageHeader>
+      <Title slot="title">{taxonFamily}</Title>
+    </PageHeader>
+  </MainPage>
+</Page>

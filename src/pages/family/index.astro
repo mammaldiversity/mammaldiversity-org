@@ -1,0 +1,22 @@
+---
+import { getFamily } from "../../../db/mdd";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+
+const families = getFamily();
+---
+
+<Page title="Mammal Diversity Database - Family" isIndexed={false}>
+  <MainPage isIndexed={false}>
+    <h1>Family</h1>
+    <ul>
+      {
+        families.map((family: string) => (
+          <li>
+            <a href={`/family/${family}`}>{family}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </MainPage>
+</Page>

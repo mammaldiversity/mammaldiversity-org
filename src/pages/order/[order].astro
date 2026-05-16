@@ -1,0 +1,25 @@
+---
+import { getOrder } from "../../../db/mdd";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
+
+export const getStaticPaths = async () => {
+  const data = getOrder();
+  return data.map((taxonOrder: string) => ({
+    params: { order: taxonOrder.toLowerCase() },
+    props: { taxonOrder },
+  }));
+};
+
+const { taxonOrder } = Astro.props;
+---
+
+<Page title={`${taxonOrder} Order`} isIndexed={false}>
+  <MainPage isIndexed={false}>
+    <PageHeader>
+      <Title slot="title">{taxonOrder}</Title>
+    </PageHeader>
+  </MainPage>
+</Page>

@@ -1,5 +1,5 @@
 // Parser for parsing the MDD json file
-import type { MddData, SpeciesData, Metadata, Synonym } from "./mdd_model";
+import type { MddData, SpeciesData, Metadata, Synonym, Taxonomy } from "./mdd_model";
 import mddRaw from "../db/data/mdd.json";
 
 function parseMDDJson(): MddData {
@@ -36,6 +36,18 @@ function getSynonymOnly(): Synonym[] {
   return synonym;
 }
 
+function getOrder(): string[] {
+  const data = getSpeciesData();
+  const orders = data.map((species) => species.speciesData.taxonOrder);
+  return [...new Set(orders)];
+}
+
+function getFamily(): string[] {
+  const data = getSpeciesData();
+  const families = data.map((species) => species.speciesData.family);
+  return [...new Set(families)];
+}
+
 export {
   getSpeciesData,
   getSynonymOnly,
@@ -44,4 +56,6 @@ export {
   filterSpeciesId,
   getMetadata,
   parseMDDJson,
+  getOrder,
+  getFamily,
 };
