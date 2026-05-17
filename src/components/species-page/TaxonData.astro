@@ -30,37 +30,42 @@ const isHidden =
   textData === "NA" || textData.trim().length === 0 ? "hidden" : "";
 
 const synonymClasses = cntl`
-  text-md
+  text-sm
   mb-2
   ${isHidden}
 `;
 
 const taxonClasses = cntl`
-  text-lg
-  md:text-xl
   mb-4
   ${isHidden}
+`;
+
+const labelClasses = cntl`
+  font-semibold
+  ${isSynonym ? "text-lg" : "text-lg md:text-xl"}
 `;
 ---
 
 <div class={isSynonym ? synonymClasses : taxonClasses}>
-  <h3 class="font-semibold">{label}</h3>
-  {
-    isList ? (
-      <TaxonDataList content={textData} isItalic={isItalic} />
-    ) : isUrl && textData.startsWith("http") ? (
-      // If contain "|", split the content and create multiple links
-      textData.includes("|") ? (
-        textData.split("|").map((link) => <Link url={link} />)
+  <h3 class={labelClasses}>{label}</h3>
+  <div class="text-md">
+    {
+      isList ? (
+        <TaxonDataList content={textData} isItalic={isItalic} />
+      ) : isUrl && textData.startsWith("http") ? (
+        // If contain "|", split the content and create multiple links
+        textData.includes("|") ? (
+          textData.split("|").map((link) => <Link url={link} />)
+        ) : (
+          <Link url={textData} />
+        )
+      ) : textData.includes("http") ? (
+        <MixedLink text={textData} isItalic={isItalic} />
       ) : (
-        <Link url={textData} />
+        <p class={isItalic ? "italic" : ""}>
+          <MddText text={textData} />
+        </p>
       )
-    ) : textData.includes("http") ? (
-      <MixedLink text={textData} isItalic={isItalic} />
-    ) : (
-      <p class={isItalic ? "italic" : ""}>
-        <MddText text={textData} />
-      </p>
-    )
-  }
+    }
+  </div>
 </div>
