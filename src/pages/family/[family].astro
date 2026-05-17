@@ -13,6 +13,7 @@ import { Image } from "astro:assets";
 import { MilAttribution } from "../../components/mil/Attribution";
 import { generateSpeciesLink } from "../../libs/permalink";
 import MilMultiImages from "../../components/mil/MilMultiImages.astro";
+import HigherTaxaContent from "../../layouts/HigherTaxaContent.astro";
 
 const headerClasses = cntl`
   text-center
@@ -59,26 +60,30 @@ const milPortraits = milImages.filter((img) => img.orientation === "portrait");
       <Title bottomPadding={8}>{taxonFamily}</Title>
       <PageDivider />
     </div>
-    {
-      milImages.length > 0 && (
-        <>
-          {milLandscapes.length > 0 && (
-            <MilMultiImages images={milLandscapes} />
-          )}
-          {milPortraits.length > 0 && <MilMultiImages images={milPortraits} />}
-          <MilAttribution client:load />
-        </>
-      )
-    }
-    <PhyloContainer>
+    <HigherTaxaContent>
       {
-        tree.root.children.map((child) => (
+        milImages.length > 0 && (
           <>
-            <h2 class="mb-2 font-bold text-xl">{child.name}</h2>
-            <RecursiveTreeTips nodes={child.children} />
+            {milLandscapes.length > 0 && (
+              <MilMultiImages images={milLandscapes} />
+            )}
+            {milPortraits.length > 0 && (
+              <MilMultiImages images={milPortraits} />
+            )}
+            <MilAttribution client:load />
           </>
-        ))
+        )
       }
-    </PhyloContainer>
+      <PhyloContainer>
+        {
+          tree.root.children.map((child) => (
+            <>
+              <h2 class="mb-2 font-bold text-xl">{child.name}</h2>
+              <RecursiveTreeTips nodes={child.children} />
+            </>
+          ))
+        }
+      </PhyloContainer>
+    </HigherTaxaContent>
   </MainPage>
 </Page>
