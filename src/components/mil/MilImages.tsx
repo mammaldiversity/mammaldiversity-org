@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import type { MilMetadata } from "../../../db/mil_model";
+import { MilAttributionByMddId } from "./Attribution";
 
 export default function MilImages({
   metadata,
@@ -127,24 +128,7 @@ function ImageCaption({ image }: { image: MilMetadata }) {
       </div>
       <p className="mt-2">Distribution :</p>
       <p>{image.distribution ?? "Unknown"}</p>
-      <ImageAttribution milId={image.milId} />
+      <MilAttributionByMddId milId={image.milId} />
     </div>
-  );
-}
-
-function ImageAttribution({ milId }: { milId: number }) {
-  return (
-    <p className="text-xs mt-2">
-      Image courtesy of the{" "}
-      <a
-        href="https://www.mammalsociety.org/image-library"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline hover:text-spectra-600 dark:hover:text-spectra-300"
-      >
-        ASM Mammal Images Library
-      </a>{" "}
-      &middot; MIL ID: {milId}
-    </p>
   );
 }

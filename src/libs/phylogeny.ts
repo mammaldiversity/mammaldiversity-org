@@ -41,6 +41,8 @@ export interface TreeOptions {
     maxDepth?: number;
 }
 
+
+
 export function buildPhylogeneticTree(options?: TreeOptions | string[]): PhyloTree {
     let opts: TreeOptions = {};
     if (options && !Array.isArray(options)) {
@@ -140,4 +142,22 @@ export function buildPhylogeneticTree(options?: TreeOptions | string[]): PhyloTr
     });
 
     return tree;
+}
+
+/*
+* Get species node of the given tree.
+*/
+export function getSpeciesNodes(tree: PhyloTree): PhyloNode[] {
+    const speciesNodes: PhyloNode[] = [];
+    const queue: PhyloNode[] = [tree.root];
+
+    while (queue.length > 0) {
+        const node = queue.shift()!;
+        if (node.rank === "species") {
+            speciesNodes.push(node);
+        }
+        queue.push(...node.children);
+    }
+
+    return speciesNodes;
 }

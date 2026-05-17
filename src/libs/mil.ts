@@ -18,6 +18,15 @@ function getSpeciesMilImages(mddId: number): MilMetadata[] {
 }
 
 /**
+ * Get multiple MIL images from the given MDD IDs.
+ * @param mddIds - Array of MDD IDs.
+ * @returns An array of MIL metadata.
+ */
+function getMilImagesByMddIds(mddIds: number[], maxCount: number): MilMetadata[] {
+  return mddIds.map((mddId) => getMilMetadataByMddId(mddId)).flat().slice(0, maxCount);
+}
+
+/**
  * Retrieves MIL (Mammal Images Library) images that do not contain "skeleton" in the description.
  * The images are sorted by their MIL ID in descending order.
  * 
@@ -62,4 +71,4 @@ function getLastTenMilImages(): MilMetadata[] {
   return result;
 }
 
-export { getSpeciesMilImages, getLastTenMilImages };
+export { getSpeciesMilImages, getLastTenMilImages, getMilImagesByMddIds };

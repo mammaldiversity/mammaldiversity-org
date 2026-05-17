@@ -23,4 +23,5 @@ function generateSpeciesLink(taxonId: number): string {
   return `${MDD_SPECIES_LINK}${taxonId}`;
 }
 
+
 export { generateSpeciesLink, generateSpeciesPermalink };
