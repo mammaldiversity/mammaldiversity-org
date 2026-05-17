@@ -61,13 +61,13 @@ const milPortraits = milImages.filter((img) => img.orientation === "portrait");
     </div>
     {
       milImages.length > 0 && (
-        <div class="ml-4">
+        <>
           {milLandscapes.length > 0 && (
             <MilMultiImages images={milLandscapes} />
           )}
           {milPortraits.length > 0 && <MilMultiImages images={milPortraits} />}
           <MilAttribution client:load />
-        </div>
+        </>
       )
     }
     <PhyloContainer>

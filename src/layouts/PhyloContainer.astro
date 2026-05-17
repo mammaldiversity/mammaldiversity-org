@@ -1,7 +1,12 @@
 ---
+import cntl from "cntl";
 
+const containerClasses = cntl`
+  mt-4
+  overflow-x-auto
+`;
 ---
 
-<div class="mt-4 ml-4">
+<div class={containerClasses}>
   <slot />
 </div>

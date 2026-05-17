@@ -64,13 +64,13 @@ const root = tree.root;
     <PageDivider />
     {
       milImages.length > 0 && (
-        <div class="ml-4">
+        <>
           {milLandscapes.length > 0 && (
             <MilMultiImages images={milLandscapes} />
           )}
           {milPortraits.length > 0 && <MilMultiImages images={milPortraits} />}
           <MilAttribution client:load />
-        </div>
+        </>
       )
     }
     <PhyloContainer>

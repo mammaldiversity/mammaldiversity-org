@@ -28,23 +28,25 @@ function getLabel(node: PhyloNode) {
 }
 ---
 
-{
-  nodes.map((node, i) => (
-    <TreeTips
-      label={getLabel(node)}
-      taxonName={node.name}
-      idx={i}
-      length={nodes.length}
-      childCount={node.children.length > 0 ? node.children.length : undefined}
-      expanded={node.rank === "family" || node.rank === "order"}
-      url={getUrl(node)}
-      italic={
-        node.rank === "species" ||
-        node.rank === "genus" ||
-        node.rank === "subgenus"
-      }
-    >
-      {node.children.length > 0 ? <Astro.self nodes={node.children} /> : null}
-    </TreeTips>
-  ))
-}
+<div class="ml-2">
+  {
+    nodes.map((node, i) => (
+      <TreeTips
+        label={getLabel(node)}
+        taxonName={node.name}
+        idx={i}
+        length={nodes.length}
+        childCount={node.children.length > 0 ? node.children.length : undefined}
+        expanded={node.rank === "family" || node.rank === "order"}
+        url={getUrl(node)}
+        italic={
+          node.rank === "species" ||
+          node.rank === "genus" ||
+          node.rank === "subgenus"
+        }
+      >
+        {node.children.length > 0 ? <Astro.self nodes={node.children} /> : null}
+      </TreeTips>
+    ))
+  }
+</div>
