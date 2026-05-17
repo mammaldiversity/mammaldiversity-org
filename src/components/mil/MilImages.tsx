@@ -121,8 +121,8 @@ function ImageCaption({ image }: { image: MilMetadata }) {
         {image.description && (
           <>
             <span>Description</span>
-            <span> : </span>
-            <span>{image.description}</span>
+            <span>:</span>
+            <span className="pl-1">{image.description}</span>
           </>
         )}
       </div>
