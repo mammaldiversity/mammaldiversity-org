@@ -23,5 +23,12 @@ function generateSpeciesLink(taxonId: number): string {
   return `${MDD_SPECIES_LINK}${taxonId}`;
 }
 
+function generateOrderLink(taxonName: string): string {
+  return `/order/${taxonName}`;
+}
 
-export { generateSpeciesLink, generateSpeciesPermalink };
+function generateFamilyLink(taxonName: string): string {
+  return `/family/${taxonName}`;
+}
+
+export { generateSpeciesLink, generateSpeciesPermalink, generateOrderLink, generateFamilyLink };

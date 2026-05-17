@@ -1,7 +1,11 @@
 ---
 import TreeTips from "./TreeTips.astro";
 import type { PhyloNode } from "../../libs/phylogeny";
-import { generateSpeciesLink } from "../../libs/permalink";
+import {
+  generateSpeciesLink,
+  generateFamilyLink,
+  generateOrderLink,
+} from "../../libs/permalink";
 
 interface Props {
   nodes: PhyloNode[];
@@ -10,8 +14,9 @@ interface Props {
 const { nodes } = Astro.props;
 
 function getUrl(node: PhyloNode) {
-  if (node.rank === "order") return `/order/${node.name.toLowerCase()}`;
-  if (node.rank === "family") return `/family/${node.name.toLowerCase()}`;
+  if (node.rank === "order") return generateOrderLink(node.name.toLowerCase());
+  if (node.rank === "family")
+    return generateFamilyLink(node.name.toLowerCase());
   if (node.rank === "species" && node.mddId)
     return generateSpeciesLink(node.mddId);
   return undefined;
