@@ -18,11 +18,12 @@ const { images } = Astro.props;
           href={generateSpeciesLink(img.mddId)}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={img.description || `Individual of ${img.mddId}`}
         >
           <Image
             src={img.filePath}
-            alt={img.description}
-            title={img.description}
+            alt={img.description || `Individual of ${img.mddId}`}
+            title={img.description || `Individual of ${img.mddId}`}
             width={160}
             height={160}
             class="max-w-[120px] md:max-w-[160px] rounded-sm md:rounded-md"
