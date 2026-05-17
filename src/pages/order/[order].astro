@@ -35,7 +35,6 @@ const { taxonOrder } = Astro.props;
 const tree = buildPhylogeneticTree({
   filterByRank: "order",
   filterByName: taxonOrder,
-  maxDepth: 4,
 });
 
 const speciesData = getSpeciesData();
