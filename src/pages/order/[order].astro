@@ -1,5 +1,5 @@
 ---
-import { getOrder } from "../../../db/mdd";
+import { getOrder, getSpeciesData } from "../../../db/mdd";
 import PageDivider from "../../components/PageDivider.astro";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
@@ -8,6 +8,10 @@ import cntl from "cntl";
 import { buildPhylogeneticTree } from "../../libs/phylogeny";
 import RecursiveTreeTips from "../../components/phylo/RecursiveTreeTips.astro";
 import PhyloContainer from "../../layouts/PhyloContainer.astro";
+import { getMilImagesByMddIds } from "../../libs/mil";
+import { Image } from "astro:assets";
+import { MilAttribution } from "../../components/mil/Attribution";
+import { generateSpeciesLink } from "../../libs/permalink";
 
 const headerClasses = cntl`
   text-center
@@ -28,11 +32,27 @@ export const getStaticPaths = async () => {
 
 const { taxonOrder } = Astro.props;
 
-const { root } = buildPhylogeneticTree({
+const tree = buildPhylogeneticTree({
   filterByRank: "order",
   filterByName: taxonOrder,
   maxDepth: 4,
 });
+
+const speciesData = getSpeciesData();
+const mddIds = speciesData
+  .filter(
+    (s) => s.speciesData.taxonOrder.toLowerCase() === taxonOrder.toLowerCase(),
+  )
+  .map((s) => s.mddId);
+
+const milImages = getMilImagesByMddIds(mddIds, 20);
+
+const milLandscapes = milImages.filter(
+  (img) => img.orientation === "landscape",
+);
+const milPortraits = milImages.filter((img) => img.orientation === "portrait");
+
+const root = tree.root;
 ---
 
 <Page title={`${taxonOrder} Order`} isIndexed={false}>
@@ -42,6 +62,63 @@ const { root } = buildPhylogeneticTree({
       <Title bottomPadding={8}>{taxonOrder}</Title>
     </div>
     <PageDivider />
+    {
+      milImages.length > 0 && (
+        <div class="ml-4">
+          {milImages.length > 0 && (
+            <div class="flex flex-wrap gap-2 my-2">
+              {milLandscapes.map((milImage) => (
+                <div class="flex flex-col items-center">
+                  <a
+                    href={generateSpeciesLink(milImage.mddId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Image
+                      src={milImage.filePath}
+                      alt={milImage.description}
+                      title={milImage.description}
+                      width={120}
+                      height={120}
+                      class="max-w-[120px]"
+                      loading="lazy"
+                      decoding="async"
+                      fetchpriority="low"
+                    />
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+          {milPortraits.length > 0 && (
+            <div class="flex flex-wrap gap-2">
+              {milPortraits.map((milImage) => (
+                <div class="flex flex-col items-center">
+                  <a
+                    href={generateSpeciesLink(milImage.mddId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Image
+                      src={milImage.filePath}
+                      alt={milImage.description}
+                      title={milImage.description}
+                      width={120}
+                      height={120}
+                      class="max-w-[120px]"
+                      loading="lazy"
+                      decoding="async"
+                      fetchpriority="low"
+                    />
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+          <MilAttribution client:load />
+        </div>
+      )
+    }
     <PhyloContainer>
       {
         root.children.map((child, i) => (
