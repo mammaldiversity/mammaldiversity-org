@@ -32,5 +32,6 @@ const linkClasses = cntl`
   class={linkClasses}
   href={url}
   target={openInNewTab ? "_blank" : "_self"}
-  rel="noopener noreferrer">{text}</a
+  rel="noopener noreferrer"
+  aria-label={label ? label : url}>{text}</a
 >

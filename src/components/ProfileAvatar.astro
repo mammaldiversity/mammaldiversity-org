@@ -29,7 +29,15 @@ const iconStyle = cntl`
 <div class="flex items-center space-x-4">
   <div class="avatar">
     <div class="w-24 rounded-full">
-      <Image src={imgSrc} alt={name} width={96} height={96} />
+      <Image
+        src={imgSrc}
+        alt={name}
+        title={name}
+        width={96}
+        height={96}
+        loading="eager"
+        fetchpriority="high"
+      />
     </div>
   </div>
   <div>
@@ -38,7 +46,14 @@ const iconStyle = cntl`
     >
       {
         personalWebsite ? (
-          <a class="underline" href={personalWebsite}>
+          <a
+            class="underline"
+            href={personalWebsite}
+            title="Personal website"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Personal website"
+          >
             {name}
             <LinkIcon style={iconStyle} />
           </a>
@@ -53,7 +68,14 @@ const iconStyle = cntl`
     <p class="text-sm text-spectra-800 dark:text-spectra-100">
       {
         institutionWebsite ? (
-          <a class="underline" href={institutionWebsite}>
+          <a
+            class="underline"
+            href={institutionWebsite}
+            title="Institution website"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Institution website"
+          >
             {institution}
           </a>
         ) : (
