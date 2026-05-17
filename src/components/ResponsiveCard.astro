@@ -46,6 +46,8 @@ const cardTextClasses = cntl`
       alt={imageAlt}
       width={600}
       height={400}
+      loading="eager"
+      fetchpriority="high"
       class="w-full h-auto object-cover block dark:hidden"
     />
     <Image
@@ -53,6 +55,8 @@ const cardTextClasses = cntl`
       alt={imageAlt}
       width={600}
       height={400}
+      loading="eager"
+      fetchpriority="high"
       class="w-full h-auto object-cover hidden dark:block"
     />
   </figure>
