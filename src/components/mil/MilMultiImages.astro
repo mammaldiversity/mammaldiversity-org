@@ -1,0 +1,37 @@
+---
+import { Image } from "astro:assets";
+import type { MilMetadata } from "../../../db/mil_model";
+import { generateSpeciesLink } from "../../libs/permalink";
+
+interface Props {
+  images: MilMetadata[];
+}
+
+const { images } = Astro.props;
+---
+
+<div class="flex flex-wrap gap-2 my-2">
+  {
+    images.map((img) => (
+      <div class="flex flex-col items-center">
+        <a
+          href={generateSpeciesLink(img.mddId)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src={img.filePath}
+            alt={img.description}
+            title={img.description}
+            width={120}
+            height={120}
+            class="max-w-[120px] rounded-sm"
+            loading="lazy"
+            decoding="async"
+            fetchpriority="low"
+          />
+        </a>
+      </div>
+    ))
+  }
+</div>

@@ -12,6 +12,7 @@ import { getMilImagesByMddIds } from "../../libs/mil";
 import { Image } from "astro:assets";
 import { MilAttribution } from "../../components/mil/Attribution";
 import { generateSpeciesLink } from "../../libs/permalink";
+import MilMultiImages from "../../components/mil/MilMultiImages.astro";
 
 const headerClasses = cntl`
   text-center
@@ -64,56 +65,10 @@ const root = tree.root;
     {
       milImages.length > 0 && (
         <div class="ml-4">
-          {milImages.length > 0 && (
-            <div class="flex flex-wrap gap-2 my-2">
-              {milLandscapes.map((milImage) => (
-                <div class="flex flex-col items-center">
-                  <a
-                    href={generateSpeciesLink(milImage.mddId)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Image
-                      src={milImage.filePath}
-                      alt={milImage.description}
-                      title={milImage.description}
-                      width={120}
-                      height={120}
-                      class="max-w-[120px]"
-                      loading="lazy"
-                      decoding="async"
-                      fetchpriority="low"
-                    />
-                  </a>
-                </div>
-              ))}
-            </div>
+          {milLandscapes.length > 0 && (
+            <MilMultiImages images={milLandscapes} />
           )}
-          {milPortraits.length > 0 && (
-            <div class="flex flex-wrap gap-2">
-              {milPortraits.map((milImage) => (
-                <div class="flex flex-col items-center">
-                  <a
-                    href={generateSpeciesLink(milImage.mddId)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Image
-                      src={milImage.filePath}
-                      alt={milImage.description}
-                      title={milImage.description}
-                      width={120}
-                      height={120}
-                      class="max-w-[120px]"
-                      loading="lazy"
-                      decoding="async"
-                      fetchpriority="low"
-                    />
-                  </a>
-                </div>
-              ))}
-            </div>
-          )}
+          {milPortraits.length > 0 && <MilMultiImages images={milPortraits} />}
           <MilAttribution client:load />
         </div>
       )
