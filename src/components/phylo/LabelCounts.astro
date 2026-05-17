@@ -1,17 +1,22 @@
 ---
+import cntl from "cntl";
+
 interface Props {
   childCount?: number; // optional, number of children if this is a parent
 }
 
 const { childCount } = Astro.props as Props;
+
+const textClasses = cntl`
+  text-sm
+  text-spicy-mix-800
+  dark:text-spicy-mix-200
+`;
 ---
 
 {
   childCount !== undefined && childCount > 0 && (
-    <p
-      class="text-md text-spicy-mix-700 dark:text-spicy-mix-400"
-      aria-hidden="true"
-    >
+    <p class={textClasses} aria-hidden="true">
       <span class="mr-2">&middot;</span> {childCount}
     </p>
   )
