@@ -34,18 +34,20 @@ export const getStaticPaths = async () => {
 
 const { taxonFamily } = Astro.props;
 
+const maxImages = 24;
+
 const tree = buildPhylogeneticTree({
   filterByRank: "family",
   filterByName: taxonFamily,
 });
 
 const speciesNodes = getSpeciesNodes(tree);
-const milImages = getMilImagesByMddIds(
-  speciesNodes
-    .map((node) => node.mddId)
-    .filter((id): id is number => id !== undefined),
-  20,
-);
+
+const mddIds = speciesNodes
+  .map((node) => node.mddId)
+  .filter((id): id is number => id !== undefined);
+
+const milImages = getMilImagesByMddIds(mddIds, maxImages);
 
 const milLandscapes = milImages.filter(
   (img) => img.orientation === "landscape",

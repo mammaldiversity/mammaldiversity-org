@@ -39,6 +39,8 @@ const tree = buildPhylogeneticTree({
   filterByName: taxonOrder,
 });
 
+const maxImages = 24;
+
 const speciesData = getSpeciesData();
 const mddIds = speciesData
   .filter(
@@ -46,7 +48,7 @@ const mddIds = speciesData
   )
   .map((s) => s.mddId);
 
-const milImages = getMilImagesByMddIds(mddIds, 20);
+const milImages = getMilImagesByMddIds(mddIds, maxImages);
 
 const milLandscapes = milImages.filter(
   (img) => img.orientation === "landscape",
