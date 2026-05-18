@@ -23,20 +23,17 @@ const theria = Object.values(taxonData).filter(
 );
 ---
 
-<Page
-  title="Tree View"
-  description="A tree view of the mammalian taxonomic hierarchy"
->
-  <MainPage>
+<Page title="Mammal Diversity Database - Family" isIndexed={false}>
+  <MainPage isIndexed={false}>
     <PageHeader>
-      <Title slot="title" bottomPadding={8}>Mammalian Orders</Title>
+      <Title slot="title" bottomPadding={8}>Mammalian Families</Title>
       <div slot="description">
-        <p>List of orders in the Mammal Diversity Database (MDD)</p>
+        <p>List of families in the Mammal Diversity Database (MDD)</p>
       </div>
     </PageHeader>
     <PageDivider />
     <PhyloContainer>
-      <h2 class="text-lg font-semibold">Subclass: Prototheria</h2>
+      <h2 class="text-lg font-bold">Subclass: Prototheria</h2>
       {
         prototheria.map((order, idx) => (
           <TreeTips
@@ -46,11 +43,23 @@ const theria = Object.values(taxonData).filter(
             length={prototheria.length}
             expanded={true}
             url={"/order/" + order.order.toLowerCase()}
-          />
+          >
+            {order.family_list.map((family, idx) => (
+              <TreeTips
+                label="Family"
+                taxonName={family.family}
+                idx={idx}
+                length={order.family_list.length}
+                expanded={false}
+                url={"/family/" + family.family.toLowerCase()}
+              />
+            ))}
+          </TreeTips>
         ))
       }
+
       <div class="mt-4">
-        <h2 class="text-lg font-semibold">Subclass: Theria</h2>
+        <h2 class="text-lg font-bold">Subclass: Theria</h2>
         {
           theria.map((order, idx) => (
             <TreeTips
@@ -58,9 +67,21 @@ const theria = Object.values(taxonData).filter(
               taxonName={order.order}
               idx={idx}
               length={theria.length}
+              childCount={order.family_list.length}
               expanded={true}
-              url={"/order/" + order.order.toLowerCase()}
-            />
+              url={"/order" + order.order.toLowerCase()}
+            >
+              {order.family_list.map((family, idx) => (
+                <TreeTips
+                  label="Family"
+                  taxonName={family.family}
+                  idx={idx}
+                  length={order.family_list.length}
+                  expanded={false}
+                  url={"/family" + family.family.toLowerCase()}
+                />
+              ))}
+            </TreeTips>
           ))
         }
       </div>

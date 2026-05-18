@@ -1,0 +1,91 @@
+---
+import { getFamily } from "../../../db/mdd";
+import PageDivider from "../../components/PageDivider.astro";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import cntl from "cntl";
+import { buildPhylogeneticTree, getSpeciesNodes } from "../../libs/phylogeny";
+import RecursiveTreeTips from "../../components/phylo/RecursiveTreeTips.astro";
+import PhyloContainer from "../../layouts/PhyloContainer.astro";
+import { getMilImagesByMddIds } from "../../libs/mil";
+import { Image } from "astro:assets";
+import { MilAttribution } from "../../components/mil/Attribution";
+import { generateSpeciesLink } from "../../libs/permalink";
+import MilMultiImages from "../../components/mil/MilMultiImages.astro";
+import HigherTaxaContent from "../../layouts/HigherTaxaContent.astro";
+
+const headerClasses = cntl`
+  text-center
+  text-xl 
+  md:text-2xl 
+  text-spectra-800 
+  dark:text-spectra-200 
+  mb-2
+`;
+
+export const getStaticPaths = async () => {
+  const data = getFamily();
+  return data.map((taxonFamily: string) => ({
+    params: { family: taxonFamily.toLowerCase() },
+    props: { taxonFamily },
+  }));
+};
+
+const { taxonFamily } = Astro.props;
+
+const maxImages = 24;
+
+const tree = buildPhylogeneticTree({
+  filterByRank: "family",
+  filterByName: taxonFamily,
+});
+
+const speciesNodes = getSpeciesNodes(tree);
+
+const mddIds = speciesNodes
+  .map((node) => node.mddId)
+  .filter((id): id is number => id !== undefined);
+
+const milImages = getMilImagesByMddIds(mddIds, maxImages);
+
+const milLandscapes = milImages.filter(
+  (img) => img.orientation === "landscape",
+);
+const milPortraits = milImages.filter((img) => img.orientation === "portrait");
+---
+
+<Page title={`${taxonFamily} Family`} isIndexed={false}>
+  <MainPage isIndexed={false}>
+    <div class="mt-8 md:mt-16">
+      <p class={headerClasses}>Family</p>
+      <Title bottomPadding={8}>{taxonFamily}</Title>
+      <PageDivider />
+    </div>
+    <HigherTaxaContent>
+      {
+        milImages.length > 0 && (
+          <>
+            {milLandscapes.length > 0 && (
+              <MilMultiImages images={milLandscapes} />
+            )}
+            {milPortraits.length > 0 && (
+              <MilMultiImages images={milPortraits} />
+            )}
+            <MilAttribution client:load />
+          </>
+        )
+      }
+      <PhyloContainer>
+        {
+          tree.root.children.map((child) => (
+            <>
+              <h2 class="mb-2 font-bold text-xl">{child.name}</h2>
+              <RecursiveTreeTips nodes={child.children} />
+            </>
+          ))
+        }
+      </PhyloContainer>
+    </HigherTaxaContent>
+  </MainPage>
+</Page>

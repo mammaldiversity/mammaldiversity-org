@@ -38,6 +38,15 @@ import { Image } from "astro:assets";
         </a>.
       </p>
       <p class="mb-4">
+        For order and family pages, use the format:
+        <em class="font-semibold"
+          >https://www.mammaldiversity.org/order/[order-name]</em
+        > or
+        <em class="font-semibold"
+          >https://www.mammaldiversity.org/family/[family-name]</em
+        >.
+      </p>
+      <p class="mb-4">
         You can also visit our
         <a href="/explore" class="text-blue-600 hover:underline">Explore</a> page
         or use the
@@ -66,38 +75,47 @@ import { Image } from "astro:assets";
     const hash = window.location.hash;
     const search = window.location.search;
 
-    function extractIdFromParams(params: URLSearchParams) {
+    function extractParams(params: URLSearchParams) {
       if (params.has("id")) {
         const id = params.get("id");
-        if (id && /^\d+$/.test(id)) return id;
+        if (id && /^\d+$/.test(id)) return { type: "taxon", value: id };
       }
       if (params.has("species-id")) {
         const speciesId = params.get("species-id");
-        if (speciesId && /^\d+$/.test(speciesId)) return speciesId;
+        if (speciesId && /^\d+$/.test(speciesId))
+          return { type: "taxon", value: speciesId };
+      }
+      if (params.has("order")) {
+        const order = params.get("order");
+        if (order) return { type: "order", value: order.toLowerCase() };
+      }
+      if (params.has("family")) {
+        const family = params.get("family");
+        if (family) return { type: "family", value: family.toLowerCase() };
       }
       return null;
     }
 
-    function findMddId() {
+    function findRedirect() {
       // Check hash
       if (hash) {
         const hashParams = new URLSearchParams(hash.replace(/^#/, ""));
-        const id = extractIdFromParams(hashParams);
-        if (id) return id;
+        const match = extractParams(hashParams);
+        if (match) return match;
       }
       // Check search params
       if (search) {
         const searchParams = new URLSearchParams(search);
-        const id = extractIdFromParams(searchParams);
-        if (id) return id;
+        const match = extractParams(searchParams);
+        if (match) return match;
       }
       return null;
     }
 
-    const idMatch = findMddId();
+    const redirectMatch = findRedirect();
 
-    if (idMatch) {
-      window.location.replace(`/taxon/${idMatch}`);
+    if (redirectMatch) {
+      window.location.replace(`/${redirectMatch.type}/${redirectMatch.value}`);
     }
   });
 </script>

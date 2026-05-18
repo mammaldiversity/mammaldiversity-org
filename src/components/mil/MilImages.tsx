@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import type { MilMetadata } from "../../../db/mil_model";
+import { MilAttributionByMddId } from "./Attribution";
 
 export default function MilImages({
   metadata,
@@ -24,7 +25,7 @@ export default function MilImages({
   };
 
   return (
-    <div className="mil-images bg-gradient-to-r from-spectra-100 to-spicy-mix-100 dark:from-spectra-900 dark:to-spicy-mix-900 rounded-xl pb-2 mt-2">
+    <div className="mil-images bg-gradient-to-r from-spectra-50 to-spicy-mix-50 dark:from-spectra-950 dark:to-spicy-mix-950 rounded-xl pb-2 mt-2">
       {!image ? (
         <p className="text-gray-500 p-4">No images available</p>
       ) : (
@@ -120,31 +121,23 @@ function ImageCaption({ image }: { image: MilMetadata }) {
         {image.description && (
           <>
             <span>Description</span>
-            <span> : </span>
-            <span>{image.description}</span>
+            <span>:</span>
+            <span className="pl-1">{image.description}</span>
           </>
         )}
       </div>
       <p className="mt-2">Distribution :</p>
       <p>{image.distribution ?? "Unknown"}</p>
-      <ImageAttribution milId={image.milId} />
+      {image.isUncertainIdentification && (
+        <div className="mt-4 text-xs italic">
+          <p>Notes :</p>
+          <p>
+            The species identification is uncertain. This individual may
+            represent a different taxon.
+          </p>
+        </div>
+      )}
+      <MilAttributionByMddId milId={image.milId} />
     </div>
-  );
-}
-
-function ImageAttribution({ milId }: { milId: number }) {
-  return (
-    <p className="text-xs mt-2">
-      Image courtesy of the{" "}
-      <a
-        href="https://www.mammalsociety.org/image-library"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline hover:text-spectra-600 dark:hover:text-spectra-300"
-      >
-        ASM Mammal Images Library
-      </a>{" "}
-      &middot; MIL ID: {milId}
-    </p>
   );
 }

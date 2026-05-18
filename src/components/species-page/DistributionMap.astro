@@ -13,8 +13,8 @@ const emptyDistribution =
 const hasPredictedDistribution = countryList.predicted.length > 0;
 
 const mapContainerClasses = cntl`
-  bg-spectra-100 
-  dark:bg-spectra-900 
+  bg-spectra-50
+  dark:bg-spectra-950 
   rounded-xl 
   p-4 
   my-2
@@ -30,7 +30,7 @@ const titleClasses = cntl`
 const captionTextClasses = cntl`
   text-spectra-800 
   dark:text-spectra-100 
-  text-sm 
+  text-xs 
   mb-4
   ${emptyDistribution ? "hidden" : ""}
 `;

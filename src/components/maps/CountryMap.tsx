@@ -159,6 +159,11 @@ export default function CountryMap({
             const { iso2 } = featureCache.get(d) ?? {};
             return iso2 ? `/country/${iso2}` : undefined;
           },
+          ariaLabel: (d: Feature) => {
+            const countryName =
+              d.properties?.mdd_name ?? d.properties?.NAME ?? "Unknown";
+            return `View species for ${countryName}`;
+          },
         }),
       ],
     });

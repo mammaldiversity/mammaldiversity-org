@@ -1,5 +1,5 @@
 // Parser for parsing the MDD json file
-import type { MddData, SpeciesData, Metadata, Synonym } from "./mdd_model";
+import type { MddData, SpeciesData, Metadata, Synonym, Phylo } from "./mdd_model";
 import mddRaw from "../db/data/mdd.json";
 
 function parseMDDJson(): MddData {
@@ -31,9 +31,66 @@ function getTaxonomyData(data: SpeciesData[], speciesId: number): SpeciesData {
   return taxonomy || ({} as SpeciesData);
 }
 
+/**
+ * Filter these columns from Taxonomy interface:
+ * - subclass
+ * - infraclass
+ * - magnorder
+ * - superorder
+ * - taxonOrder
+ * - suborder
+ * - infraorder
+ * - parvorder
+ * - superfamily
+ * - family
+ * - subfamily
+ * - tribe
+ * * - genus
+ * - subgenus
+ * - specificEpithet
+ */
+function getMddTaxonomyColumns(): Phylo[] {
+  const taxonomy = getSpeciesData();
+  const taxonomyColumns = taxonomy.map((species) => species.speciesData);
+  const columns = taxonomyColumns.map((taxonomy) => {
+    return {
+      id: taxonomy.id,
+      subclass: taxonomy.subclass,
+      infraclass: taxonomy.infraclass,
+      magnorder: taxonomy.magnorder,
+      superorder: taxonomy.superorder,
+      taxonOrder: taxonomy.taxonOrder,
+      suborder: taxonomy.suborder,
+      infraorder: taxonomy.infraorder,
+      parvorder: taxonomy.parvorder,
+      superfamily: taxonomy.superfamily,
+      family: taxonomy.family,
+      subfamily: taxonomy.subfamily,
+      tribe: taxonomy.tribe,
+      genus: taxonomy.genus,
+      subgenus: taxonomy.subgenus,
+      specificEpithet: taxonomy.specificEpithet,
+    };
+  });
+
+  return columns;
+}
+
 function getSynonymOnly(): Synonym[] {
   const synonym = parseMDDJson().synonymOnly;
   return synonym;
+}
+
+function getOrder(): string[] {
+  const data = getSpeciesData();
+  const orders = data.map((species) => species.speciesData.taxonOrder);
+  return [...new Set(orders)];
+}
+
+function getFamily(): string[] {
+  const data = getSpeciesData();
+  const families = data.map((species) => species.speciesData.family);
+  return [...new Set(families)];
 }
 
 export {
@@ -41,7 +98,10 @@ export {
   getSynonymOnly,
   getTaxonomyData,
   getSpeciesDataByIds,
+  getMddTaxonomyColumns,
   filterSpeciesId,
   getMetadata,
   parseMDDJson,
+  getOrder,
+  getFamily,
 };

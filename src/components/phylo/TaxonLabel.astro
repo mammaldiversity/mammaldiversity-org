@@ -13,26 +13,27 @@ const { label, taxonName, url, italic } = Astro.props as Props;
 
 const containerClasses = cntl`
   my-1
+  text-sm
   mr-2
-  ${italic ? "italic" : ""}
+
 `;
 
 const labelClasses = cntl`
   text-xs
-  text-spectra-600
-  dark:text-spectra-400
+  text-spectra-800
+  dark:text-spectra-300
 `;
 
 const textClasses = cntl`
-  text-md
   tracking-wide
+  ${italic ? "italic" : ""}
 `;
 
 const urlClasses = cntl`
   underline
-  text-sm
   hover:text-spectra-700
   dark:hover:text-spectra-200
+  ${italic ? "italic" : ""}
 `;
 ---
 

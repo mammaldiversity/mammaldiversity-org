@@ -1,35 +1,163 @@
 /**
- * Build phylogenetic tree for a given set of taxa.
+ * Build phylogenetic tree from MDD data structure.
+ * 
+ * Include all these ranks:
+ * - subclass: string;
+ * - infraclass: string;
+ * - magnorder: string;
+ * - superorder: string;
+ * - taxonOrder: string;
+ * - suborder: string;
+ * - infraorder: string;
+ * - parvorder: string;
+ * - superfamily: string;
+ * - family: string;
+ * - subfamily: string;
+ * - tribe: string;
+ * - genus: string;
+ * - subgenus: string;
+ * - specificEpithet: string;
+ * 
+ * Ignore rank when it is empty or null.
  */
 
-interface Phylo {
-    id: number;
-    parentId: number | null;
+import { getMddTaxonomyColumns } from "../../db/mdd";
+import type { Phylo } from "../../db/mdd_model";
+
+export interface PhyloTree {
+    root: PhyloNode;
+}
+
+export interface PhyloNode {
+    rank: string;
     name: string;
-    children?: Phylo[];
+    mddId?: number;
+    children: PhyloNode[];
 }
 
-function buildPhylogeneticTree(taxa: Phylo[]): Phylo[] {
-    const taxonMap: Record<number, Phylo> = {};
-    const roots: Phylo[] = [];
+export interface TreeOptions {
+    filterByRank?: string;
+    filterByName?: string;
+    maxDepth?: number;
+}
 
-    // First, create a map of all taxa by their IDs
-    taxa.forEach(taxon => {
-        taxonMap[taxon.id] = { ...taxon, children: [] };
-    });
 
-    // Then, build the tree structure
-    taxa.forEach(taxon => {
-        if (taxon.parentId !== null) {
-            const parent = taxonMap[taxon.parentId];
-            if (parent) {
-                parent.children!.push(taxonMap[taxon.id]);
+
+export function buildPhylogeneticTree(options?: TreeOptions | string[]): PhyloTree {
+    let opts: TreeOptions = {};
+    if (options && !Array.isArray(options)) {
+        opts = options;
+    }
+
+    let taxa = getMddTaxonomyColumns();
+    const tree: PhyloTree = {
+        root: {
+            rank: "root",
+            name: "root",
+            children: [],
+        },
+    };
+
+    const rankKeys: (keyof Omit<Phylo, "id">)[] = [
+        "subclass",
+        "infraclass",
+        "magnorder",
+        "superorder",
+        "taxonOrder",
+        "suborder",
+        "infraorder",
+        "parvorder",
+        "superfamily",
+        "family",
+        "subfamily",
+        "tribe",
+        "genus",
+        "subgenus",
+        "specificEpithet",
+    ];
+
+    let activeRanks = rankKeys
+        .map((key) => {
+            let rank = key.toLowerCase();
+            if (key === "taxonOrder") rank = "order";
+            if (key === "specificEpithet") rank = "species";
+            return { key, rank };
+        });
+
+    if (opts.filterByRank && opts.filterByName) {
+        const filterRankObj = activeRanks.find(r => r.rank === opts.filterByRank);
+        if (filterRankObj) {
+            const lowerTarget = opts.filterByName.toLowerCase();
+            taxa = taxa.filter(taxon => {
+                const val = taxon[filterRankObj.key as keyof typeof taxon];
+                return typeof val === "string" && val.toLowerCase() === lowerTarget;
+            });
+
+            const startIndex = activeRanks.findIndex(r => r.rank === opts.filterByRank);
+            if (startIndex !== -1) {
+                activeRanks = activeRanks.slice(startIndex);
             }
-        } else {
-            roots.push(taxonMap[taxon.id]);
+
+            if (opts.filterByRank === "order") {
+                const familyIndex = activeRanks.findIndex(r => r.rank === "family");
+                if (familyIndex !== -1) {
+                    activeRanks = activeRanks.slice(0, familyIndex + 1);
+                }
+            }
         }
+    }
+
+    taxa.forEach((taxon) => {
+        let currentNode = tree.root;
+        let depth = 0;
+
+        activeRanks.forEach(({ key, rank }) => {
+            if (opts.maxDepth !== undefined && depth > opts.maxDepth) {
+                return;
+            }
+
+            const taxonName = taxon[key as keyof typeof taxon];
+            if (typeof taxonName === "string" && taxonName.trim() !== "" && taxonName !== "NA") {
+                const nodeName = rank === "species" ? `${taxon.genus} ${taxonName}` : taxonName;
+
+                let childNode = currentNode.children.find(
+                    (child) => child.name === nodeName && child.rank === rank
+                );
+
+                if (!childNode) {
+                    childNode = {
+                        rank,
+                        name: nodeName,
+                        children: [],
+                    };
+                    if (rank === "species") {
+                        childNode.mddId = taxon.id;
+                    }
+                    currentNode.children.push(childNode);
+                }
+                currentNode = childNode;
+                depth++;
+            }
+        });
     });
 
-    return roots;
+    return tree;
 }
 
+/*
+* Get species node of the given tree.
+*/
+export function getSpeciesNodes(tree: PhyloTree): PhyloNode[] {
+    const speciesNodes: PhyloNode[] = [];
+    const queue: PhyloNode[] = [tree.root];
+
+    while (queue.length > 0) {
+        const node = queue.shift()!;
+        if (node.rank === "species") {
+            speciesNodes.push(node);
+        }
+        queue.push(...node.children);
+    }
+
+    return speciesNodes;
+}
