@@ -31,4 +31,29 @@ function generateFamilyLink(taxonName: string): string {
   return `/family/${taxonName}`;
 }
 
-export { generateSpeciesLink, generateSpeciesPermalink, generateOrderLink, generateFamilyLink };
+function generateCountryLink(countryCode: string): string {
+  return `/country/${countryCode}`;
+}
+
+function generateCountryPermalink(countryCode: string): string {
+  return `https://mammaldiversity.org/country/${countryCode}`;
+}
+
+function generateStateLink(countryCode: string, stateCode: string): string {
+  return `/country/${countryCode}/${stateCode}`;
+}
+
+function generateStatePermalink(countryCode: string, stateCode: string): string {
+  return `https://mammaldiversity.org/country/${countryCode}/${stateCode}`;
+}
+
+export {
+  generateSpeciesLink,
+  generateSpeciesPermalink,
+  generateOrderLink,
+  generateFamilyLink,
+  generateCountryLink,
+  generateCountryPermalink,
+  generateStateLink,
+  generateStatePermalink,
+};
