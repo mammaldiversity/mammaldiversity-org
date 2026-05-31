@@ -150,6 +150,16 @@ export default function UnitedStatesMap({
             fill: isDark ? "#1f2937" : "#ffffff",
             stroke: "currentColor",
           },
+
+          href: (d: Feature) => {
+            const { state } = featureCache.get(d) ?? {};
+            return state ? `/country/US/${state}` : undefined;
+          },
+          ariaLabel: (d: Feature) => {
+            const stateName =
+              d.properties?.NAME ?? d.properties?.name ?? "Unknown";
+            return `View species for ${stateName}`;
+          },
         }),
       ],
     });
@@ -157,6 +167,20 @@ export default function UnitedStatesMap({
     const container = containerRef.current;
     container.innerHTML = "";
     container.append(plot);
+
+    // Clean up prohibited ARIA attributes on SVG groups (<g>)
+    const svgElement = container.querySelector("svg");
+    if (svgElement) {
+      const ariaGroups = svgElement.querySelectorAll("g[aria-label]");
+      ariaGroups.forEach((el) => {
+        const label = el.getAttribute("aria-label");
+        if (label === "geo" || label === "tip" || label === "graticule" || label === "sphere") {
+          el.removeAttribute("aria-label");
+        } else {
+          el.setAttribute("role", "group");
+        }
+      });
+    }
 
     return () => plot.remove();
   }, [width, usMap, colors, projection, featureCache]);

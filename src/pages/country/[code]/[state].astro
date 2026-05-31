@@ -1,0 +1,73 @@
+---
+// URL: /country/[code]/[state]
+// Example: /country/US/CA
+// [code] is alpha-2 country code
+// [state] is state name
+import cntl from "cntl";
+import { getTaxonDataByMddIds } from "../../../libs/taxon_table";
+import TaxonTable from "../../../components/taxon-table/TaxonTable.astro";
+import type { UnitedStatesData } from "../../../../db/country_stats_model";
+import {
+  getUnitedStatesData,
+  parseStateSpeciesList,
+} from "../../../../db/united_states";
+import Title from "../../../components/Title.astro";
+import MainPage from "../../../layouts/MainPage.astro";
+import Page from "../../../layouts/Page.astro";
+import PageHeader from "../../../layouts/PageHeader.astro";
+import { getStateName } from "../../../libs/state_map";
+
+export const getStaticPaths = async () => {
+  // US only for now
+  const unitedStatesStats: Record<string, UnitedStatesData> =
+    getUnitedStatesData();
+  const states = Object.keys(unitedStatesStats);
+
+  return states.map((state) => ({
+    params: { code: "US", state },
+  }));
+};
+
+const { code, state } = Astro.params;
+
+const unitedStatesStats: Record<string, UnitedStatesData> =
+  getUnitedStatesData();
+
+const stateData: UnitedStatesData = unitedStatesStats[state];
+const stateName = getStateName(state);
+
+const speciesList = parseStateSpeciesList(stateData);
+const speciesIds = speciesList.map(([id, _]) => id);
+const taxonData = getTaxonDataByMddIds(speciesIds);
+
+const subTitleClass = cntl`
+    text-spectra-950 
+    dark:text-spectra-50 
+    text-4xl
+    font-semibold 
+    mb-8
+    mt-16
+    text-center
+`;
+---
+
+<Page title={`${stateName}, ${code} Mammal Diversity Statistics`}>
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">{stateName}, {code}</Title>
+      <div slot="description">
+        <p>
+          The state's mammalian diversity consists of
+          {stateData.totalLivingSpecies} living
+          {
+            stateData.totalExtinctSpecies > 0 && (
+              <>and {stateData.totalExtinctSpecies} extinct</>
+            )
+          } species in {stateData.totalOrder} orders,
+          {stateData.totalFamily} families, and {stateData.totalGenus} genera.
+        </p>
+      </div>
+    </PageHeader>
+    <TaxonTable data={taxonData} />
+  </MainPage>
+</Page>

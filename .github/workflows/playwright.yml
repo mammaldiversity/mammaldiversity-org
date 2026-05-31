@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
         with:
-          node-version: "24"
+          node-version: "24.0"
       - uses: oven-sh/setup-bun@v2
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -64,18 +64,14 @@ jobs:
           mkdir -p ../../public/mil-images
           find "$IMAGES_DIR" -name "*.webp" -exec mv {} ../../public/mil-images/ \;
 
-      - name: Prepare MDD test data
-        working-directory: db/data
-        run: mv test.json mdd.json
-
       - name: Install dependencies
         run: bun install
 
       - name: Install Playwright Browsers
-        run: bun x playwright install --with-deps
+        run: bunx -y playwright install --with-deps
 
       - name: Run Playwright tests
-        run: bun x playwright test
+        run: bunx playwright test
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

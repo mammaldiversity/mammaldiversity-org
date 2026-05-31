@@ -172,6 +172,20 @@ export default function CountryMap({
     container.innerHTML = "";
     container.append(plot);
 
+    // Clean up prohibited ARIA attributes on SVG groups (<g>)
+    const svgElement = container.querySelector("svg");
+    if (svgElement) {
+      const ariaGroups = svgElement.querySelectorAll("g[aria-label]");
+      ariaGroups.forEach((el) => {
+        const label = el.getAttribute("aria-label");
+        if (label === "geo" || label === "tip" || label === "graticule" || label === "sphere") {
+          el.removeAttribute("aria-label");
+        } else {
+          el.setAttribute("role", "group");
+        }
+      });
+    }
+
     return () => plot.remove();
   }, [width, world, colors, projection, featureCache]);
 

@@ -1,0 +1,80 @@
+---
+import cntl from "cntl";
+import { getUnitedStatesData } from "../../../db/united_states";
+import type { UnitedStatesData } from "../../../db/country_stats_model";
+import { getStateName } from "../../libs/state_map";
+
+const unitedStatesStats: Record<string, UnitedStatesData> =
+  getUnitedStatesData();
+
+const states = Object.keys(unitedStatesStats);
+
+const subTitleClass = cntl`
+    text-spectra-950 
+    dark:text-spectra-50 
+    text-3xl
+    font-semibold 
+    mb-4
+    mt-16
+    text-center
+`;
+
+const gridClass = cntl`
+  grid
+  grid-cols-2
+  sm:grid-cols-3
+  md:grid-cols-4
+  lg:grid-cols-5
+  gap-4
+  max-w-6xl
+  mx-auto
+  px-4
+  mb-16
+`;
+
+const buttonClass = cntl`
+  flex
+  items-center
+  justify-center
+  px-4
+  py-3
+  text-center
+  text-md
+  font-medium
+  text-spectra-800
+  dark:text-spectra-200
+  bg-spectra-50
+  dark:bg-spectra-900/50
+  border
+  border-spectra-200
+  dark:border-spectra-800
+  rounded-lg
+  shadow-sm
+  hover:shadow-md
+  hover:bg-spectra-100
+  dark:hover:bg-spectra-800
+  hover:border-spectra-300
+  dark:hover:border-spectra-700
+  transition-all
+  duration-200
+  ease-in-out
+  hover:-translate-y-0.5
+`;
+---
+
+<div>
+  <h2 class={subTitleClass}>Mammal Diversity by State</h2>
+  <p class="text-center mb-8">
+    Click on a state to view its mammal diversity statistics.
+  </p>
+</div>
+
+<div class={gridClass}>
+  {
+    states.map((state) => (
+      <a href={`/country/US/${state}`} class={buttonClass}>
+        {getStateName(state)}
+      </a>
+    ))
+  }
+</div>

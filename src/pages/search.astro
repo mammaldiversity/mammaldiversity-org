@@ -4,10 +4,12 @@ import MainPage from "../layouts/MainPage.astro";
 import Page from "../layouts/Page.astro";
 import Link from "../components/Link.astro";
 import { join } from "path";
-const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
+const pageFindJsPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
+const pageFindCssPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.css");
 ---
 
 <Page title="Search Database">
+  <link slot="head" href={pageFindCssPath} rel="stylesheet" />
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Search Database</Title>
@@ -161,7 +163,7 @@ const pageFindPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.js");
   }
 </style>
 
-<script src={pageFindPath} type="text/javascript" is:inline></script>
+<script src={pageFindJsPath} type="text/javascript" is:inline></script>
 
 <script>
   declare const PagefindUI: any;
