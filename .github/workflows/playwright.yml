@@ -72,10 +72,10 @@ jobs:
         run: bun install
 
       - name: Install Playwright Browsers
-        run: bun x playwright install --with-deps
+        run: bunx playwright install
 
       - name: Run Playwright tests
-        run: bun x playwright test
+        run: bunx playwright test
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
