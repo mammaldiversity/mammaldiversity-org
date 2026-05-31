@@ -72,7 +72,7 @@ jobs:
         run: bun install
 
       - name: Install Playwright Browsers
-        run: bunx playwright install
+        run: npx -y playwright install --with-deps
 
       - name: Run Playwright tests
         run: bunx playwright test
