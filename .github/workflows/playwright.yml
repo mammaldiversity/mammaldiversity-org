@@ -64,10 +64,6 @@ jobs:
           mkdir -p ../../public/mil-images
           find "$IMAGES_DIR" -name "*.webp" -exec mv {} ../../public/mil-images/ \;
 
-      - name: Prepare MDD test data
-        working-directory: db/data
-        run: mv test.json mdd.json
-
       - name: Install dependencies
         run: bun install
 
