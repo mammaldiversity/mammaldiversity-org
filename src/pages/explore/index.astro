@@ -114,7 +114,7 @@ const mapClasses = cntl`
             />
           </div>
           <div class="mb-4 mx-auto">
-            <CountryMap client:load stats={countryStats} />
+            <CountryMap client:visible stats={countryStats} />
           </div>
           <ActionButton label="Explore country data" uri="/country" />
         </div>
@@ -143,7 +143,7 @@ const mapClasses = cntl`
             /><span class="inline">.</span>
           </div>
           <div class="mb-8 mx-auto">
-            <UnitedStatesMap client:load stats={unitedStatesStats} />
+            <UnitedStatesMap client:visible stats={unitedStatesStats} />
           </div>
           <ActionButton label="Explore United States data" uri="/country/US" />
         </div>
