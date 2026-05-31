@@ -150,6 +150,16 @@ export default function UnitedStatesMap({
             fill: isDark ? "#1f2937" : "#ffffff",
             stroke: "currentColor",
           },
+
+          href: (d: Feature) => {
+            const { state } = featureCache.get(d) ?? {};
+            return state ? `/country/US/${state}` : undefined;
+          },
+          ariaLabel: (d: Feature) => {
+            const stateName =
+              d.properties?.NAME ?? d.properties?.name ?? "Unknown";
+            return `View species for ${stateName}`;
+          },
         }),
       ],
     });
