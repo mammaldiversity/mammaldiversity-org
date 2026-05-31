@@ -9,6 +9,7 @@ import {
 } from "../../../db/country_stats";
 import type { CountryData } from "../../../db/country_stats_model";
 import OneLineNotes from "../../components/OneLineNotes.astro";
+import StateList from "../../components/taxon-table/StateList.astro";
 import TaxonTable from "../../components/taxon-table/TaxonTable.astro";
 import Title from "../../components/Title.astro";
 import MainPage from "../../layouts/MainPage.astro";
@@ -60,6 +61,7 @@ const msg =
         </p>
         <OneLineNotes msg={msg} />
       </div>
-    </PageHeader><TaxonTable data={speciesData} /></MainPage
-  >
+    </PageHeader><TaxonTable data={speciesData} />
+    {code === "US" && <StateList />}
+  </MainPage>
 </Page>

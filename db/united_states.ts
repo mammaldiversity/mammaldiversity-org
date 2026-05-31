@@ -1,6 +1,10 @@
 import type { UnitedStatesData } from "./country_stats_model";
 import unitedStatsRaw from "./data/usa_states.json";
 
+/**
+ * Get United States data.
+ * @returns {Record<string, UnitedStatesData>} Object keyed by state code to UnitedStatesData.
+ */
 function getUnitedStatesData(): Record<string, UnitedStatesData> {
   const raw = unitedStatsRaw as any;
   const states = raw.state_data || raw.stateData || {};
@@ -20,16 +24,19 @@ function getUnitedStatesData(): Record<string, UnitedStatesData> {
   return result;
 }
 
-function parseStateSpeciesList(
-  data: UnitedStatesData,
-): Record<number, boolean> {
-  const speciesList: Record<string, boolean> = {};
+/**
+ * Parse state species list from UnitedStatesData.
+ * @param {UnitedStatesData} data - UnitedStatesData object.
+ * @returns a tuple of [speciesId: string, isPredicted: boolean]
+ */
+function parseStateSpeciesList(data: UnitedStatesData): [number, boolean][] {
+  const speciesList: [number, boolean][] = [];
   if (!data.speciesList || data.speciesList.length === 0) {
     return speciesList;
   }
-  data.speciesList.forEach((speciesId) => {
+  data.speciesList.forEach((speciesId: string) => {
     const cleanId = speciesId.replace(/\?$/, "");
-    speciesList[cleanId] = speciesId.endsWith("?");
+    speciesList.push([Number(cleanId), speciesId.endsWith("?")]);
   });
   return speciesList;
 }
