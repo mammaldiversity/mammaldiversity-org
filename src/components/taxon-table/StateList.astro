@@ -3,11 +3,10 @@ import cntl from "cntl";
 import { getUnitedStatesData } from "../../../db/united_states";
 import type { UnitedStatesData } from "../../../db/country_stats_model";
 import { getStateName } from "../../libs/state_map";
+import TableHead from "./TableHead.astro";
 
 const unitedStatesStats: Record<string, UnitedStatesData> =
   getUnitedStatesData();
-
-const states = Object.keys(unitedStatesStats);
 
 const subTitleClass = cntl`
     text-spectra-950 
@@ -19,46 +18,67 @@ const subTitleClass = cntl`
     text-center
 `;
 
-const gridClass = cntl`
-  grid
-  grid-cols-2
-  sm:grid-cols-3
-  md:grid-cols-4
-  lg:grid-cols-5
-  gap-4
-  max-w-6xl
+const containerClasses = cntl`
+  overflow-x-auto
   mx-auto
-  px-4
+  max-h-lvh
+`;
+
+const tableClasses = cntl`
+  table-auto
+  my-4
+  mx-auto
+  border-collapse
+  border-spacing-0
   mb-16
 `;
 
-const buttonClass = cntl`
-  flex
-  items-center
-  justify-center
-  px-4
-  py-3
+const thStateClass = cntl`
+  py-2
+  px-2
+  rounded-tl-xl
+  border-b
+  text-start
+`;
+
+const thLastColClass = cntl`
+  py-2
+  px-2
+  rounded-tr-xl
+  border-b
   text-center
-  text-md
-  font-medium
-  text-spectra-800
-  dark:text-spectra-200
-  bg-spectra-50
-  dark:bg-spectra-900/50
-  border
-  border-spectra-200
-  dark:border-spectra-800
-  rounded-lg
-  shadow-sm
-  hover:shadow-md
-  hover:bg-spectra-100
-  dark:hover:bg-spectra-800
-  hover:border-spectra-300
-  dark:hover:border-spectra-700
-  transition-all
+`;
+
+const theadClasses = cntl`
+  bg-spectra-100 
+  dark:bg-spectra-900
+  sticky 
+  top-0 
+  z-10
+  text-center
+  border-b
+`;
+
+const stateClass = cntl`
+  py-2
+  px-2
+  border-b
+  text-start
+  underline
+  decoration-spectra-500
+  cursor-pointer
+  hover:text-spectra-800
+  dark:hover:text-spectra-200
+  transition-colors
   duration-200
   ease-in-out
-  hover:-translate-y-0.5
+`;
+
+const tdClasses = cntl`
+  py-2
+  px-2
+  border-b
+  text-center
 `;
 ---
 
@@ -69,12 +89,33 @@ const buttonClass = cntl`
   </p>
 </div>
 
-<div class={gridClass}>
-  {
-    states.map((state) => (
-      <a href={`/country/US/${state}`} class={buttonClass}>
-        {getStateName(state)}
-      </a>
-    ))
-  }
+<div class={containerClasses}>
+  <table class={tableClasses} id="state-table">
+    <thead class={theadClasses}>
+      <tr>
+        <th class={thStateClass}>State</th>
+        <th class={tdClasses}>Total Orders</th>
+        <th class={tdClasses}>Total Families</th>
+        <th class={tdClasses}>Total Genera</th>
+        <th class={tdClasses}>Total Living Species</th>
+        <th class={thLastColClass}>Total Extinct Species</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        Object.entries(unitedStatesStats).map(([code, state]) => (
+          <tr>
+            <td class={stateClass}>
+              <a href={`/country/US/${code}`}>{getStateName(code)}</a>
+            </td>
+            <td class={tdClasses}>{state.totalOrder}</td>
+            <td class={tdClasses}>{state.totalFamily}</td>
+            <td class={tdClasses}>{state.totalGenus}</td>
+            <td class={tdClasses}>{state.totalLivingSpecies}</td>
+            <td class={tdClasses}>{state.totalExtinctSpecies}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
 </div>
