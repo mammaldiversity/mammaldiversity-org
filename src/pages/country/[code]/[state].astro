@@ -39,16 +39,6 @@ const stateName = getStateName(state);
 const speciesList = parseStateSpeciesList(stateData);
 const speciesIds = speciesList.map(([id, _]) => id);
 const taxonData = getTaxonDataByMddIds(speciesIds);
-
-const subTitleClass = cntl`
-    text-spectra-950 
-    dark:text-spectra-50 
-    text-4xl
-    font-semibold 
-    mb-8
-    mt-16
-    text-center
-`;
 ---
 
 <Page title={`${stateName}, ${code} Mammal Diversity Statistics`}>
