@@ -2,13 +2,6 @@
 import ActionButton from "./buttons/ActionButton.astro";
 import Link from "./Link.astro";
 
-interface MainActionButtons {
-  searchURI: string;
-  downloadURI: string;
-  previousVersionsURI: string;
-  versionDescription: string;
-}
-
 const { searchURI, downloadURI, previousVersionsURI, versionDescription } =
   Astro.props;
 ---
