@@ -48,7 +48,7 @@ jobs:
 
           # Move prepared output to expected mil/mil.json path
           mkdir -p mil
-          mv mil_mdd.json mil/mil.json
+          mv mil.json mil/mil.json
 
           # Extract images so they can be moved/verified downstream
           tar -xzf "$MIL_FILENAME"
