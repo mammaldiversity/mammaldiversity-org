@@ -1,0 +1,60 @@
+---
+import { Image } from "astro:assets";
+import pixelSearch from "../../assets/images/screenshots/pixelSearch.webp";
+import cntl from "cntl";
+
+const bentoCellClasses = cntl`
+  bg-gradient-to-br
+  dark:from-spectra-900
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
+  rounded-[2rem]
+  p-6
+  md:p-8
+  border
+  dark:border-spectra-800
+  border-spectra-200/60
+  overflow-hidden
+  relative
+  shadow-sm
+  hover:shadow-md
+  transition-all
+  duration-300
+  group
+`;
+---
+
+<div class={`${bentoCellClasses} flex flex-col justify-between`}>
+  <div class="z-10">
+    <div
+      class="w-12 h-12 rounded-2xl bg-white/80 dark:bg-spectra-800 flex items-center justify-center mb-5 shadow-sm border border-spectra-100 dark:border-spectra-700 backdrop-blur-sm"
+    >
+      <svg
+        class="w-6 h-6 text-blue-600 dark:text-blue-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg
+      >
+    </div>
+    <h3 class="text-xl font-semibold mb-2">Advanced Search</h3>
+    <p class="text-sm text-spectra-600 dark:text-spectra-400 mb-8">
+      Quickly search and filter thousands of mammal species, their associated
+      names, and synonyms with our highly optimized local search engine.
+    </p>
+  </div>
+  <div
+    class="mt-auto -mb-16 -mx-4 flex justify-center transform group-hover:-translate-y-2 group-hover:scale-105 transition-all duration-500"
+  >
+    <Image
+      src={pixelSearch}
+      alt="Search Screen"
+      class="w-36 sm:w-44 drop-shadow-[0_15px_30px_rgba(0,0,0,0.2)]"
+    />
+  </div>
+</div>

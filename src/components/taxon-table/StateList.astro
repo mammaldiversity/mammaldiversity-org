@@ -3,7 +3,6 @@ import cntl from "cntl";
 import { getUnitedStatesData } from "../../../db/united_states";
 import type { UnitedStatesData } from "../../../db/country_stats_model";
 import { getStateName } from "../../libs/state_map";
-import TableHead from "./TableHead.astro";
 
 const unitedStatesStats: Record<string, UnitedStatesData> =
   getUnitedStatesData();

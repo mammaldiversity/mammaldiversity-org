@@ -168,7 +168,7 @@ The build process consists of the following steps:
 1. **Checkout Repository**: The workflow begins by checking out the latest version of the repository.
 2. **Setup Environment**: It sets up the necessary environment, including Bun and Rust.
 3. **Install MDD CLI**: A command-line tool, `mdd_api`, is installed using `cargo`. This tool is used to process the raw MDD data.
-4. **Data Extraction**: The latest Mammal Diversity Database data is downloaded as a ZIP file. The `mdd` CLI is then used to extract the data into the `db/data` directory.
+4. **Data Extraction & Ingestion**: The latest Mammal Diversity Database data and Mammal Image Library (MIL) data are processed using `mdd prepare` into standard JSON files in the `db/data` directory.
 5. **Build Site**: The `withastro/action` is used to build the Astro site. This action performs the following sub-steps:
     - Installs dependencies using `bun install`.
     - Runs the `build` script from `package.json`, which executes `astro check && astro build`. This command type-checks the code and generates the static HTML, CSS, and JavaScript files in the `dist/` directory.

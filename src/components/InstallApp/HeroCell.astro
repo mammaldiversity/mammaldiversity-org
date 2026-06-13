@@ -1,0 +1,85 @@
+---
+import { Image } from "astro:assets";
+import iphoneHomeDark from "../../assets/images/screenshots/iphoneHomeDark.webp";
+import GooglePlayBadge from "../../assets/app-stores/GooglePlayBadge.svg";
+import Link from "../Link.astro";
+import cntl from "cntl";
+
+const bentoCellClasses = cntl`
+  bg-gradient-to-br
+  dark:from-spectra-900
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
+  rounded-[2rem]
+  p-6
+  md:p-8
+  border
+  dark:border-spectra-800
+  border-spectra-200/60
+  overflow-hidden
+  relative
+  shadow-sm
+  hover:shadow-md
+  transition-all
+  duration-300
+  group
+`;
+---
+
+<div
+  class={`${bentoCellClasses} md:col-span-2 md:row-span-2 flex flex-col sm:flex-row items-center gap-8 sm:gap-4`}
+>
+  <div class="flex-1 text-left z-10 w-full sm:pr-4 pt-4 sm:pt-0">
+    <div
+      class="inline-flex items-center space-x-2 bg-spectra-200/50 dark:bg-spectra-800/50 rounded-full px-3 py-1 mb-6"
+    >
+      <span class="relative flex h-2 w-2">
+        <span
+          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"
+        ></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"
+        ></span>
+      </span>
+      <span class="text-xs font-medium text-spectra-800 dark:text-spectra-200"
+        >Available Now</span
+      >
+    </div>
+    <h3
+      class="text-3xl md:text-4xl font-serif font-semibold mb-4 leading-tight"
+    >
+      The MDD App
+    </h3>
+    <p
+      class="text-spectra-700 dark:text-spectra-300 mb-8 leading-relaxed text-base md:text-lg"
+    >
+      Access the entire Mammal Diversity Database on the go, anywhere.
+    </p>
+    <div class="flex flex-col gap-4">
+      <a
+        href="https://play.google.com/store/apps/details?id=com.hhandika.mdd"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block transition-transform hover:scale-105 origin-left"
+      >
+        <Image height="50" src={GooglePlayBadge} alt="Get it on Google Play" />
+      </a>
+      <p class="text-sm dark:text-spectra-400 text-spectra-600">
+        Follow <Link
+          url="https://github.com/mammaldiversity/mdd_app/releases/latest"
+          label="installation guidelines"
+          openInNewTab={true}
+        /> to install on other platforms.
+      </p>
+    </div>
+  </div>
+  <div
+    class="flex-1 w-full flex justify-center sm:justify-end relative sm:-mr-8 md:-mr-12 lg:-mr-16 mt-8 sm:mt-0"
+  >
+    <Image
+      src={iphoneHomeDark}
+      alt="MDD App Home Screen"
+      class="w-56 sm:w-64 md:w-72 lg:w-80 drop-shadow-[0_20px_40px_rgba(0,0,0,0.25)] transform group-hover:-translate-y-2 transition-transform duration-500"
+    />
+  </div>
+</div>

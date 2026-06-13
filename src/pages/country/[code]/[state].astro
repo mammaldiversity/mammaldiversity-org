@@ -3,7 +3,6 @@
 // Example: /country/US/CA
 // [code] is alpha-2 country code
 // [state] is state name
-import cntl from "cntl";
 import { getTaxonDataByMddIds } from "../../../libs/taxon_table";
 import TaxonTable from "../../../components/taxon-table/TaxonTable.astro";
 import type { UnitedStatesData } from "../../../../db/country_stats_model";
@@ -39,16 +38,6 @@ const stateName = getStateName(state);
 const speciesList = parseStateSpeciesList(stateData);
 const speciesIds = speciesList.map(([id, _]) => id);
 const taxonData = getTaxonDataByMddIds(speciesIds);
-
-const subTitleClass = cntl`
-    text-spectra-950 
-    dark:text-spectra-50 
-    text-4xl
-    font-semibold 
-    mb-8
-    mt-16
-    text-center
-`;
 ---
 
 <Page title={`${stateName}, ${code} Mammal Diversity Statistics`}>
