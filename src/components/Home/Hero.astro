@@ -21,6 +21,7 @@ const mddDownloadLink =
 const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
 
 const heroClasses = cntl`
+  max-w-[2400px]
   grid
   grid-cols-1
   lg:grid-cols-2
@@ -36,7 +37,6 @@ const heroClasses = cntl`
   dark:from-spectra-900/80
   dark:to-spicy-mix-900/80
   backdrop-blur-sm
-  lg:max-w-7xl
   rounded-[2rem]
   mx-auto
   shadow-sm
@@ -80,8 +80,8 @@ const descriptionClasses = cntl`
     <h1 class={titleClasses}>The Mammal Diversity Database</h1>
     <h2 class={subtitleClasses}>By the American Society of Mammalogists</h2>
     <p class={descriptionClasses}>
-      Track the latest taxonomic changes to living and recently extinct
-      (i.e., since ~1500 CE) species and higher taxa of mammals.
+      Track the latest taxonomic changes to living and recently extinct (i.e.,
+      since ~1500 CE) species and higher taxa of mammals.
     </p>
     <MainActionButtons
       searchURI="./search"
