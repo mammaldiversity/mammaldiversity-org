@@ -1,0 +1,47 @@
+---
+import { Image } from "astro:assets";
+import macVombatus from "../../assets/images/screenshots/macVombatus.webp";
+import cntl from "cntl";
+
+const bentoCellClasses = cntl`
+  bg-gradient-to-br
+  dark:from-spectra-900
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
+  rounded-[2rem]
+  p-6
+  md:p-8
+  border
+  dark:border-spectra-800
+  border-spectra-200/60
+  overflow-hidden
+  relative
+  shadow-sm
+  hover:shadow-md
+  transition-all
+  duration-300
+  group
+`;
+---
+<div class={`${bentoCellClasses} md:col-span-2 flex flex-col sm:flex-row items-center justify-between`}>
+  <div class="flex-1 mb-8 sm:mb-0 sm:pr-8 z-10 w-full">
+    <div class="w-12 h-12 rounded-2xl bg-white/80 dark:bg-spectra-800 flex items-center justify-center mb-5 shadow-sm border border-spectra-100 dark:border-spectra-700 backdrop-blur-sm">
+      <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+    </div>
+    <h3 class="text-xl font-semibold mb-2">Cross-Platform Native</h3>
+    <p class="text-sm text-spectra-600 dark:text-spectra-400 mb-6">
+      Enjoy a native, fast experience on iOS, Android, macOS, Windows, and Linux. Built completely from the ground up.
+    </p>
+    <ul class="flex flex-wrap gap-2">
+      {["iOS", "Android", "macOS", "Windows", "Linux"].map((platform) => (
+        <li class="px-3 py-1.5 text-xs font-semibold bg-white/60 dark:bg-spectra-800/80 rounded-xl text-spectra-700 dark:text-spectra-300 border border-spectra-200 dark:border-spectra-700 shadow-sm">
+          {platform}
+        </li>
+      ))}
+    </ul>
+  </div>
+  <div class="flex-1 w-full flex justify-center sm:justify-end -mb-12 sm:-mb-16 -mr-4 sm:-mr-8 lg:-mr-12 relative transform group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-105 transition-all duration-500 origin-bottom-right">
+    <Image src={macVombatus} alt="Mac App Screen" class="w-64 sm:w-80 md:w-[22rem] lg:w-[26rem] drop-shadow-[0_15px_30px_rgba(0,0,0,0.3)] rounded-tl-xl" />
+  </div>
+</div>

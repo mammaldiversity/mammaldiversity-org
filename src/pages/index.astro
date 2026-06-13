@@ -16,7 +16,7 @@ import {
   getCurrentDate,
 } from "../libs/metadata";
 import MilSlideshow from "../components/mil/MilSlideshow.astro";
-import InstallApp from "../components/InstallApp.astro";
+import InstallApp from "../components/InstallApp/index.astro";
 
 const meta = getMetadata();
 const currentVersion = cleanVersion(meta.version);
