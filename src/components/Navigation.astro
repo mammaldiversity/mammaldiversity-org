@@ -71,11 +71,18 @@ const navItemClasses = cntl`
 `;
 
 const mobileItemClasses = cntl`
-  block
+  flex
+  items-center
+  w-full
   rounded-lg
-  px-3
-  py-2
+  px-4
+  py-4
+  text-lg
+  font-medium
   ${navColorClasses}
+  active:bg-spicy-mix-200
+  dark:active:bg-spicy-mix-700
+  transition-colors
 `;
 
 const navIndicatorColorClasses = cntl`
@@ -140,16 +147,12 @@ const indicatorClasses = cntl`
             <div class="space-y-2 py-6 font-semibold">
               {
                 navItems.map(({ path, label }) => (
-                  <>
-                    <div class="flex items-center space-x-2">
-                      <div
-                        class={`w-2 h-2 rounded-full bg-transparent -mr-2 ml-2 ${currentPath === path || currentPath === `${path}/` ? `${navIndicatorColorClasses}` : ""}`}
-                      />
-                      <a href={path} class={mobileItemClasses}>
-                        {label}
-                      </a>
-                    </div>
-                  </>
+                  <a href={path} class={mobileItemClasses}>
+                    <div
+                      class={`w-2 h-2 rounded-full shrink-0 mr-4 ${currentPath === path || currentPath === `${path}/` ? `${navIndicatorColorClasses}` : "bg-transparent"}`}
+                    />
+                    {label}
+                  </a>
                 ))
               }
             </div>
