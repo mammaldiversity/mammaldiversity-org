@@ -68,69 +68,99 @@ const trHoverClass = cntl`
         <th class={`${thClass} rounded-tl-2xl`}>Taxa</th>
         <th class={thClass}>MSW3 2005</th>
         <th class={thClass}>MDD 2018</th>
-        <th class={`${thClass} rounded-tr-2xl text-blue-600 dark:text-blue-400 font-bold`}>Current</th>
+        <th
+          class={`${thClass} rounded-tr-2xl text-blue-600 dark:text-blue-400 font-bold`}
+          >Current</th
+        >
       </tr>
     </thead>
     <tbody class="divide-y divide-spectra-100 dark:divide-spectra-800/50">
       <tr class="bg-spectra-50/30 dark:bg-spectra-800/10">
-        <td colspan="4" class="py-2 px-6 text-xs font-semibold text-spectra-500 uppercase tracking-widest bg-spectra-50 dark:bg-spectra-900/50">Species</td>
+        <td
+          colspan="4"
+          class="py-2 px-6 text-xs font-semibold text-spectra-500 uppercase tracking-widest bg-spectra-50 dark:bg-spectra-900/50"
+          >Species</td
+        >
       </tr>
       <tr class={trHoverClass}>
         <td class={`${tdClass} font-medium pl-10`}>Total</td>
         <td class={tdClass}>5,416</td>
         <td class={tdClass}>6,495</td>
-        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}>{totalSpecies}</td>
+        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}
+          >{totalSpecies}</td
+        >
       </tr>
       <tr class={trHoverClass}>
         <td class={`${tdClass} font-medium pl-10`}>Recently Extinct</td>
         <td class={tdClass}>75</td>
         <td class={tdClass}>96</td>
-        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}>{recentlyExtinct}</td>
+        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}
+          >{recentlyExtinct}</td
+        >
       </tr>
       <tr class={trHoverClass}>
         <td class={`${tdClass} font-medium pl-10`}>Living</td>
         <td class={tdClass}>5,341</td>
         <td class={tdClass}>6,399</td>
-        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}>{living}</td>
+        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}
+          >{living}</td
+        >
       </tr>
       <tr class={trHoverClass}>
         <td class={`${tdClass} font-medium pl-10`}>Domestic</td>
         <td class={tdClass}>0</td>
         <td class={tdClass}>16</td>
-        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}>{domestic}</td>
+        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}
+          >{domestic}</td
+        >
       </tr>
       <tr class={trHoverClass}>
         <td class={`${tdClass} font-medium pl-10`}>Living Wild</td>
         <td class={tdClass}>5,338</td>
         <td class={tdClass}>6,382</td>
-        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}>{livingWild}</td>
+        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}
+          >{livingWild}</td
+        >
       </tr>
       <tr class="bg-spectra-50/30 dark:bg-spectra-800/10">
-        <td colspan="4" class="py-2 px-6 text-xs font-semibold text-spectra-500 uppercase tracking-widest bg-spectra-50 dark:bg-spectra-900/50">Higher Taxa & Data</td>
+        <td
+          colspan="4"
+          class="py-2 px-6 text-xs font-semibold text-spectra-500 uppercase tracking-widest bg-spectra-50 dark:bg-spectra-900/50"
+          >Higher Taxa & Synonyms</td
+        >
       </tr>
       <tr class={trHoverClass}>
         <td class={`${tdClass} font-medium pl-6`}>Genera</td>
         <td class={tdClass}>1,230</td>
         <td class={tdClass}>1,314</td>
-        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}>{genera}</td>
+        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}
+          >{genera}</td
+        >
       </tr>
       <tr class={trHoverClass}>
         <td class={`${tdClass} font-medium pl-6`}>Families</td>
         <td class={tdClass}>153</td>
         <td class={tdClass}>167</td>
-        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}>{families}</td>
+        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}
+          >{families}</td
+        >
       </tr>
       <tr class={trHoverClass}>
         <td class={`${tdClass} font-medium pl-6`}>Orders</td>
         <td class={tdClass}>29</td>
         <td class={tdClass}>27</td>
-        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}>{orders}</td>
+        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400`}
+          >{orders}</td
+        >
       </tr>
       <tr class={trHoverClass}>
         <td class={`${tdClass} font-medium pl-6 border-none`}>Synonyms</td>
         <td class={`${tdClass} border-none`}>-</td>
         <td class={`${tdClass} border-none`}>-</td>
-        <td class={`${tdClass} font-bold text-blue-600 dark:text-blue-400 border-none`}>{synonyms}</td>
+        <td
+          class={`${tdClass} font-bold text-blue-600 dark:text-blue-400 border-none`}
+          >{synonyms}</td
+        >
       </tr>
     </tbody>
   </table>
