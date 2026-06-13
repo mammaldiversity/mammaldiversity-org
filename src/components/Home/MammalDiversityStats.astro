@@ -1,0 +1,23 @@
+---
+import cntl from "cntl";
+import DiversityStatTable from "../DiversityStatTable.astro";
+
+const sectionTitleClass = cntl`
+  font-serif
+  text-3xl
+  lg:text-4xl
+  font-semibold
+  text-center
+  mt-16
+  mb-10
+  text-spectra-900
+  dark:text-spectra-50
+`;
+---
+
+<div>
+  <h2 class={sectionTitleClass}>Mammal Diversity Statistics</h2>
+  <div class="mb-16">
+    <DiversityStatTable />
+  </div>
+</div>
