@@ -8,8 +8,6 @@ import Journal from "../components/pubs/Journal.astro";
 import Link from "../components/Link.astro";
 import FrontPage from "../layouts/FrontPage.astro";
 import DiversityStatTable from "../components/DiversityStatTable.astro";
-import desktopApp from "../assets/images/screenshots/desktopApp.png";
-import InstallButton from "../components/buttons/InstallButton.astro";
 import { getMetadata } from "../../db/mdd";
 import {
   formatDate,
@@ -18,7 +16,7 @@ import {
   getCurrentDate,
 } from "../libs/metadata";
 import MilSlideshow from "../components/mil/MilSlideshow.astro";
-import { Image } from "astro:assets";
+import InstallApp from "../components/InstallApp.astro";
 
 const meta = getMetadata();
 const currentVersion = cleanVersion(meta.version);
@@ -94,21 +92,6 @@ const secondaryTitleClass = cntl`
   font-semibold
   mt-4
   mb-4
-`;
-
-const highlightedContainerClasses = cntl`
-  py-4
-  px-2
-  text-center
-  my-4
-  max-w-4xl
-  mx-auto
-  bg-gradient-to-r
-  dark:from-spectra-900
-  dark:to-transparent
-  from-spectra-100
-  to-transparent
-  rounded-xl
 `;
 ---
 
@@ -187,42 +170,7 @@ const highlightedContainerClasses = cntl`
         <h2 class={sectionTitleClass}>Mammal Diversity Statistics</h2>
         <DiversityStatTable />
       </div>
-      <div class={highlightedContainerClasses}>
-        <h2 class={sectionTitleClass}>
-          Try the MDD App <span class="text-sm inline-block align-top"
-            >beta</span
-          >
-        </h2>
-        <div
-          class="grid lg:flex grid-cols-1 md:grid-cols-2 justify-center py-2 px-4"
-        >
-          <Image
-            class="mx-auto"
-            height="320"
-            src={desktopApp}
-            alt="MDD App"
-            title="Click to learn more about the MDD App"
-            loading="eager"
-            fetchpriority="high"
-          />
-          <div class="text-left mt-4">
-            <p class="text-lg font-semibold">App features:</p>
-            <ul class="text-left ml-4 list-disc list-inside">
-              <li>Offline access to the database</li>
-              <li>Advanced search</li>
-              <li>Custom exports</li>
-              <li>And more</li>
-            </ul>
-            <p class="text-md mt-2">Support all major desktop and mobile OS.</p>
-            <InstallButton
-              label="Install"
-              url="https://github.com/mammaldiversity/mdd_app?tab=readme-ov-file#try-it-out-"
-              extendClass="mt-12"
-              withIcon
-            />
-          </div>
-        </div>
-      </div>
+      <InstallApp />
       <div id="citation" class="py-4 px-2 text-center mb-4 mx-auto">
         <h2 class={sectionTitleClass}>Cite MDD</h2>
         <div class="text-md mt-4">
