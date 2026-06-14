@@ -69,9 +69,88 @@ function createAuthorityCitation(
   return withParentheses ? `(${citation})` : citation;
 }
 
+function shouldSeparateSynonymAuthorityWithColon(
+  nomenclaturalStatus?: string,
+): boolean {
+  if (!nomenclaturalStatus) {
+    return false;
+  }
+
+  const colonSeparatedStatuses = new Set([
+    "incorrect_subsequent_spelling",
+    "justified_emendation",
+    "mandatory_change",
+    "misidentification",
+    "name_combination",
+    "unjustified_emendation",
+    "variant",
+  ]);
+
+  return nomenclaturalStatus
+    .split("|")
+    .map((status) => status.trim())
+    .some((status) => colonSeparatedStatuses.has(status));
+}
+
+function isPresent(value?: string | number): boolean {
+  const text = value === undefined ? "" : String(value).trim();
+  return text !== "" && text !== "NA";
+}
+
+function formatCoordinate(
+  coordinate: string | number | undefined,
+  positiveDirection: string,
+  negativeDirection: string,
+): string | undefined {
+  if (!isPresent(coordinate)) {
+    return undefined;
+  }
+  const numericCoordinate = Number(coordinate);
+  if (Number.isNaN(numericCoordinate)) {
+    return undefined;
+  }
+  const direction =
+    numericCoordinate >= 0 ? positiveDirection : negativeDirection;
+  const totalSeconds = Math.round(Math.abs(numericCoordinate) * 3600);
+  const degrees = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (seconds > 0) {
+    return `${degrees}°${minutes}′${seconds}″${direction}`;
+  }
+  if (minutes > 0) {
+    return `${degrees}°${minutes}′${direction}`;
+  }
+  return `${degrees}°${direction}`;
+}
+
+function createStructuredTypeLocality(
+  typeCountry?: string,
+  typeSubregion?: string,
+  typeSubregion2?: string,
+  typeLatitude?: string | number,
+  typeLongitude?: string | number,
+): string {
+  const localityParts = [typeCountry, typeSubregion, typeSubregion2].filter(
+    isPresent,
+  );
+  const coordinateParts = [
+    formatCoordinate(typeLatitude, "N", "S"),
+    formatCoordinate(typeLongitude, "E", "W"),
+  ].filter(isPresent);
+  const parts = [...localityParts, coordinateParts.join(", ")].filter(
+    isPresent,
+  );
+
+  return parts.length > 0 ? `${parts.join(": ")}.` : "";
+}
+
 export {
   createSynonymName,
+  createStructuredTypeLocality,
   cleanTaxonData,
   createAuthorityCitation,
+  shouldSeparateSynonymAuthorityWithColon,
   isItalicText,
 };
