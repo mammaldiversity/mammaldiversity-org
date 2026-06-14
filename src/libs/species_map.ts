@@ -1,7 +1,15 @@
+import type { CountryRegionCode } from "../../db/country_stats_model";
+import countryRegionCodeRaw from "../../db/data/country_region_code.json" with {
+  type: "json",
+};
+
 interface CountryDistribution {
   known: string[];
   predicted: string[];
 }
+
+const countryRegionCode =
+  countryRegionCodeRaw as unknown as CountryRegionCode;
 
 /**
  * Maps MDD distribution country names to their corresponding mdd_name values
@@ -13,6 +21,22 @@ const MDD_TO_MAP_NAME: Record<string, string> = {
 
 const normalizeCountryName = (name: string): string =>
   MDD_TO_MAP_NAME[name] ?? name;
+
+function countryNameToCode(name: string): string | undefined {
+  const trimmedName = name.trim();
+  return (
+    countryRegionCode.regionToCode[trimmedName] ??
+    countryRegionCode.regionToCode[normalizeCountryName(trimmedName)]
+  );
+}
+
+function countryNamesToCodes(names: string[]): Set<string> {
+  return new Set(
+    names
+      .map((name) => countryNameToCode(name))
+      .filter((code): code is string => code !== undefined),
+  );
+}
 
 /**
  * Splits a country distribution string into known and predicted distributions.
@@ -62,4 +86,6 @@ export {
   splitCountryDistribution,
   countryListToJson,
   jsonToCountryList,
+  countryNameToCode,
+  countryNamesToCodes,
 };

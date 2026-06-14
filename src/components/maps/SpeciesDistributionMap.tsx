@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
 import cntl from "cntl";
 import { convertTopoToGeoJson } from "../../libs/country_utils";
-
+import { countryNamesToCodes } from "../../libs/species_map";
 
 const KNOWN_COLOR = "#117554";
 const PREDICTED_COLOR = "#FFEB00";
@@ -70,8 +70,18 @@ function SpeciesDistributionMap({
     [knownDistribution],
   );
 
+  const knownCountryCodes = useMemo(
+    () => countryNamesToCodes(knownDistribution),
+    [knownDistribution],
+  );
+
   const predictedCountries = useMemo(
     () => new Set(predictedDistribution),
+    [predictedDistribution],
+  );
+
+  const predictedCountryCodes = useMemo(
+    () => countryNamesToCodes(predictedDistribution),
     [predictedDistribution],
   );
 
@@ -85,12 +95,23 @@ function SpeciesDistributionMap({
 
     for (const feature of world.features) {
       const props = feature.properties;
+      const iso2 = props?.ISO_A2 as string | undefined;
       const mddName = props?.mdd_name as string | undefined;
+      const name = props?.NAME as string | undefined;
 
       let status: FeatureCacheEntry["status"] = null;
-      if (mddName) {
-        if (knownCountries.has(mddName)) status = "known";
-        else if (predictedCountries.has(mddName)) status = "predicted";
+      if (
+        (iso2 && knownCountryCodes.has(iso2)) ||
+        (mddName && knownCountries.has(mddName)) ||
+        (name && knownCountries.has(name))
+      ) {
+        status = "known";
+      } else if (
+        (iso2 && predictedCountryCodes.has(iso2)) ||
+        (mddName && predictedCountries.has(mddName)) ||
+        (name && predictedCountries.has(name))
+      ) {
+        status = "predicted";
       }
 
       cache.set(feature, {
@@ -101,7 +122,13 @@ function SpeciesDistributionMap({
     }
 
     return { featureCache: cache, highlightedFeatures: highlighted };
-  }, [world, knownCountries, predictedCountries]);
+  }, [
+    world,
+    knownCountries,
+    knownCountryCodes,
+    predictedCountries,
+    predictedCountryCodes,
+  ]);
 
   // Load TopoJSON — uses module-level cache to prevent re-fetching on remount
   useEffect(() => {
