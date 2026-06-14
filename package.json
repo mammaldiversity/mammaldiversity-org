@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
+    "normalize-region-data": "bun scripts/normalize-region-data.ts",
     "build": "astro check && astro build && bun run postbuild",
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",

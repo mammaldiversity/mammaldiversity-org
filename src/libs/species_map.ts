@@ -19,12 +19,19 @@ const MDD_TO_MAP_NAME: Record<string, string> = {
   "United States": "United States of America",
 };
 
+const MDD_VISUAL_REGION_CODES: Record<string, string> = {
+  "Andaman and Nicobar Islands": "IN-ANI",
+  Galapagos: "EC-GAL",
+  "Galápagos Islands": "EC-GAL",
+};
+
 const normalizeCountryName = (name: string): string =>
   MDD_TO_MAP_NAME[name] ?? name;
 
 function countryNameToCode(name: string): string | undefined {
   const trimmedName = name.trim();
   return (
+    MDD_VISUAL_REGION_CODES[trimmedName] ??
     countryRegionCode.regionToCode[trimmedName] ??
     countryRegionCode.regionToCode[normalizeCountryName(trimmedName)]
   );
