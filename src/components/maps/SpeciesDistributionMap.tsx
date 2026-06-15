@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import * as Plot from "@observablehq/plot";
-import cntl from "cntl";
 import { convertTopoToGeoJson } from "../../libs/country_utils";
 import { countryNamesToCodes } from "../../libs/species_map";
 
@@ -10,11 +9,7 @@ const PREDICTED_COLOR = "#FFEB00";
 const COUNTRY_MAP_URL = "/map/countries-50m.json";
 type ProjectionOption = Plot.PlotOptions["projection"];
 
-const mapClasses = cntl`
-  min-w-lg 
-  md:max-w-full 
-  mx-auto
-`;
+const mapClasses = "min-w-lg md:max-w-full mx-auto";
 
 let cachedWorldGeoJSON: WorldGeoJSON | null = null;
 
@@ -22,7 +17,8 @@ interface GeoFeatureProperties {
   ISO_A2?: string;
   mdd_name?: string;
   NAME?: string;
-  [key: string]: string | number | undefined;
+  mdd_point?: boolean;
+  [key: string]: string | number | boolean | undefined;
 }
 
 interface GeoFeature {
@@ -40,6 +36,12 @@ interface FeatureCacheEntry {
   status: "known" | "predicted" | null;
   name: string;
 }
+
+const isPointFeature = (feature: GeoFeature): boolean =>
+  feature.geometry !== null &&
+  typeof feature.geometry === "object" &&
+  "type" in feature.geometry &&
+  feature.geometry.type === "Point";
 
 interface Props {
   knownDistribution?: string[];
@@ -85,12 +87,17 @@ function SpeciesDistributionMap({
     [predictedDistribution],
   );
 
-  const { featureCache, highlightedFeatures } = useMemo(() => {
+  const { featureCache, baseFeatures, highlightedFeatures } = useMemo(() => {
     const cache = new WeakMap<GeoFeature, FeatureCacheEntry>();
+    const base: GeoFeature[] = [];
     const highlighted: GeoFeature[] = [];
 
     if (!world?.features?.length) {
-      return { featureCache: cache, highlightedFeatures: highlighted };
+      return {
+        featureCache: cache,
+        baseFeatures: base,
+        highlightedFeatures: highlighted,
+      };
     }
 
     for (const feature of world.features) {
@@ -118,10 +125,15 @@ function SpeciesDistributionMap({
         status,
         name: mddName ?? props?.NAME ?? "Unknown Country",
       });
+      if (!isPointFeature(feature)) base.push(feature);
       if (status !== null) highlighted.push(feature);
     }
 
-    return { featureCache: cache, highlightedFeatures: highlighted };
+    return {
+      featureCache: cache,
+      baseFeatures: base,
+      highlightedFeatures: highlighted,
+    };
   }, [
     world,
     knownCountries,
@@ -215,7 +227,7 @@ function SpeciesDistributionMap({
       height: plotHeight,
       style: { overflow: "visible" },
       marks: [
-        Plot.geo(world.features, {
+        Plot.geo(baseFeatures, {
           fill: (d: GeoFeature) => {
             const status = featureCache.get(d)?.status;
             if (status === "known") return knownColor;
@@ -228,8 +240,17 @@ function SpeciesDistributionMap({
         }),
 
         Plot.geo(highlightedFeatures, {
-          fill: "transparent",
-          stroke: "none",
+          r: 4.5,
+          fill: (d: GeoFeature) => {
+            if (!isPointFeature(d)) return "transparent";
+            const status = featureCache.get(d)?.status;
+            if (status === "known") return knownColor;
+            if (status === "predicted") return predictedColor;
+            return "transparent";
+          },
+          stroke: (d: GeoFeature) =>
+            isPointFeature(d) ? "currentColor" : "none",
+          strokeWidth: (d: GeoFeature) => (isPointFeature(d) ? 1.2 : 0),
           title: (d: GeoFeature) =>
             featureCache.get(d)?.name ?? "Unknown Country",
           tip: {
@@ -277,6 +298,7 @@ function SpeciesDistributionMap({
   }, [
     world,
     featureCache,
+    baseFeatures,
     highlightedFeatures,
     knownColor,
     predictedColor,

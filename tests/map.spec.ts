@@ -37,6 +37,8 @@ test("countryListToJson", () => {
 test("country distributions resolve to MDD country codes", () => {
   expect(countryNameToCode("Russia")).toBe("RU");
   expect(countryNameToCode("United States of America")).toBe("US");
+  expect(countryNameToCode("Andaman and Nicobar Islands")).toBe("IN-ANI");
+  expect(countryNameToCode("Galápagos Islands")).toBe("EC-GAL");
   expect(countryNamesToCodes(["Russia", "United States of America"])).toEqual(
     new Set(["RU", "US"]),
   );
@@ -108,4 +110,29 @@ test("country map includes Russia under the database country code", () => {
 
   expect(russia?.properties?.NAME).toBe("Russia");
   expect(russia?.geometry.type).toBe("MultiPolygon");
+});
+
+test("country map includes point markers for MDD regions absent from the polygon asset", () => {
+  const countriesPath = join(process.cwd(), "public/map/countries-50m.json");
+  const topoData = JSON.parse(readFileSync(countriesPath, "utf8"));
+  const geoData = convertTopoToGeoJson(topoData);
+
+  const singapore = geoData.features.find(
+    (feature) => feature.properties?.ISO_A2 === "SG",
+  );
+  const andamanNicobar = geoData.features.find(
+    (feature) => feature.properties?.ISO_A2 === "IN-ANI",
+  );
+  const galapagos = geoData.features.find(
+    (feature) => feature.properties?.ISO_A2 === "EC-GAL",
+  );
+
+  expect(singapore?.properties?.mdd_name).toBe("Singapore");
+  expect(singapore?.geometry.type).toBe("Point");
+  expect(andamanNicobar?.properties?.mdd_name).toBe(
+    "Andaman and Nicobar Islands",
+  );
+  expect(andamanNicobar?.geometry.type).toBe("Point");
+  expect(galapagos?.properties?.mdd_name).toBe("Galápagos Islands");
+  expect(galapagos?.geometry.type).toBe("Point");
 });
