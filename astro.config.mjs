@@ -6,7 +6,7 @@ import partytown from "@astrojs/partytown";
 import preact from "@astrojs/preact";
 
 export default defineConfig({
-  site: "https://www.mdd.hhandika.com/",
+  site: "https://www.mammaldiversity.org/",
   integrations: [
     tailwind(),
     preact(),
