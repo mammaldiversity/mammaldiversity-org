@@ -1,0 +1,145 @@
+---
+import cntl from "cntl";
+import Zenodo from "../pubs/Zenodo.astro";
+import SpeciesCitation from "../pubs/SpeciesCitation.astro";
+import Journal from "../pubs/Journal.astro";
+import Link from "../Link.astro";
+import { getMetadata } from "../../../db/mdd";
+import {
+  cleanVersion,
+  getCurrentYear,
+  getCurrentDate,
+} from "../../libs/metadata";
+
+const meta = getMetadata();
+const currentVersion = cleanVersion(meta.version);
+const currentYear = getCurrentYear();
+const currentDate = getCurrentDate();
+const doi = meta.doi ? meta.doi : "https://doi.org/10.5281/zenodo.17033774";
+
+const sectionTitleClass = cntl`
+  font-serif
+  text-3xl
+  lg:text-4xl
+  font-semibold
+  text-center
+  mb-8
+  text-spectra-900
+  dark:text-spectra-50
+`;
+---
+
+<div id="citation" class="py-8 mb-16 max-w-7xl mx-auto">
+  <h2 class={sectionTitleClass}>Cite MDD</h2>
+  <div class="space-y-8 mt-8">
+    <div
+      class="bg-spectra-50/50 dark:bg-spectra-800/30 border border-spectra-200 dark:border-spectra-700 rounded-2xl p-6 shadow-sm"
+    >
+      <h3
+        class="text-lg font-semibold text-spectra-900 dark:text-spectra-100 mb-3"
+      >
+        The current database
+      </h3>
+      <p class="text-sm text-spectra-600 dark:text-spectra-400 mb-4">
+        (via <Link
+          url="https://doi.org/10.5281/zenodo.4139722"
+          label="Zenodo"
+        />)
+      </p>
+      <div
+        class="bg-white dark:bg-spectra-900 rounded-xl p-4 border border-spectra-100 dark:border-spectra-800"
+      >
+        <Zenodo
+          authors={["Mammal Diversity Database"]}
+          year={currentYear}
+          title={`Mammal Diversity Database (Version ${currentVersion}) [Data set]`}
+          doi={doi}
+        />
+      </div>
+    </div>
+
+    <div
+      class="bg-spectra-50/50 dark:bg-spectra-800/30 border border-spectra-200 dark:border-spectra-700 rounded-2xl p-6 shadow-sm"
+    >
+      <h3
+        class="text-lg font-semibold text-spectra-900 dark:text-spectra-100 mb-3"
+      >
+        A specific entry
+      </h3>
+      <p class="text-sm text-spectra-600 dark:text-spectra-400 mb-4">
+        Each entry has a citation string at the end. For example:
+      </p>
+      <div
+        class="bg-white dark:bg-spectra-900 rounded-xl p-4 border border-spectra-100 dark:border-spectra-800"
+      >
+        <SpeciesCitation
+          species="Dipodomys deserti"
+          mddID="1001892"
+          date={currentDate}
+          year={currentYear}
+        />
+      </div>
+    </div>
+
+    <div
+      class="bg-spectra-50/50 dark:bg-spectra-800/30 border border-spectra-200 dark:border-spectra-700 rounded-2xl p-6 shadow-sm"
+    >
+      <h3
+        class="text-lg font-semibold text-spectra-900 dark:text-spectra-100 mb-3"
+      >
+        Describing the MDD v2.0 taxonomy
+      </h3>
+      <div
+        class="bg-white dark:bg-spectra-900 rounded-xl p-4 border border-spectra-100 dark:border-spectra-800"
+      >
+        <Journal
+          authors={[
+            "Burgin, C. J.",
+            "Zijlstra, J. S.",
+            "Becker, M. A.",
+            "Handika, H.",
+            "Alston, J. M.",
+            "Widness, J.",
+            "Liphardt, S.",
+            "Huckaby, D. G.",
+            "Upham, N. S",
+          ]}
+          year={2025}
+          title="How many mammal species are there now? Updates and trends in taxonomic, nomenclatural, and geographic knowledge"
+          journal="Journal of Mammalogy"
+          volume="in press"
+          pages="TBD"
+          doi="https://doi.org/10.1101/2025.02.27.640393"
+        />
+      </div>
+    </div>
+
+    <div
+      class="bg-spectra-50/50 dark:bg-spectra-800/30 border border-spectra-200 dark:border-spectra-700 rounded-2xl p-6 shadow-sm"
+    >
+      <h3
+        class="text-lg font-semibold text-spectra-900 dark:text-spectra-100 mb-3"
+      >
+        Describing the MDD v1.0 taxonomy
+      </h3>
+      <div
+        class="bg-white dark:bg-spectra-900 rounded-xl p-4 border border-spectra-100 dark:border-spectra-800"
+      >
+        <Journal
+          authors={[
+            "Burgin, C. J.",
+            "Colella, J. P.",
+            "Kahn, P. L.",
+            "Upham, N. S",
+          ]}
+          year={2018}
+          title="How many species of mammals are there?"
+          journal="Journal of Mammalogy"
+          volume="99"
+          pages="1—11"
+          doi="https://doi.org/10.1093/jmammal/gyx147"
+        />
+      </div>
+    </div>
+  </div>
+</div>

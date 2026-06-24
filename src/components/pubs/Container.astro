@@ -2,6 +2,52 @@
 
 ---
 
-<div class="p-4 my-4 bg-spectra-50 dark:bg-spectra-950 rounded-xl">
-  <slot />
+<div class="relative p-4 my-4 bg-spectra-50 dark:bg-spectra-950 rounded-xl group citation-container">
+  <div class="citation-content pr-10 text-sm">
+    <slot />
+  </div>
+  <button
+    class="absolute top-4 right-4 p-2 text-spectra-400 hover:text-spectra-900 dark:hover:text-spectra-100 transition-colors bg-white dark:bg-spectra-800 rounded-lg shadow-sm border border-spectra-200 dark:border-spectra-700 opacity-0 group-hover:opacity-100 focus:opacity-100 copy-button"
+    aria-label="Copy citation to clipboard"
+    title="Copy to clipboard"
+  >
+    <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+    <svg class="w-4 h-4 check-icon hidden text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+  </button>
 </div>
+
+<script>
+  document.querySelectorAll('.copy-button').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const container = btn.closest('.citation-container');
+      if (!container) return;
+      
+      const content = container.querySelector('.citation-content');
+      if (!content) return;
+      
+      // innerText works better than textContent for preserving visible spacing
+      const textToCopy = (content as HTMLElement).innerText || content.textContent || "";
+      
+      try {
+        await navigator.clipboard.writeText(textToCopy.trim());
+        
+        // Show success checkmark
+        const copyIcon = btn.querySelector('.copy-icon');
+        const checkIcon = btn.querySelector('.check-icon');
+        
+        if (copyIcon && checkIcon) {
+          copyIcon.classList.add('hidden');
+          checkIcon.classList.remove('hidden');
+          
+          setTimeout(() => {
+            copyIcon.classList.remove('hidden');
+            checkIcon.classList.add('hidden');
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
+    });
+  });
+</script>

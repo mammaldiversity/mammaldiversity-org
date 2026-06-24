@@ -52,6 +52,9 @@ interface FeatureDatum {
   iso2: string | undefined;
 }
 
+const isPointFeature = (feature: Feature): boolean =>
+  feature.geometry?.type === "Point";
+
 let cachedWorld: FeatureCollection | null = null;
 
 export default function CountryMap({
@@ -115,8 +118,17 @@ export default function CountryMap({
     return cache;
   }, [world, normalizedStats]);
 
+  const visibleFeatures = useMemo(() => {
+    if (!world?.features?.length) return [];
+
+    return world.features.filter((feature) => {
+      if (!isPointFeature(feature)) return true;
+      return featureCache.get(feature)?.count !== undefined;
+    });
+  }, [world, featureCache]);
+
   useEffect(() => {
-    if (!width || !world?.features?.length || !containerRef.current) return;
+    if (!width || visibleFeatures.length === 0 || !containerRef.current) return;
 
     const isDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
@@ -136,11 +148,12 @@ export default function CountryMap({
         Plot.sphere({ stroke: "currentColor", strokeOpacity: 0.1 }),
         Plot.graticule({ stroke: "currentColor", strokeOpacity: 0.1 }),
 
-        Plot.geo(world, {
+        Plot.geo(visibleFeatures, {
+          r: 4,
           fill: (d: Feature) => featureCache.get(d)?.count,
           stroke: "currentColor",
-          strokeWidth: 0.5,
-          strokeOpacity: 0.3,
+          strokeWidth: (d: Feature) => (isPointFeature(d) ? 1.2 : 0.5),
+          strokeOpacity: (d: Feature) => (isPointFeature(d) ? 0.7 : 0.3),
 
           tip: {
             channels: {
@@ -149,7 +162,14 @@ export default function CountryMap({
               "Species Count": (d: Feature) =>
                 featureCache.get(d)?.count ?? "No data",
             },
-            format: { fill: false, x: false, y: false },
+            format: {
+              fill: false,
+              r: false,
+              strokeOpacity: false,
+              strokeWidth: false,
+              x: false,
+              y: false,
+            },
             pointer: "xy",
             fill: isDark ? "#1f2937" : "#ffffff",
             stroke: "currentColor",
@@ -187,7 +207,7 @@ export default function CountryMap({
     }
 
     return () => plot.remove();
-  }, [width, world, colors, projection, featureCache]);
+  }, [width, visibleFeatures, colors, projection, featureCache]);
 
   return <div ref={containerRef} className="w-full relative min-h-[300px]" />;
 }

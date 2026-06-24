@@ -1,0 +1,35 @@
+---
+import cntl from "cntl";
+import HeroCell from "./HeroCell.astro";
+import SearchCell from "./SearchCell.astro";
+import OfflineCell from "./OfflineCell.astro";
+import CrossPlatformCell from "./CrossPlatformCell.astro";
+import ExportsCell from "./ExportsCell.astro";
+
+const sectionTitleClass = cntl`
+  font-serif
+  text-3xl
+  lg:text-4xl
+  font-semibold
+  text-center
+  mb-4
+  mt-12
+`;
+---
+
+<div>
+  <h2 class={sectionTitleClass}>Install the MDD App</h2>
+  <p class="text-center text-spectra-600 dark:text-spectra-400 mb-10">
+    Another way to access the MDD database with data statistics and full
+    integration of the Mammal Images Libary (MIL).
+  </p>
+  <div
+    class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto px-4 mb-16"
+  >
+    <HeroCell />
+    <SearchCell />
+    <OfflineCell />
+    <CrossPlatformCell />
+    <ExportsCell />
+  </div>
+</div>

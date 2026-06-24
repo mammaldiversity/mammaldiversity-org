@@ -1,0 +1,33 @@
+---
+import cntl from "cntl";
+
+const bentoCellClasses = cntl`
+  bg-gradient-to-br
+  dark:from-spectra-900
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
+  rounded-[2rem]
+  p-6
+  md:p-8
+  border
+  dark:border-spectra-800
+  border-spectra-200/60
+  overflow-hidden
+  relative
+  shadow-sm
+  hover:shadow-md
+  transition-all
+  duration-300
+  group
+`;
+---
+<div class={`${bentoCellClasses} flex flex-col justify-center`}>
+  <div class="w-12 h-12 rounded-2xl bg-white/80 dark:bg-spectra-800 flex items-center justify-center mb-5 shadow-sm border border-spectra-100 dark:border-spectra-700 backdrop-blur-sm">
+    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+  </div>
+  <h3 class="text-xl font-semibold mb-2">Works Offline</h3>
+  <p class="text-sm text-spectra-600 dark:text-spectra-400">
+    The entire dataset comes fully bundled, including the MIL images. No internet required for your remote fieldwork.
+  </p>
+</div>

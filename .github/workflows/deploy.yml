@@ -49,6 +49,9 @@ jobs:
           # Extract images so they can be moved/verified downstream
           tar -xzf "$MIL_FILENAME"
 
+      - name: Normalize region data
+        run: bun run normalize-region-data
+
       - name: Copy MIL images to Astro assets
         working-directory: db/data
         run: |

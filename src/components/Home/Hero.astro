@@ -1,0 +1,95 @@
+---
+import cntl from "cntl";
+import MainActionButtons from "../MainActionButtons.astro";
+import MilSlideshow from "../mil/MilSlideshow.astro";
+import { getMetadata } from "../../../db/mdd";
+import { formatDate, cleanVersion } from "../../libs/metadata";
+
+const meta = getMetadata();
+const currentVersion = cleanVersion(meta.version);
+
+const overrideReleaseDate = "2025-06-13"; // Fallback date if releaseDate is not available
+const releaseDate = meta.releaseDate
+  ? formatDate(meta.releaseDate)
+  : formatDate(overrideReleaseDate);
+
+const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
+const mddDownloadLink =
+  "https://github.com/mammaldiversity/mammaldiversity.github.io/raw/refs/heads/master/assets/data/MDD.zip";
+
+// Define version description
+const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
+
+const heroClasses = cntl`
+  max-w-[2400px]
+  grid
+  grid-cols-1
+  lg:grid-cols-2
+  gap-8
+  lg:gap-12
+  lg:mt-8
+  p-8
+  lg:p-12
+  bg-gradient-to-br
+  from-spectra-100/80
+  to-spicy-mix-100/80
+  dark:from-spectra-900/80
+  dark:to-spicy-mix-900/80
+  backdrop-blur-sm
+  rounded-[2rem]
+  mx-auto
+  shadow-sm
+  border
+  border-white/50
+  dark:border-white/5
+`;
+
+const titleClasses = cntl`
+  font-serif
+  font-semibold
+  text-5xl
+  lg:text-6xl
+  text-spectra-900
+  dark:text-spectra-50
+  leading-tight
+  mb-2
+`;
+
+const subtitleClasses = cntl`
+  text-lg
+  lg:text-xl
+  text-spectra-700
+  dark:text-spectra-300
+  font-medium
+  mb-6
+`;
+
+const descriptionClasses = cntl`
+  text-xl
+  lg:text-2xl
+  text-spectra-800
+  dark:text-spectra-200
+  leading-relaxed
+  mb-8
+`;
+---
+
+<div id="hero" class={heroClasses}>
+  <div class="flex flex-col justify-center">
+    <h1 class={titleClasses}>The Mammal Diversity Database</h1>
+    <h2 class={subtitleClasses}>By the American Society of Mammalogists</h2>
+    <p class={descriptionClasses}>
+      Track the latest taxonomic changes to living and recently extinct (i.e.,
+      since ~1500 CE) species and higher taxa of mammals.
+    </p>
+    <MainActionButtons
+      searchURI="./search"
+      downloadURI={mddDownloadLink}
+      previousVersionsURI={prevVersionsLink}
+      versionDescription={versionDescription}
+    />
+  </div>
+  <div class="flex flex-col items-center justify-center lg:pl-4">
+    <MilSlideshow />
+  </div>
+</div>

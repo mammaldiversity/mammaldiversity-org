@@ -1,0 +1,48 @@
+---
+import cntl from "cntl";
+
+const bentoCellClasses = cntl`
+  bg-gradient-to-br
+  dark:from-spectra-900
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
+  rounded-[2rem]
+  p-6
+  md:p-8
+  border
+  dark:border-spectra-800
+  border-spectra-200/60
+  overflow-hidden
+  relative
+  shadow-sm
+  hover:shadow-md
+  transition-all
+  duration-300
+  group
+`;
+---
+
+<div class={`${bentoCellClasses} md:col-span-1 flex flex-col justify-center`}>
+  <div
+    class="w-12 h-12 rounded-2xl bg-white/80 dark:bg-spectra-800 flex items-center justify-center mb-5 shadow-sm border border-spectra-100 dark:border-spectra-700 backdrop-blur-sm"
+  >
+    <svg
+      class="w-6 h-6 text-orange-600 dark:text-orange-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+      ></path></svg
+    >
+  </div>
+  <h3 class="text-xl font-semibold mb-2">Custom Exports</h3>
+  <p class="text-sm text-spectra-600 dark:text-spectra-400">
+    Easily export search results to Comma-Separated Value (CSV) or JSON format.
+    The output includes all MDD fields.
+  </p>
+</div>
