@@ -1,6 +1,7 @@
 ---
 import Link from "../Link.astro";
 import MddText from "./MddText.astro";
+import { createAutoLinkedTextParts } from "../../libs/taxon";
 
 interface Props {
   text: string;
@@ -8,18 +9,19 @@ interface Props {
 }
 
 const { text, isItalic } = Astro.props as Props;
+const textParts = createAutoLinkedTextParts(text);
 ---
 
 {
-  text.split(/(http\S+)/g).map((part) =>
-    part.startsWith("http") ? (
-      <>
-        <Link url={part.replace(/[.,!?)]*$/, "")} />
-        {part.match(/[.,!?)]*$/)}
-      </>
+  textParts.map((part) =>
+    part.url ? (
+      <Link
+        url={part.url}
+        label={part.url === part.text ? undefined : part.text}
+      />
     ) : (
       <span class={isItalic ? "italic" : ""}>
-        <MddText text={part} />
+        <MddText text={part.text} />
       </span>
     )
   )
