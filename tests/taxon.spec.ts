@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import {
   cleanTaxonData,
+  createAutoLinkedTextParts,
   createAuthorityCitation,
   createStructuredTypeLocality,
   createSynonymName,
@@ -11,6 +12,26 @@ import {
 test("cleanTaxonData", () => {
   expect(cleanTaxonData("Mammalia|Rodentia")).toBe("Mammalia · Rodentia");
   expect(cleanTaxonData("Mammalia")).toBe("Mammalia");
+});
+
+test("createAutoLinkedTextParts", () => {
+  expect(createAutoLinkedTextParts("doi:10.1206/3780.2")).toEqual([
+    {
+      text: "doi:10.1206/3780.2",
+      url: "https://doi.org/10.1206/3780.2",
+    },
+  ]);
+  expect(createAutoLinkedTextParts("see a#59343")).toEqual([
+    { text: "see " },
+    { text: "a#59343", url: "https://hesperomys.com/a/59343" },
+  ]);
+  expect(createAutoLinkedTextParts("doi:10.1206/3780.2.")).toEqual([
+    {
+      text: "doi:10.1206/3780.2",
+      url: "https://doi.org/10.1206/3780.2",
+    },
+    { text: "." },
+  ]);
 });
 
 test("createSynonymName", () => {

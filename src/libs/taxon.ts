@@ -36,6 +36,59 @@ function isItalicText(text: string): boolean {
   return /_[^_]+_/.test(text);
 }
 
+interface LinkedTextPart {
+  text: string;
+  url?: string;
+}
+
+function trimLinkedTextPunctuation(text: string): {
+  linkText: string;
+  trailingText: string;
+} {
+  const trailingText = text.match(/[.,!?)]*$/)?.[0] ?? "";
+  return {
+    linkText: text.slice(0, text.length - trailingText.length),
+    trailingText,
+  };
+}
+
+function createAutoLinkedTextParts(text: string): LinkedTextPart[] {
+  const parts: LinkedTextPart[] = [];
+  const linkPattern = /(https?:\/\/\S+|doi:10\.\S+|a#\d+)/gi;
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(linkPattern)) {
+    const matchText = match[0];
+    const matchIndex = match.index ?? 0;
+
+    if (matchIndex > lastIndex) {
+      parts.push({ text: text.slice(lastIndex, matchIndex) });
+    }
+
+    const { linkText, trailingText } = trimLinkedTextPunctuation(matchText);
+    const lowerLinkText = linkText.toLowerCase();
+    let url = linkText;
+    if (lowerLinkText.startsWith("doi:")) {
+      url = `https://doi.org/${linkText.slice(4)}`;
+    } else if (lowerLinkText.startsWith("a#")) {
+      url = `https://hesperomys.com/a/${linkText.slice(2)}`;
+    }
+
+    parts.push({ text: linkText, url });
+    if (trailingText.length > 0) {
+      parts.push({ text: trailingText });
+    }
+
+    lastIndex = matchIndex + matchText.length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push({ text: text.slice(lastIndex) });
+  }
+
+  return parts.length > 0 ? parts : [{ text }];
+}
+
 /**
  * Creates a synonym name for a species.
  * @param {string} rootName - The root name of the species.
@@ -147,6 +200,7 @@ function createStructuredTypeLocality(
 }
 
 export {
+  createAutoLinkedTextParts,
   createSynonymName,
   createStructuredTypeLocality,
   cleanTaxonData,
