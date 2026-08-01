@@ -15,7 +15,12 @@ const meta = getMetadata();
 const currentVersion = cleanVersion(meta.version);
 const currentYear = getCurrentYear();
 const currentDate = getCurrentDate();
-const doi = meta.doi ? meta.doi : "https://doi.org/10.5281/zenodo.17033774";
+const rawDoi = meta.doi;
+const doi = rawDoi
+  ? rawDoi.startsWith("http")
+    ? rawDoi
+    : `https://doi.org/${rawDoi}`
+  : "https://doi.org/10.5281/zenodo.17033774";
 
 const sectionTitleClass = cntl`
   font-serif

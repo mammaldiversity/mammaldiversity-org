@@ -183,5 +183,27 @@ const secondaryCardClass = cntl`
         ))
       }
     </div>
+
+    {
+      (meta.remarks || meta.doi) && (
+        <div class="lg:col-span-12 mt-6 pt-6 border-t border-white/10 text-sm text-spectra-200">
+          <h3 class="font-semibold text-lg text-white mb-2">Release Notes</h3>
+          {meta.remarks && <p class="mb-2 leading-relaxed">{meta.remarks}</p>}
+          {meta.doi && (
+            <p class="text-xs text-spectra-300">
+              DOI:{' '}
+              <a
+                href={meta.doi.startsWith('http') ? meta.doi : `https://doi.org/${meta.doi}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-spicy-mix-300 hover:underline font-mono"
+              >
+                {meta.doi.startsWith('http') ? meta.doi : `https://doi.org/${meta.doi}`}
+              </a>
+            </p>
+          )}
+        </div>
+      )
+    }
   </div>
 </div>
