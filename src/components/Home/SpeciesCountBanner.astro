@@ -1,0 +1,187 @@
+---
+import cntl from 'cntl';
+import { getMetadata } from '../../../db/mdd';
+
+interface StatItem {
+  label: string;
+  value: string;
+  tag?: string;
+}
+
+const meta = getMetadata();
+
+const speciesCountFormatted = meta.speciesCount.toLocaleString();
+const livingWildFormatted = meta.livingWild.toLocaleString();
+const extinctFormatted = meta.recentlyExtinct.toLocaleString();
+const domesticFormatted = meta.domestic.toLocaleString();
+const orderCountFormatted = meta.orderCount.toLocaleString();
+const familyCountFormatted = meta.familyCount.toLocaleString();
+const genusCountFormatted = meta.genusCount.toLocaleString();
+const synonymCountFormatted = meta.synonymCount.toLocaleString();
+
+const secondaryStats: StatItem[] = [
+  {
+    label: 'Orders',
+    value: orderCountFormatted,
+  },
+  {
+    label: 'Families',
+    value: familyCountFormatted,
+  },
+  {
+    label: 'Genera',
+    value: genusCountFormatted,
+  },
+  {
+    label: 'Synonyms',
+    value: synonymCountFormatted,
+  },
+];
+
+const containerClass = cntl`
+  relative
+  mt-10
+  mb-14
+  p-8
+  md:p-10
+  lg:p-12
+  rounded-[2.5rem]
+  bg-gradient-to-br
+  from-spectra-900
+  via-spectra-950
+  to-spicy-mix-950
+  text-white
+  shadow-md
+  shadow-spectra-950/20
+  border
+  border-spectra-700/40
+  overflow-hidden
+`;
+
+const heroGlowClass = cntl`
+  absolute
+  -top-24
+  -right-24
+  w-96
+  h-96
+  bg-spectra-400/20
+  rounded-full
+  blur-3xl
+  pointer-events-none
+`;
+
+
+const heroTitleClass = cntl`
+  font-serif
+  text-5xl
+  sm:text-6xl
+  lg:text-7xl
+  font-bold
+  tracking-tight
+  bg-gradient-to-r
+  from-white
+  via-spectra-100
+  to-spicy-mix-200
+  bg-clip-text
+  text-transparent
+`;
+
+const heroSubLabelClass = cntl`
+  text-base
+  sm:text-lg
+  font-medium
+  text-spectra-300
+  tracking-wide
+`;
+
+const breakdownPillClass = cntl`
+  flex
+  items-center
+  justify-between
+  gap-3
+  px-4
+  py-2.5
+  rounded-xl
+  bg-white/5
+  hover:bg-white/10
+  border
+  border-white/10
+  transition-all
+  duration-200
+`;
+
+const secondaryCardClass = cntl`
+  group
+  p-5
+  rounded-2xl
+  bg-spectra-900/60
+  hover:bg-spectra-800/80
+  border
+  border-white/10
+  hover:border-spectra-400/40
+  backdrop-blur-md
+  transition-all
+  duration-300
+  hover:-translate-y-1
+  shadow-sm
+`;
+---
+
+<div id="species-count-summary" class={containerClass}>
+  <div class={heroGlowClass}></div>
+
+  <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+    <!-- Featured Main Species Count -->
+    <div class="lg:col-span-7 flex flex-col justify-center">
+
+        <p class="sm:items-baseline">
+        <span class={heroTitleClass}>{speciesCountFormatted}</span>
+        <span class="pl-2 md:pl-4 text-2xl sm:text-3xl font-serif text-spicy-mix-300 font-semibold">
+          Species
+        </span>
+      </p>
+
+      <p class={heroSubLabelClass}>
+        Total recognized living and recently extinct mammal species in MDD {meta.version}
+      </p>
+
+      <!-- Species Breakdown Sub-Pills -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8">
+        <div class={breakdownPillClass}>
+          <span class="text-xs uppercase tracking-wider text-spectra-200 font-medium">
+            Living Wild
+          </span>
+          <span class="text-sm font-bold text-white">{livingWildFormatted}</span>
+        </div>
+        <div class={breakdownPillClass}>
+          <span class="text-xs uppercase tracking-wider text-spectra-200 font-medium">
+            Extinct (post-1500)
+          </span>
+          <span class="text-sm font-bold text-spicy-mix-300">{extinctFormatted}</span>
+        </div>
+        <div class={breakdownPillClass}>
+          <span class="text-xs uppercase tracking-wider text-spectra-200 font-medium">
+            Domestic
+          </span>
+          <span class="text-sm font-bold text-spectra-200">{domesticFormatted}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Higher Taxa & Synonym Statistics Grid -->
+    <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+      {
+        secondaryStats.map((stat) => (
+          <div class={secondaryCardClass}>
+            <div class="text-xs font-semibold uppercase tracking-wider text-spectra-300">
+              {stat.label}
+            </div>
+            <div class="text-2xl sm:text-3xl font-bold text-white mt-1 group-hover:text-spicy-mix-200 transition-colors">
+              {stat.value}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>

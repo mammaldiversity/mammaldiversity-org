@@ -19,8 +19,12 @@ const text = label ? label : url;
 
 const linkClasses = cntl`
   underline
-  text-spectra-700
+  text-spectra-800
   dark:text-spectra-200
+  hover:text-spicy-mix-700
+  dark:hover:text-spicy-mix-300
+  transition-colors
+  font-medium
   ${label ? "break-word" : "break-all"}
   overflow-clip
   text-ellipsis
