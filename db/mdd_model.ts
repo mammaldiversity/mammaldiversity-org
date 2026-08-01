@@ -142,7 +142,7 @@ interface Metadata {
   genusCount: number;
   familyCount: number;
   orderCount: number;
-  remark?: string;
+  remarks?: string;
   doi?: string;
 }
 
@@ -151,4 +151,12 @@ interface SynonymName {
   citation: string;
 }
 
-export type { Taxonomy, Synonym, MddData, SpeciesData, SynonymName, Metadata, Phylo };
+export type {
+  Taxonomy,
+  Synonym,
+  MddData,
+  SpeciesData,
+  SynonymName,
+  Metadata,
+  Phylo,
+};

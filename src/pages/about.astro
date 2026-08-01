@@ -18,6 +18,8 @@ import SpeciesCitation from "../components/pubs/SpeciesCitation.astro";
 import Paragraph from "../components/Paragraph.astro";
 import Book from "../components/pubs/Book.astro";
 import Page from "../layouts/Page.astro";
+import PageHeader from "../layouts/PageHeader.astro";
+import cntl from "cntl";
 
 const currentYear = new Date().getFullYear();
 const currentDate = new Date().toLocaleDateString("en-US", {
@@ -25,12 +27,33 @@ const currentDate = new Date().toLocaleDateString("en-US", {
   month: "long",
   day: "numeric",
 });
+
+const aboutCardClass = cntl`
+  p-5
+  my-4
+  bg-gradient-to-br
+  dark:from-spectra-900
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
+  backdrop-blur-sm
+  rounded-2xl
+  shadow-sm
+  border
+  border-spectra-200/60
+  dark:border-spectra-700/60
+  hover:shadow-md
+  transition-all
+  duration-300
+`;
 ---
 
 <Page data-pagefind-ignore title="About MDD">
-  <MainPage
-    ><div class="text-center item-center mt-8 md:mt-16">
-      <Title>About MDD</Title>
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">About MDD</Title>
+    </PageHeader>
+    <div class="lg:max-w-7xl mx-auto mt-12">
       <Section title="Overview">
         <Paragraph>
           Development for the Mammal Diversity Database (MDD) is funded
@@ -117,19 +140,21 @@ const currentDate = new Date().toLocaleDateString("en-US", {
             institution="California State University, Long Beach"
           />
         </CurationTeam>
-        <h3 class="font-semibold">
-          Oversight by the ASM Biodiversity Committee
-        </h3>
-        <p>
-          E. Abreu, J. Alston, T. Androski, M. Becker, C. Burgin, C.
-          Calderón-Acevedo, J. Colella, E. Craig, G. D'Elia, T. Demos, J.
-          Esselstyn, P.-H. Fabre, A. Feijó, A. Ferguson, J. Frey, K. Gorman, M.
-          Hawkins, V. Hayssen, S. Hess, A. Hinckley, D. Huckaby, B. Kohli, T.
-          Lee, S. Liphardt, S. Maher, V. Mathis, M. McDonough, S. Mech, P.
-          Moehlman, A. Mychajliw, J. Nations, R. Norris, G. Oliver, C. Parker,
-          B. Patterson, N. Pradhan, D. Reeder, M. E. Rodríguez-Posada, L.
-          Ruedas, B. Tanis, H. Taylor, N. Upham (chair), J. Widness, J. Zijlstra
-        </p>
+        <div class={aboutCardClass}>
+          <h3 class="font-semibold text-lg mb-2">
+            Oversight by the ASM Biodiversity Committee
+          </h3>
+          <p class="text-sm leading-relaxed text-spectra-800 dark:text-spectra-100">
+            E. Abreu, J. Alston, T. Androski, M. Becker, C. Burgin, C.
+            Calderón-Acevedo, J. Colella, E. Craig, G. D'Elia, T. Demos, J.
+            Esselstyn, P.-H. Fabre, A. Feijó, A. Ferguson, J. Frey, K. Gorman, M.
+            Hawkins, V. Hayssen, S. Hess, A. Hinckley, D. Huckaby, B. Kohli, T.
+            Lee, S. Liphardt, S. Maher, V. Mathis, M. McDonough, S. Mech, P.
+            Moehlman, A. Mychajliw, J. Nations, R. Norris, G. Oliver, C. Parker,
+            B. Patterson, N. Pradhan, D. Reeder, M. E. Rodríguez-Posada, L.
+            Ruedas, B. Tanis, H. Taylor, N. Upham (chair), J. Widness, J. Zijlstra
+          </p>
+        </div>
       </Section>
       <Section title="Citing MDD">
         <p>

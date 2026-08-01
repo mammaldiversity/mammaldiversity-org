@@ -13,11 +13,22 @@ const emptyDistribution =
 const hasPredictedDistribution = countryList.predicted.length > 0;
 
 const mapContainerClasses = cntl`
-  bg-spectra-50
-  dark:bg-spectra-950 
-  rounded-xl 
-  p-4 
+  bg-gradient-to-br
+  dark:from-spectra-900
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
+  backdrop-blur-sm
+  rounded-2xl
+  p-4
   my-2
+  shadow-sm
+  border
+  border-spectra-200/60
+  dark:border-spectra-700/60
+  hover:shadow-md
+  transition-all
+  duration-300
   ${extendClass}
 `;
 

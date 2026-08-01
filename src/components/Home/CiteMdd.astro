@@ -15,7 +15,12 @@ const meta = getMetadata();
 const currentVersion = cleanVersion(meta.version);
 const currentYear = getCurrentYear();
 const currentDate = getCurrentDate();
-const doi = meta.doi ? meta.doi : "https://doi.org/10.5281/zenodo.17033774";
+const rawDoi = meta.doi;
+const doi = rawDoi
+  ? rawDoi.startsWith("http")
+    ? rawDoi
+    : `https://doi.org/${rawDoi}`
+  : "https://doi.org/10.5281/zenodo.17033774";
 
 const sectionTitleClass = cntl`
   font-serif
@@ -40,7 +45,7 @@ const sectionTitleClass = cntl`
       >
         The current database
       </h3>
-      <p class="text-sm text-spectra-600 dark:text-spectra-400 mb-4">
+      <p class="text-sm text-spectra-700 dark:text-spectra-300 mb-4">
         (via <Link
           url="https://doi.org/10.5281/zenodo.4139722"
           label="Zenodo"
@@ -66,7 +71,7 @@ const sectionTitleClass = cntl`
       >
         A specific entry
       </h3>
-      <p class="text-sm text-spectra-600 dark:text-spectra-400 mb-4">
+      <p class="text-sm text-spectra-700 dark:text-spectra-300 mb-4">
         Each entry has a citation string at the end. For example:
       </p>
       <div

@@ -13,13 +13,16 @@ const pageFindCssPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.css
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Search Database</Title>
-      <p class="text-md mb-4">
-        Search for any information in the database. For a structured list
+      <p class="text-md mb-4 max-w-4xl mx-auto">
+          Search for any information in the database. For a structured list
         grouped by taxonomic order, visit the <Link
           url="/explore"
           label="Explore Page"
           openInNewTab={false}
-        />.
+        />. The <Link
+          url="https://github.com/mammaldiversity/mdd_app/releases/latest"
+          label="MDD App"
+          openInNewTab={true}/> provides a more advanced search feature with offline access and custom exports.
       </p>
     </div>
     <!-- <OneLineNotes
