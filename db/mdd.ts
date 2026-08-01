@@ -1,9 +1,18 @@
 // Parser for parsing the MDD json file
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { gunzipSync } from "node:zlib";
 import type { MddData, SpeciesData, Metadata, Synonym, Phylo } from "./mdd_model";
-import mddRaw from "../db/data/mdd.json";
+
+// Keep the large dataset out of Vite's module graph. Importing the 123 MB JSON
+// file makes Rolldown serialize an AST that exceeds Node's string-size limit.
+const mddPath = resolve(process.cwd(), "db/data/mdd.json.gz");
+const mddRaw = JSON.parse(
+  gunzipSync(readFileSync(mddPath)).toString("utf8"),
+) as MddData;
 
 function parseMDDJson(): MddData {
-  return mddRaw as unknown as MddData;
+  return mddRaw;
 }
 
 function getSpeciesData(): SpeciesData[] {
