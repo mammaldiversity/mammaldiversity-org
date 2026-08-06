@@ -15,8 +15,11 @@ const sectionTitleClass = cntl`
 `;
 
 const whatsNewCard = cntl`
-  bg-white/80
-  dark:bg-spectra-800/80
+  bg-gradient-to-br
+  dark:from-spectra-900
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
   backdrop-blur-sm
   rounded-2xl
   p-6
@@ -31,13 +34,13 @@ const whatsNewCard = cntl`
 ---
 
 <div>
-  <h2 class={sectionTitleClass}>What's New in the MDD2</h2>
+  <h2 class={sectionTitleClass}>New in MDD v2</h2>
   <div
     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
   >
     <div class={whatsNewCard}>
       <div
-        class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mb-4 text-blue-600 dark:text-blue-400"
+        class="w-10 h-10 rounded-full bg-spectra-100 dark:bg-spectra-800 flex items-center justify-center mb-4 text-spectra-800 dark:text-spectra-200 border border-spectra-200 dark:border-spectra-700"
       >
         <svg
           class="w-5 h-5"
@@ -52,7 +55,7 @@ const whatsNewCard = cntl`
           ></path></svg
         >
       </div>
-      <p class="text-sm text-spectra-800 dark:text-spectra-200">
+      <p class="text-sm text-spectra-900 dark:text-spectra-100">
         Codings of US state, country, continent, and biogeographic realm
         geographic categories for each species. <Link
           url="/country/US"
@@ -62,7 +65,7 @@ const whatsNewCard = cntl`
     </div>
     <div class={whatsNewCard}>
       <div
-        class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center mb-4 text-purple-600 dark:text-purple-400"
+        class="w-10 h-10 rounded-full bg-spicy-mix-100 dark:bg-spicy-mix-900/60 flex items-center justify-center mb-4 text-spicy-mix-800 dark:text-spicy-mix-200 border border-spicy-mix-200 dark:border-spicy-mix-800"
       >
         <svg
           class="w-5 h-5"
@@ -77,14 +80,14 @@ const whatsNewCard = cntl`
           ></path></svg
         >
       </div>
-      <p class="text-sm text-spectra-800 dark:text-spectra-200">
+      <p class="text-sm text-spectra-900 dark:text-spectra-100">
         A comprehensive nomenclatural dataset for 50,000+ synonymous
         species-rank names, curated with type locality and specimen information.
       </p>
     </div>
     <div class={whatsNewCard}>
       <div
-        class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center mb-4 text-green-600 dark:text-green-400"
+        class="w-10 h-10 rounded-full bg-spectra-100 dark:bg-spectra-800 flex items-center justify-center mb-4 text-spectra-800 dark:text-spectra-200 border border-spectra-200 dark:border-spectra-700"
       >
         <svg
           class="w-5 h-5"
@@ -99,14 +102,14 @@ const whatsNewCard = cntl`
           ></path></svg
         >
       </div>
-      <p class="text-sm text-spectra-800 dark:text-spectra-200">
+      <p class="text-sm text-spectra-900 dark:text-spectra-100">
         Integration between the MDD, the databases Hesperomys, Batnames, and the
         Mammal Images Library (MIL) for greater data accuracy and completeness.
       </p>
     </div>
     <div class={whatsNewCard}>
       <div
-        class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-4 text-orange-600 dark:text-orange-400"
+        class="w-10 h-10 rounded-full bg-spicy-mix-100 dark:bg-spicy-mix-900/60 flex items-center justify-center mb-4 text-spicy-mix-800 dark:text-spicy-mix-200 border border-spicy-mix-200 dark:border-spicy-mix-800"
       >
         <svg
           class="w-5 h-5"
@@ -121,7 +124,7 @@ const whatsNewCard = cntl`
           ></path></svg
         >
       </div>
-      <p class="text-sm text-spectra-800 dark:text-spectra-200">
+      <p class="text-sm text-spectra-900 dark:text-spectra-100">
         A rewritten and redesigned of the MDD website with a new search feature
         and better scalability for supporting future features. The original
         version is available at <Link
@@ -132,7 +135,7 @@ const whatsNewCard = cntl`
     </div>
     <div class={whatsNewCard}>
       <div
-        class="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/50 flex items-center justify-center mb-4 text-cyan-600 dark:text-cyan-400"
+        class="w-10 h-10 rounded-full bg-spectra-100 dark:bg-spectra-800 flex items-center justify-center mb-4 text-spectra-800 dark:text-spectra-200 border border-spectra-200 dark:border-spectra-700"
       >
         <svg
           class="w-5 h-5"
@@ -147,7 +150,7 @@ const whatsNewCard = cntl`
           ></path></svg
         >
       </div>
-      <p class="text-sm text-spectra-800 dark:text-spectra-200">
+      <p class="text-sm text-spectra-900 dark:text-spectra-100">
         Discover more ways to explore the database and view in-depth data
         statistics, including taxonomic tables and interactive geographic maps. <Link
           url="/explore"
@@ -157,7 +160,7 @@ const whatsNewCard = cntl`
     </div>
     <div class={whatsNewCard}>
       <div
-        class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center mb-4 text-red-600 dark:text-red-400"
+        class="w-10 h-10 rounded-full bg-spicy-mix-100 dark:bg-spicy-mix-900/60 flex items-center justify-center mb-4 text-spicy-mix-800 dark:text-spicy-mix-200 border border-spicy-mix-200 dark:border-spicy-mix-800"
       >
         <svg
           class="w-5 h-5"
@@ -172,7 +175,7 @@ const whatsNewCard = cntl`
           ></path></svg
         >
       </div>
-      <p class="text-sm text-spectra-800 dark:text-spectra-200">
+      <p class="text-sm text-spectra-900 dark:text-spectra-100">
         A new cross-platform app offering offline access to MDD, advanced search
         capabilities, custom exports, and more. Check out the "Install MDD App"
         section below.

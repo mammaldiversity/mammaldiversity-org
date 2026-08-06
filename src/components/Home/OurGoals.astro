@@ -1,31 +1,44 @@
 ---
 import cntl from "cntl";
 
+const sectionTitleClass = cntl`
+  font-serif
+  text-3xl
+  lg:text-4xl
+  font-semibold
+  text-center
+  mb-4
+  text-spectra-900
+  dark:text-spectra-50
+`;
+
 const goalBanner = cntl`
   relative
   bg-gradient-to-br
-  from-spectra-800
-  to-spectra-950
   dark:from-spectra-900
-  dark:to-spectra-950
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
   text-white
   rounded-[2rem]
   py-12
   px-8
   md:px-16
   text-center
-  shadow-lg
-  max-w-5xl
+  max-w-[2400px]
   mx-auto
   overflow-hidden
+  border
+  border-spectra-200
+  dark:border-spectra-700
 `;
 ---
 
-<div id="goal-content" class="mt-20 mb-12">
+<div id="goal-content" class="mt-6 mb-12">
   <div class={goalBanner}>
     <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent"></div>
-    <h2 class="font-serif text-3xl lg:text-4xl font-semibold mb-6 text-white relative z-10">Our Goals</h2>
-    <p class="text-lg md:text-xl text-spectra-100 leading-relaxed font-light relative z-10 max-w-4xl mx-auto">
+    <h2 class={sectionTitleClass}>Our Goals</h2>
+    <p class="text-lg md:text-xl text-spectra-900 dark:text-spectra-100 leading-relaxed font-normal relative z-10 mx-auto">
       We are curating the taxonomic implications of new research
       publications in real time — with the goal of promoting rigorous study
       of mammal biodiversity worldwide. The initial objective has been to

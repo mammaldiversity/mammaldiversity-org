@@ -1,0 +1,168 @@
+---
+import DiffTable from "../../components/DiffTable.astro";
+import Link from "../../components/Link.astro";
+import PageDivider from "../../components/PageDivider.astro";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
+import {
+  cleanVersion,
+  getDiffReleases,
+  getReleaseDate,
+  getReleaseNotes,
+  getTaxonomyCategoryCounts,
+} from "../../../db/diffs";
+import {
+  getHistoricalReleaseDate,
+  getHistoricalReleaseNote,
+  getHistoricalReleaseNotes,
+} from "../../../db/release_notes";
+import { formatDate } from "../../libs/metadata";
+
+const diffReleases = getDiffReleases();
+const diffsByVersion = new Map(
+  diffReleases.map((release) => [cleanVersion(release.version), release]),
+);
+const releaseVersions = new Set([
+  ...diffReleases.map((release) => cleanVersion(release.version)),
+  ...getHistoricalReleaseNotes().map((release) => release.version),
+]);
+
+function titleCase(value: string): string {
+  return value.replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+const releaseSummaries = Array.from(releaseVersions)
+  .map((version) => {
+    const release = diffsByVersion.get(version);
+
+    return {
+      release,
+      version,
+      releaseDate: release
+        ? getReleaseDate(release)
+        : getHistoricalReleaseDate(version),
+      releaseNotes: release
+        ? getReleaseNotes(release)
+        : getHistoricalReleaseNote(version),
+      taxonomyCounts: release
+        ? Object.entries(getTaxonomyCategoryCounts(release.taxonomyChanges)).sort(
+            ([left], [right]) => left.localeCompare(right),
+          )
+        : [],
+    };
+  })
+  .sort((left, right) => {
+    const dateDifference =
+      releaseTimestamp(right.releaseDate) - releaseTimestamp(left.releaseDate);
+
+    return dateDifference || compareVersions(right.version, left.version);
+  });
+
+function releaseTimestamp(date: string | undefined): number {
+  if (!date) return 0;
+
+  const timestamp = Date.parse(`${date}T00:00:00Z`);
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+}
+
+function compareVersions(left: string, right: string): number {
+  const leftParts = left.split(".").map(Number);
+  const rightParts = right.split(".").map(Number);
+
+  for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index += 1) {
+    const difference = (leftParts[index] ?? 0) - (rightParts[index] ?? 0);
+    if (difference !== 0) return difference;
+  }
+
+  return 0;
+}
+
+const summaryColumns = [
+  { key: "category", label: "Category" },
+  { key: "count", label: "Changes" },
+];
+---
+
+<Page title="MDD Release Notes" isIndexed={false}>
+  <MainPage isIndexed={false}>
+    <PageHeader>
+      <Title slot="title" bottomPadding={8}>MDD Release Notes</Title>
+      <div slot="description">
+        <p>
+          Explore taxonomy changes and field-level differences across available Mammal Diversity Database releases.
+        </p>
+      </div>
+    </PageHeader>
+    <PageDivider />
+
+    <div class="mx-auto max-w-6xl space-y-12 pb-12">
+      {
+        releaseSummaries.length > 0 ? (
+        releaseSummaries.map(
+          ({ release, version, releaseDate, releaseNotes, taxonomyCounts }) => (
+            <section
+              id={`release-v${version}`}
+              class="rounded-2xl border border-spectra-200/70 bg-white/80 p-6 shadow-sm dark:border-spectra-700/70 dark:bg-spectra-900/80 sm:p-8"
+            >
+              <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p class="text-sm font-semibold uppercase tracking-wider text-spectra-600 dark:text-spectra-300">
+                    Released {formatDate(releaseDate) ?? "Date unavailable"}
+                  </p>
+                  <h2 class="mt-1 font-serif text-3xl font-semibold text-spectra-950 dark:text-spectra-50">
+                    MDD v{version}
+                  </h2>
+                </div>
+                {release && (
+                  <div class="flex flex-wrap gap-3 text-sm">
+                    <Link
+                      url={`/releases/diff-changes/${version}`}
+                      label="Taxonomy changes"
+                    />
+                    <Link
+                      url={`/releases/all-diffs/${version}`}
+                      label="All changes"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {releaseNotes && (
+                <div class="mb-6 whitespace-pre-line break-words leading-relaxed text-spectra-800 dark:text-spectra-200">
+                  {releaseNotes}
+                </div>
+              )}
+
+              {release && (
+                <div>
+                  <h3 class="mb-3 text-lg font-semibold text-spectra-900 dark:text-spectra-100">
+                    Taxonomy changes from v{cleanVersion(release.prevVersion)} to v{version}
+                  </h3>
+                  <DiffTable
+                    columns={summaryColumns}
+                    rows={taxonomyCounts.map(([category, count]) => ({
+                      category: titleCase(category),
+                      count,
+                    }))}
+                  />
+                  <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <p class="text-xs text-spectra-600 dark:text-spectra-400">
+                      {release.taxonomyChanges.length.toLocaleString()} taxonomy changes total
+                    </p>
+                  </div>
+                </div>
+              )}
+            </section>
+          ),
+        )
+        ) : (
+          <p class="py-12 text-center text-spectra-700 dark:text-spectra-300">
+            No release differences are currently available.
+          </p>
+        )
+      }
+    </div>
+  </MainPage>
+</Page>

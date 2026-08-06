@@ -35,3 +35,9 @@ country_stats.json
 mil.json
 mil-images/
 usa_states.json
+
+# macOS
+.DS_Store
+__MACOSX/
+MDD/
+diffs.json

@@ -13,13 +13,16 @@ const pageFindCssPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.css
   <MainPage>
     <div class="text-center item-center mt-8 md:mt-16">
       <Title>Search Database</Title>
-      <p class="text-md mb-4">
-        Search for any information in the database. For a structured list
+      <p class="text-md mb-4 max-w-4xl mx-auto">
+          Search for any information in the database. For a structured list
         grouped by taxonomic order, visit the <Link
           url="/explore"
           label="Explore Page"
           openInNewTab={false}
-        />.
+        />. The <Link
+          url="https://github.com/mammaldiversity/mdd_app/releases/latest"
+          label="MDD App"
+          openInNewTab={true}/> provides a more advanced search feature with offline access and custom exports.
       </p>
     </div>
     <!-- <OneLineNotes
@@ -166,16 +169,41 @@ const pageFindCssPath = join(import.meta.env.BASE_URL, "pagefind/pagefind-ui.css
 <script src={pageFindJsPath} type="text/javascript" is:inline></script>
 
 <script>
-  declare const PagefindUI: any;
-  window.addEventListener("DOMContentLoaded", () => {
-    if (!window.location.pathname.includes("/explore")) {
-      new PagefindUI({
-        element: "#search",
-        showSubResults: true,
-        showImages: false,
-        pageSize: 15,
-        showEmptyFilters: false,
-      });
+  interface PagefindUIOptions {
+    element: string;
+    showSubResults?: boolean;
+    showImages?: boolean;
+    pageSize?: number;
+    showEmptyFilters?: boolean;
+  }
+
+  interface PagefindUIInstance {
+    triggerSearch: (term: string) => void;
+  }
+
+  interface PagefindUIConstructor {
+    new (options: PagefindUIOptions): PagefindUIInstance;
+  }
+
+  declare const PagefindUI: PagefindUIConstructor;
+
+  function handlePagefindInit(): void {
+    if (window.location.pathname.includes('/explore')) {
+      return;
     }
-  });
+    const pui = new PagefindUI({
+      element: '#search',
+      showSubResults: true,
+      showImages: false,
+      pageSize: 15,
+      showEmptyFilters: false,
+    });
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get('q') || params.get('query');
+    if (query) {
+      pui.triggerSearch(query);
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', handlePagefindInit);
 </script>

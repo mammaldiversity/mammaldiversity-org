@@ -21,7 +21,6 @@ const mddDownloadLink =
 const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
 
 const heroClasses = cntl`
-  max-w-[2400px]
   grid
   grid-cols-1
   lg:grid-cols-2
@@ -49,7 +48,7 @@ const titleClasses = cntl`
   font-semibold
   text-5xl
   lg:text-6xl
-  text-spectra-900
+  text-spectra-950
   dark:text-spectra-50
   leading-tight
   mb-2
@@ -59,7 +58,7 @@ const subtitleClasses = cntl`
   text-lg
   lg:text-xl
   text-spectra-700
-  dark:text-spectra-300
+  dark:text-spectra-200
   font-medium
   mb-6
 `;
@@ -67,8 +66,8 @@ const subtitleClasses = cntl`
 const descriptionClasses = cntl`
   text-xl
   lg:text-2xl
-  text-spectra-800
-  dark:text-spectra-200
+  text-spectra-900
+  dark:text-spectra-100
   leading-relaxed
   mb-8
 `;
@@ -82,8 +81,56 @@ const descriptionClasses = cntl`
       Track the latest taxonomic changes to living and recently extinct (i.e.,
       since ~1500 CE) species and higher taxa of mammals.
     </p>
+    <form action="/search" method="GET" class="relative my-2 w-full">
+      <div class="relative flex items-center">
+        <div
+          class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-spectra-600 dark:text-spectra-300"
+        >
+          <svg
+            class="w-5 h-5"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607z"
+            ></path>
+          </svg>
+        </div>
+        <input
+          type="search"
+          name="q"
+          class="w-full pl-11 pr-28 py-3 text-base text-spectra-950 dark:text-spectra-50 bg-white/90 dark:bg-spectra-950/70 backdrop-blur-md border border-spectra-300 dark:border-spectra-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-spectra-600 focus:border-transparent transition-all placeholder:text-spectra-600/70 dark:placeholder:text-spectra-400/70 shadow-sm"
+          placeholder="Search species, genus, family, order..."
+          required
+          autocomplete="off"
+        />
+        <button
+          type="submit"
+          class="absolute right-1.5 px-2 py-2 bg-spectra-800 hover:bg-spectra-900 dark:bg-spectra-600 dark:hover:bg-spectra-500 text-white font-medium text-sm rounded-lg transition-colors shadow-sm flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>Search</span>
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </form>
     <MainActionButtons
-      searchURI="./search"
       downloadURI={mddDownloadLink}
       previousVersionsURI={prevVersionsLink}
       versionDescription={versionDescription}

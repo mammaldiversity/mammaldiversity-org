@@ -2,19 +2,19 @@
 import ActionButton from "./buttons/ActionButton.astro";
 import Link from "./Link.astro";
 
-const { searchURI, downloadURI, previousVersionsURI, versionDescription } =
+const { downloadURI, previousVersionsURI, versionDescription } =
   Astro.props;
 ---
 
-<div class="grid md:flex md:grid-cols-2 gap-2 mt-8 md:mt-16">
+<div class="grid md:flex md:grid-cols-2 gap-2 mt-4">
   <div class="md:mr-2 mb-2 md:mb-0">
-    <ActionButton label="Download the latest version" uri={downloadURI} />
+    <ActionButton label="Download latest version" uri={downloadURI} />
   </div>
   <div>
-    <ActionButton label="Search database" uri={searchURI} isPrimary />
+    <ActionButton label="Explore MDD" uri="/explore" isPrimary />
   </div>
 </div>
-<div class="text-left text-xs mt-2">
+<div class="text-left text-xs mt-2 text-spectra-700 dark:text-spectra-300 font-medium">
   <p>
     {versionDescription}.
   </p>

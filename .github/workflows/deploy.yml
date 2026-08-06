@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -20,11 +20,6 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-
       - name: Install MDD CLI
         run: cargo install mdd_api
 
@@ -32,7 +27,7 @@ jobs:
         working-directory: db/data
         run: |
           curl -L -o MDD.zip https://github.com/mammaldiversity/mammaldiversity.github.io/raw/master/assets/data/MDD.zip
-          
+
           MIL_URL=$(curl -s https://api.github.com/repos/mammaldiversity/asm-mil/releases/latest \
             | grep -o '"browser_download_url": *"[^"]*\.tar\.gz"' \
             | grep -o 'https://[^"]*')
@@ -43,11 +38,40 @@ jobs:
           echo "Downloading MIL data from $MIL_URL"
           curl -L -o "$MIL_FILENAME" "$MIL_URL"
 
-          # Run the new prepare subcommand to unpack MDD and merge with MIL data
-          mdd prepare -z MDD.zip -m "$MIL_FILENAME" -o .
+          # Parse MDD and merge the archive diff into the checked-in history.
+          mdd unpack -z MDD.zip -o . --append-diff diffs.json.gz
+
+          # Prepare MIL metadata from the extracted MDD CSV.
+          MDD_FILE=$(find MDD -type f -name 'MDD_v*.csv' -print -quit)
+          if [ -z "$MDD_FILE" ]; then
+            echo "ERROR: No MDD species CSV found after unpacking MDD.zip" >&2
+            exit 1
+          fi
+          mdd mil -m "$MIL_FILENAME" -d "$MDD_FILE" -o mil.json
 
           # Extract images so they can be moved/verified downstream
           tar -xzf "$MIL_FILENAME"
+
+      - name: Commit parsed MDD diffs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add db/data/diffs.json.gz
+          if git diff --cached --quiet; then
+            echo "No parsed diff changes to commit."
+            exit 0
+          fi
+
+          staged_files=$(git diff --cached --name-only)
+          if [ "$staged_files" != "db/data/diffs.json.gz" ]; then
+            echo "ERROR: Unexpected files staged for the diff update:" >&2
+            printf '%s\n' "$staged_files" >&2
+            exit 1
+          fi
+
+          git commit -m "Update parsed release diffs"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Normalize region data
         run: bun run normalize-region-data
