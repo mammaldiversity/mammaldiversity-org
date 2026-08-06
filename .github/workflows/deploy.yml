@@ -20,11 +20,6 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-
       - name: Install MDD CLI
         run: cargo install mdd_api
 
@@ -32,7 +27,7 @@ jobs:
         working-directory: db/data
         run: |
           curl -L -o MDD.zip https://github.com/mammaldiversity/mammaldiversity.github.io/raw/master/assets/data/MDD.zip
-          
+
           MIL_URL=$(curl -s https://api.github.com/repos/mammaldiversity/asm-mil/releases/latest \
             | grep -o '"browser_download_url": *"[^"]*\.tar\.gz"' \
             | grep -o 'https://[^"]*')
