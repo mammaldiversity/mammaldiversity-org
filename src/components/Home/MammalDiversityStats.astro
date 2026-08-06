@@ -1,6 +1,11 @@
 ---
 import cntl from "cntl";
+import ActionButton from "../buttons/ActionButton.astro";
 import DiversityStatTable from "../DiversityStatTable.astro";
+import ReleaseChangeChart from "../ReleaseChangeChart";
+import { getChangeTrendData } from "../../../db/diffs";
+
+const changeTrendData = getChangeTrendData();
 
 const sectionTitleClass = cntl`
   font-serif
@@ -19,5 +24,23 @@ const sectionTitleClass = cntl`
   <h2 class={sectionTitleClass}>Mammal Diversity Statistics</h2>
   <div class="mb-16">
     <DiversityStatTable />
+    <div
+      class="mx-auto mt-10 max-w-4xl rounded-2xl border border-spectra-200/60 bg-white/80 p-4 shadow-sm dark:border-spectra-700/60 dark:bg-spectra-900/80 sm:p-6"
+    >
+      <h3 class="mb-2 text-center font-serif text-2xl font-semibold text-spectra-900 dark:text-spectra-50">
+        Taxonomic Changes since the MDD v2 release
+      </h3>
+      <p class="mb-4 text-center text-sm text-spectra-700 dark:text-spectra-300">
+        Counts of de novo descriptions, genus changes, lumps, and splits recorded in each release.
+      </p>
+      <ReleaseChangeChart client:visible data={changeTrendData} />
+      <div class="mt-5 flex justify-center">
+        <ActionButton
+          label="Show all changes"
+          uri="/releases/taxonomy-changes"
+          isPrimary
+        />
+      </div>
+    </div>
   </div>
 </div>

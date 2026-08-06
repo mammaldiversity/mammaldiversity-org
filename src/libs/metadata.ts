@@ -10,6 +10,7 @@ function formatDate(dateString: string | undefined): string | null {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   });
 }
 
