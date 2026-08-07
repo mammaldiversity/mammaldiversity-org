@@ -39,7 +39,7 @@ jobs:
           curl -L -o "$MIL_FILENAME" "$MIL_URL"
 
           # Parse MDD and merge the archive diff into the checked-in history.
-          mdd unpack -z MDD.zip -o . --append-diff diffs.json.gz
+          mdd unpack -i MDD.zip -o . --append-diff diffs.json.gz
 
           # Prepare MIL metadata from the extracted MDD CSV.
           MDD_FILE=$(find MDD -type f -name 'MDD_v*.csv' -print -quit)
