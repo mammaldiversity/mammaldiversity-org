@@ -53,18 +53,19 @@ jobs:
           tar -xzf "$MIL_FILENAME"
 
       - name: Commit parsed MDD diffs
+        working-directory: db/data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add db/data/diffs.json.gz
+          git add ./diffs.json.gz
           if git diff --cached --quiet; then
             echo "No parsed diff changes to commit."
             exit 0
           fi
 
           staged_files=$(git diff --cached --name-only)
-          if [ "$staged_files" != "db/data/diffs.json.gz" ]; then
+          if [ "$staged_files" != "./diffs.json.gz" ]; then
             echo "ERROR: Unexpected files staged for the diff update:" >&2
             printf '%s\n' "$staged_files" >&2
             exit 1
