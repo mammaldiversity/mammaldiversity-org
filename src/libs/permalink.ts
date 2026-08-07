@@ -14,6 +14,8 @@ function generateSpeciesPermalink(taxonId: number): string {
   return `${MDD_SPECIES_PERMALINK}${MDD_SPECIES_LINK}${taxonId}`;
 }
 
+export const ZENODO_MDD_LINK = "https://doi.org/10.5281/zenodo.4139722";
+
 /**
  * Generates a relative link for a species page.
  * @param {number} taxonId - The ID of the taxon.
@@ -43,7 +45,10 @@ function generateStateLink(countryCode: string, stateCode: string): string {
   return `/country/${countryCode}/${stateCode}`;
 }
 
-function generateStatePermalink(countryCode: string, stateCode: string): string {
+function generateStatePermalink(
+  countryCode: string,
+  stateCode: string,
+): string {
   return `https://mammaldiversity.org/country/${countryCode}/${stateCode}`;
 }
 

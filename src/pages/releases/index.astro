@@ -19,6 +19,8 @@ import {
   getHistoricalReleaseNotes,
 } from "../../../db/release_notes";
 import { formatDate } from "../../libs/metadata";
+import { ZENODO_MDD_LINK } from "../../libs/permalink";
+import LinkIcon from "../../components/LinkIcon.astro";
 
 const diffReleases = getDiffReleases();
 const diffsByVersion = new Map(
@@ -47,9 +49,9 @@ const releaseSummaries = Array.from(releaseVersions)
         ? getReleaseNotes(release)
         : getHistoricalReleaseNote(version),
       taxonomyCounts: release
-        ? Object.entries(getTaxonomyCategoryCounts(release.taxonomyChanges)).sort(
-            ([left], [right]) => left.localeCompare(right),
-          )
+        ? Object.entries(
+            getTaxonomyCategoryCounts(release.taxonomyChanges),
+          ).sort(([left], [right]) => left.localeCompare(right))
         : [],
     };
   })
@@ -71,7 +73,11 @@ function compareVersions(left: string, right: string): number {
   const leftParts = left.split(".").map(Number);
   const rightParts = right.split(".").map(Number);
 
-  for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index += 1) {
+  for (
+    let index = 0;
+    index < Math.max(leftParts.length, rightParts.length);
+    index += 1
+  ) {
     const difference = (leftParts[index] ?? 0) - (rightParts[index] ?? 0);
     if (difference !== 0) return difference;
   }
@@ -83,6 +89,8 @@ const summaryColumns = [
   { key: "category", label: "Category" },
   { key: "count", label: "Changes" },
 ];
+
+const zenodoReleaseLink = ZENODO_MDD_LINK;
 ---
 
 <Page title="MDD Release Notes" isIndexed={false}>
@@ -91,7 +99,8 @@ const summaryColumns = [
       <Title slot="title" bottomPadding={8}>MDD Release Notes</Title>
       <div slot="description">
         <p>
-          Explore taxonomy changes and field-level differences across available Mammal Diversity Database releases.
+          Download older versions of the MDD at{" "}
+          <Link url={zenodoReleaseLink} label="Zenodo" openInNewTab={true} />.
         </p>
       </div>
     </PageHeader>
@@ -100,63 +109,71 @@ const summaryColumns = [
     <div class="mx-auto max-w-6xl space-y-12 pb-12">
       {
         releaseSummaries.length > 0 ? (
-        releaseSummaries.map(
-          ({ release, version, releaseDate, releaseNotes, taxonomyCounts }) => (
-            <section
-              id={`release-v${version}`}
-              class="rounded-2xl border border-spectra-200/70 bg-white/80 p-6 shadow-sm dark:border-spectra-700/70 dark:bg-spectra-900/80 sm:p-8"
-            >
-              <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p class="text-sm font-semibold uppercase tracking-wider text-spectra-600 dark:text-spectra-300">
-                    Released {formatDate(releaseDate) ?? "Date unavailable"}
-                  </p>
-                  <h2 class="mt-1 font-serif text-3xl font-semibold text-spectra-950 dark:text-spectra-50">
-                    MDD v{version}
-                  </h2>
+          releaseSummaries.map(
+            ({
+              release,
+              version,
+              releaseDate,
+              releaseNotes,
+              taxonomyCounts,
+            }) => (
+              <section
+                id={`release-v${version}`}
+                class="rounded-2xl border border-spectra-200/70 bg-white/80 p-6 shadow-sm dark:border-spectra-700/70 dark:bg-spectra-900/80 sm:p-8"
+              >
+                <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p class="text-sm font-semibold uppercase tracking-wider text-spectra-600 dark:text-spectra-300">
+                      Released {formatDate(releaseDate) ?? "Date unavailable"}
+                    </p>
+                    <h2 class="mt-1 font-serif text-3xl font-semibold text-spectra-950 dark:text-spectra-50">
+                      MDD v{version}
+                    </h2>
+                  </div>
+                  {release && (
+                    <div class="flex flex-wrap gap-3 text-sm">
+                      <Link
+                        url={`/releases/diff-changes/${version}`}
+                        label="Taxonomy changes"
+                      />
+                      <Link
+                        url={`/releases/all-diffs/${version}`}
+                        label="All changes"
+                      />
+                    </div>
+                  )}
                 </div>
-                {release && (
-                  <div class="flex flex-wrap gap-3 text-sm">
-                    <Link
-                      url={`/releases/diff-changes/${version}`}
-                      label="Taxonomy changes"
-                    />
-                    <Link
-                      url={`/releases/all-diffs/${version}`}
-                      label="All changes"
-                    />
+
+                {releaseNotes && (
+                  <div class="mb-6 whitespace-pre-line break-words leading-relaxed text-spectra-800 dark:text-spectra-200">
+                    {releaseNotes}
                   </div>
                 )}
-              </div>
 
-              {releaseNotes && (
-                <div class="mb-6 whitespace-pre-line break-words leading-relaxed text-spectra-800 dark:text-spectra-200">
-                  {releaseNotes}
-                </div>
-              )}
-
-              {release && (
-                <div>
-                  <h3 class="mb-3 text-lg font-semibold text-spectra-900 dark:text-spectra-100">
-                    Taxonomy changes from v{cleanVersion(release.prevVersion)} to v{version}
-                  </h3>
-                  <DiffTable
-                    columns={summaryColumns}
-                    rows={taxonomyCounts.map(([category, count]) => ({
-                      category: titleCase(category),
-                      count,
-                    }))}
-                  />
-                  <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-                    <p class="text-xs text-spectra-600 dark:text-spectra-400">
-                      {release.taxonomyChanges.length.toLocaleString()} taxonomy changes total
-                    </p>
+                {release && (
+                  <div>
+                    <h3 class="mb-3 text-lg font-semibold text-spectra-900 dark:text-spectra-100">
+                      Taxonomy changes from v{cleanVersion(release.prevVersion)}{" "}
+                      to v{version}
+                    </h3>
+                    <DiffTable
+                      columns={summaryColumns}
+                      rows={taxonomyCounts.map(([category, count]) => ({
+                        category: titleCase(category),
+                        count,
+                      }))}
+                    />
+                    <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                      <p class="text-xs text-spectra-600 dark:text-spectra-400">
+                        {release.taxonomyChanges.length.toLocaleString()}{" "}
+                        taxonomy changes total
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )}
-            </section>
-          ),
-        )
+                )}
+              </section>
+            ),
+          )
         ) : (
           <p class="py-12 text-center text-spectra-700 dark:text-spectra-300">
             No release differences are currently available.
