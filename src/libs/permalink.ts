@@ -15,6 +15,8 @@ function generateSpeciesPermalink(taxonId: number): string {
 }
 
 export const ZENODO_MDD_LINK = "https://doi.org/10.5281/zenodo.4139722";
+export const MDD_DOWNLOAD_LINK =
+  "https://github.com/mammaldiversity/mammaldiversity.github.io/raw/refs/heads/master/assets/data/MDD.zip";
 
 /**
  * Generates a relative link for a species page.

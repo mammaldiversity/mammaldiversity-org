@@ -12,7 +12,12 @@ import {
   getHistoricalReleaseNotes,
 } from "../db/release_notes";
 import type { DiffRelease } from "../db/diffs_model";
-import { formatDate } from "../src/libs/metadata";
+import { getMetadata } from "../db/mdd";
+import {
+  cleanVersion as cleanMetadataVersion,
+  formatDate,
+} from "../src/libs/metadata";
+import { MDD_DOWNLOAD_LINK } from "../src/libs/permalink";
 
 const diffReleases = getDiffReleases();
 const allTaxonomyChanges = getAllTaxonomyChanges();
@@ -21,6 +26,7 @@ const latestRelease = diffReleases.find(
   (release) => cleanVersion(release.version) === latestChange.version,
 )!;
 const latestVersion = cleanVersion(latestRelease.version);
+const currentVersion = cleanMetadataVersion(getMetadata().version);
 
 test("diff parser exposes JSON releases and fallback dates", () => {
   const trend = getChangeTrendData();
@@ -67,8 +73,26 @@ test("release index summarizes changes by category", async ({ page }) => {
   await page.goto("/releases");
 
   await expect(page).toHaveTitle("MDD Release Notes");
-  await expect(page.getByRole("heading", { name: `MDD v${latestVersion}` })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: `MDD v${currentVersion} Latest` }),
+  ).toBeVisible();
   await expect(page.getByRole("heading", { name: "MDD v2.1" })).toBeVisible();
+  const currentReleaseSection = page.locator(
+    `section[id="release-v${currentVersion}"]`,
+  );
+  await expect(currentReleaseSection.getByText("Latest", { exact: true })).toHaveClass(
+    /rounded-full/,
+  );
+  await expect(
+    currentReleaseSection.getByRole("link", {
+      name: `Download MDD v${currentVersion}`,
+    }),
+  ).toHaveAttribute("href", MDD_DOWNLOAD_LINK);
+  await expect(
+    page.locator('section[id="release-v2.4"]').getByRole("link", {
+      name: /Download MDD/,
+    }),
+  ).toHaveCount(0);
   const latestReleaseNotes = getReleaseNotes(latestRelease);
   expect(latestReleaseNotes).toBeDefined();
   await expect(page.getByText(latestReleaseNotes!, { exact: true })).toBeVisible();

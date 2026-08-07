@@ -1,5 +1,6 @@
 ---
 import DiffTable from "../../components/DiffTable.astro";
+import ActionButton from "../../components/buttons/ActionButton.astro";
 import Link from "../../components/Link.astro";
 import PageDivider from "../../components/PageDivider.astro";
 import Title from "../../components/Title.astro";
@@ -18,11 +19,15 @@ import {
   getHistoricalReleaseNote,
   getHistoricalReleaseNotes,
 } from "../../../db/release_notes";
-import { formatDate } from "../../libs/metadata";
-import { ZENODO_MDD_LINK } from "../../libs/permalink";
-import LinkIcon from "../../components/LinkIcon.astro";
+import { getMetadata } from "../../../db/mdd";
+import {
+  cleanVersion as cleanMetadataVersion,
+  formatDate,
+} from "../../libs/metadata";
+import { MDD_DOWNLOAD_LINK, ZENODO_MDD_LINK } from "../../libs/permalink";
 
 const diffReleases = getDiffReleases();
+const currentVersion = cleanMetadataVersion(getMetadata().version);
 const diffsByVersion = new Map(
   diffReleases.map((release) => [cleanVersion(release.version), release]),
 );
@@ -121,16 +126,31 @@ const zenodoReleaseLink = ZENODO_MDD_LINK;
                 id={`release-v${version}`}
                 class="rounded-2xl border border-spectra-200/70 bg-white/80 p-6 shadow-sm dark:border-spectra-700/70 dark:bg-spectra-900/80 sm:p-8"
               >
-                <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <p class="text-sm font-semibold uppercase tracking-wider text-spectra-600 dark:text-spectra-300">
-                      Released {formatDate(releaseDate) ?? "Date unavailable"}
-                    </p>
-                    <h2 class="mt-1 font-serif text-3xl font-semibold text-spectra-950 dark:text-spectra-50">
-                      MDD v{version}
-                    </h2>
-                  </div>
-                  {release && (
+                <div class="mb-4">
+                  <p class="text-sm font-semibold uppercase tracking-wider text-spectra-600 dark:text-spectra-300">
+                    Released {formatDate(releaseDate) ?? "Date unavailable"}
+                  </p>
+                  <h2 class="mt-1 font-serif text-3xl font-semibold text-spectra-950 dark:text-spectra-50">
+                    MDD v{version}
+                    {version === currentVersion && (
+                      <sup class="ml-2 inline-flex translate-y-[-0.2em] rounded-full border border-spicy-mix-300 bg-spicy-mix-100 px-2 py-2 align-middle font-sans text-[0.65rem] font-bold uppercase tracking-[0.14em] text-spicy-mix-800 dark:border-spicy-mix-700 dark:bg-spicy-mix-900/70 dark:text-spicy-mix-200">
+                        Latest
+                      </sup>
+                    )}
+                  </h2>
+                </div>
+
+                {release && (
+                  <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+                    {version === currentVersion ? (
+                      <ActionButton
+                        label={`Download MDD v${version}`}
+                        uri={MDD_DOWNLOAD_LINK}
+                        isPrimary
+                      />
+                    ) : (
+                      <span aria-hidden="true" />
+                    )}
                     <div class="flex flex-wrap gap-3 text-sm">
                       <Link
                         url={`/releases/diff-changes/${version}`}
@@ -141,8 +161,8 @@ const zenodoReleaseLink = ZENODO_MDD_LINK;
                         label="All changes"
                       />
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {releaseNotes && (
                   <div class="mb-6 whitespace-pre-line break-words leading-relaxed text-spectra-800 dark:text-spectra-200">
