@@ -1,4 +1,9 @@
 ---
+import {
+  formatDiffName,
+  tokenizeDiffReference,
+} from "../libs/diff-display";
+
 export interface DiffTableColumn {
   key: string;
   label: string;
@@ -41,13 +46,35 @@ const cellClass =
         <tbody>
           {rows.map((row) => (
             <tr class="transition-colors even:bg-spectra-50/40 hover:bg-spectra-100/60 dark:even:bg-spectra-800/20 dark:hover:bg-spectra-800/50">
-              {columns.map((column) => (
-                <td class={cellClass}>
-                  {row[column.key] === null || row[column.key] === undefined || row[column.key] === ""
-                    ? "—"
-                    : String(row[column.key])}
-                </td>
-              ))}
+              {columns.map((column) => {
+                const value = row[column.key];
+                const isEmpty = value === null || value === undefined || value === "";
+
+                return (
+                  <td class={cellClass}>
+                    {isEmpty
+                      ? "—"
+                      : column.key === "oldName" || column.key === "newName"
+                        ? formatDiffName(String(value))
+                        : column.key === "reference"
+                          ? tokenizeDiffReference(String(value)).map((token) =>
+                              token.type === "link" ? (
+                                <a
+                                  class="underline hover:text-spectra-600 dark:hover:text-spectra-300"
+                                  href={token.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {token.text}
+                                </a>
+                              ) : (
+                                token.text
+                              ),
+                            )
+                          : String(value)}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

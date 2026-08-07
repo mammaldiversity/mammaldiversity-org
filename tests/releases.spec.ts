@@ -18,6 +18,7 @@ import {
   formatDate,
 } from "../src/libs/metadata";
 import { MDD_DOWNLOAD_LINK } from "../src/libs/permalink";
+import { formatDiffName, tokenizeDiffReference } from "../src/libs/diff-display";
 
 const diffReleases = getDiffReleases();
 const allTaxonomyChanges = getAllTaxonomyChanges();
@@ -67,6 +68,35 @@ test("release notes use embedded notes before historical fallback", () => {
     allChanges: [],
   } satisfies DiffRelease;
   expect(getReleaseNotes(release)).toBe("Embedded release note");
+});
+
+test("diff display formatting preserves citation text around links", () => {
+  expect(formatDiffName("Crocidura_darvishi")).toBe("Crocidura darvishi");
+  expect(formatDiffName("Crocidura_zhadaensis")).toBe("Crocidura zhadaensis");
+
+  expect(tokenizeDiffReference(
+    "Source doi:10.1206/4030.1.; DOI 10.1002/ece3.70215, https://example.org/page.",
+  )).toEqual([
+    { type: "text", text: "Source " },
+    {
+      type: "link",
+      text: "doi:10.1206/4030.1",
+      href: "https://doi.org/10.1206/4030.1",
+    },
+    { type: "text", text: ".; " },
+    {
+      type: "link",
+      text: "DOI 10.1002/ece3.70215",
+      href: "https://doi.org/10.1002/ece3.70215",
+    },
+    { type: "text", text: ", " },
+    {
+      type: "link",
+      text: "https://example.org/page",
+      href: "https://example.org/page",
+    },
+    { type: "text", text: "." },
+  ]);
 });
 
 test("release index summarizes changes by category", async ({ page }) => {
@@ -126,6 +156,19 @@ test("detail pages render JSON changes through tables", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "MDD v2.1 Taxonomy Changes" })).toBeVisible();
   await expect(page.getByText("215 taxonomy changes")).toBeVisible();
   await expect(page.locator("table tbody tr")).toHaveCount(215);
+  const taxonomyNameCells = await page
+    .locator("table tbody tr td:nth-child(1), table tbody tr td:nth-child(2)")
+    .allTextContents();
+  expect(taxonomyNameCells.every((text) => !text.includes("_"))).toBe(true);
+  await expect(page.locator('a[href="https://doi.org/10.1206/4030.1"]').first()).toHaveAttribute(
+    "target",
+    "_blank",
+  );
+  await expect(page.locator('a[href="https://doi.org/10.1206/4030.1"]').first()).toHaveAttribute(
+    "rel",
+    "noopener noreferrer",
+  );
+  await expect(page.locator('a[href="https://bibdigital.rjb.csic.es/idurl/1/9635"]').first()).toBeVisible();
 
   await page.goto("/releases/all-diffs/2.1");
   await expect(page.getByRole("heading", { name: "MDD v2.1 All Changes" })).toBeVisible();
@@ -133,6 +176,10 @@ test("detail pages render JSON changes through tables", async ({ page }) => {
   await expect(page.getByText("Field changes by type")).toBeVisible();
   await expect(page.locator("table").first().locator("tbody tr")).toHaveCount(3);
   await expect(page.locator("table").nth(1).locator("tbody tr")).toHaveCount(4683);
+  const fieldNameCells = await page
+    .locator("table:nth-of-type(2) tbody tr td:nth-child(2), table:nth-of-type(2) tbody tr td:nth-child(3)")
+    .allTextContents();
+  expect(fieldNameCells.every((text) => !text.includes("_"))).toBe(true);
   await expect(page.locator(".overflow-x-auto").first()).toHaveClass(/rounded-2xl/);
   await expect(page.locator(".overflow-x-auto").nth(1)).toHaveClass(/rounded-2xl/);
 });
@@ -154,6 +201,10 @@ test("aggregated taxonomy changes page renders release metadata", async ({ page 
   await expect(page.locator("table tbody tr").first()).toContainText(
     formatDate(latestChange.releaseDate)!,
   );
+  const aggregatedNameCells = await page
+    .locator("table tbody tr td:nth-child(3), table tbody tr td:nth-child(4)")
+    .allTextContents();
+  expect(aggregatedNameCells.every((text) => !text.includes("_"))).toBe(true);
 });
 
 test("homepage links to releases and renders the change chart", async ({ page }) => {
