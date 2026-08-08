@@ -22,11 +22,24 @@ interface LineStyle {
 }
 
 const LINE_STYLES: LineStyle[] = [
-  { key: "deNovo", label: "De novo / new descriptions" },
+  { key: "deNovo", label: "De novo" },
   { key: "genus", label: "Genus changes", dasharray: "8 5" },
   { key: "lump", label: "Lumps", dasharray: "2 5" },
   { key: "split", label: "Splits", dasharray: "8 4 2 4" },
 ];
+
+const CHART_COLORS = {
+  light: {
+    foreground: "#273a39",
+    grid: "#679a98",
+    pointOutline: "#ffffff",
+  },
+  dark: {
+    foreground: "#f4f9f8",
+    grid: "#679a98",
+    pointOutline: "#273a39",
+  },
+} as const;
 
 function formatReleaseDate(dateString: string | undefined): string {
   if (!dateString) return "Date unavailable";
@@ -38,6 +51,28 @@ function formatReleaseDate(dateString: string | undefined): string {
     day: "numeric",
     timeZone: "UTC",
   });
+}
+
+function usePrefersDarkMode() {
+  const [isDark, setIsDark] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const updateColorScheme = () => setIsDark(mediaQuery.matches);
+
+    updateColorScheme();
+    mediaQuery.addEventListener("change", updateColorScheme);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateColorScheme);
+    };
+  }, []);
+
+  return isDark;
 }
 
 function useContainerWidth(
@@ -74,6 +109,7 @@ function useContainerWidth(
 export default function ReleaseChangeChart({ data }: ReleaseChangeChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useContainerWidth(containerRef);
+  const isDark = usePrefersDarkMode();
 
   const chartData = useMemo<ChartDatum[]>(
     () =>
@@ -89,14 +125,17 @@ export default function ReleaseChangeChart({ data }: ReleaseChangeChartProps) {
   );
 
   const releaseDates = useMemo(
-    () => new Map(data.map((release) => [`v${release.version}`, release.releaseDate])),
+    () =>
+      new Map(
+        data.map((release) => [`v${release.version}`, release.releaseDate]),
+      ),
     [data],
   );
 
   useEffect(() => {
     if (!width || !containerRef.current || chartData.length === 0) return;
 
-    const isDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const colors = isDark ? CHART_COLORS.dark : CHART_COLORS.light;
     const plot = Plot.plot({
       width,
       height: 380,
@@ -105,29 +144,33 @@ export default function ReleaseChangeChart({ data }: ReleaseChangeChartProps) {
       marginBottom: 78,
       style: {
         background: "transparent",
-        color: isDark ? "#dcebe9" : "#273a39",
+        color: colors.foreground,
         fontSize: "12px",
       },
-      x: {
-        label: "MDD version · release date",
-        tickFormat: (version: string) =>
-          `${version}\n${formatReleaseDate(releaseDates.get(version))}`,
-        tickRotate: -28,
-        tickPadding: 4,
-      },
       y: {
-        grid: true,
-        label: "Count",
+        grid: colors.grid,
         nice: true,
       },
       marks: [
+        Plot.axisX({
+          color: colors.foreground,
+          label: "MDD version · release date",
+          tickFormat: (version: string) =>
+            `${version}\n${formatReleaseDate(releaseDates.get(version))}`,
+          tickRotate: -28,
+          tickPadding: 4,
+        }),
+        Plot.axisY({
+          color: colors.foreground,
+          label: "Count",
+        }),
         ...LINE_STYLES.map(({ label, dasharray }) =>
           Plot.lineY(
             chartData.filter((datum) => datum.category === label),
             {
               x: "version",
               y: "count",
-              stroke: "currentColor",
+              stroke: colors.foreground,
               strokeWidth: 2.5,
               strokeDasharray: dasharray,
             },
@@ -136,9 +179,9 @@ export default function ReleaseChangeChart({ data }: ReleaseChangeChartProps) {
         Plot.dot(chartData, {
           x: "version",
           y: "count",
-          fill: "currentColor",
+          fill: colors.foreground,
           r: 4,
-          stroke: isDark ? "#273a39" : "#ffffff",
+          stroke: colors.pointOutline,
           strokeWidth: 1.5,
           tip: {
             channels: {
@@ -147,7 +190,15 @@ export default function ReleaseChangeChart({ data }: ReleaseChangeChartProps) {
               Change: "category",
               Count: "count",
             },
-            format: { fill: false, stroke: false, strokeWidth: false, r: false },
+            format: {
+              fill: false,
+              stroke: false,
+              strokeWidth: false,
+              r: false,
+            },
+            pointer: "xy",
+            fill: isDark ? "#1f2937" : "#ffffff",
+            stroke: "currentColor",
           },
         }),
       ],
@@ -163,14 +214,18 @@ export default function ReleaseChangeChart({ data }: ReleaseChangeChartProps) {
     );
 
     return () => plot.remove();
-  }, [chartData, releaseDates, width]);
+  }, [chartData, isDark, releaseDates, width]);
 
   return (
-    <div className="w-full overflow-x-auto" aria-label="Taxonomic change trend chart">
+    <div
+      className="w-full overflow-x-auto"
+      role="group"
+      aria-label="Taxonomic change trend chart"
+    >
       <div className="min-w-[400px]">
         <div ref={containerRef} className="min-h-[380px] w-full" />
         <div
-          className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-spectra-700 dark:text-spectra-200"
+          className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-spectra-900 dark:text-spectra-50"
           aria-label="Chart legend"
         >
           {LINE_STYLES.map(({ label, dasharray }) => (
