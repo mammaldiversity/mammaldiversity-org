@@ -40,3 +40,6 @@ usa_states.json
 .DS_Store
 __MACOSX/
 MDD/
+diffs.json
+
+.antigravitycli

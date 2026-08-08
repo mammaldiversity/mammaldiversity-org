@@ -32,7 +32,10 @@ jobs:
         working-directory: db/data
         run: |
           curl -L -o MDD.zip https://github.com/mammaldiversity/mammaldiversity.github.io/raw/master/assets/data/MDD.zip
+          DIFFS_BACKUP="$RUNNER_TEMP/mdd-diffs.json.gz"
+          cp diffs.json.gz "$DIFFS_BACKUP"
           mdd unpack -i MDD.zip
+          cp "$DIFFS_BACKUP" diffs.json.gz
 
       - name: Normalize region data
         run: bun run normalize-region-data

@@ -4,6 +4,7 @@ import MainActionButtons from "../MainActionButtons.astro";
 import MilSlideshow from "../mil/MilSlideshow.astro";
 import { getMetadata } from "../../../db/mdd";
 import { formatDate, cleanVersion } from "../../libs/metadata";
+import { MDD_DOWNLOAD_LINK, ZENODO_MDD_LINK } from "../../libs/permalink";
 
 const meta = getMetadata();
 const currentVersion = cleanVersion(meta.version);
@@ -13,9 +14,7 @@ const releaseDate = meta.releaseDate
   ? formatDate(meta.releaseDate)
   : formatDate(overrideReleaseDate);
 
-const prevVersionsLink = "https://doi.org/10.5281/zenodo.4139722";
-const mddDownloadLink =
-  "https://github.com/mammaldiversity/mammaldiversity.github.io/raw/refs/heads/master/assets/data/MDD.zip";
+const prevVersionsLink = ZENODO_MDD_LINK;
 
 // Define version description
 const versionDescription = `Current version: v${currentVersion}, released ${releaseDate}`;
@@ -124,14 +123,13 @@ const descriptionClasses = cntl`
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            ></path>
+              d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
           </svg>
         </button>
       </div>
     </form>
     <MainActionButtons
-      downloadURI={mddDownloadLink}
+      downloadURI={MDD_DOWNLOAD_LINK}
       previousVersionsURI={prevVersionsLink}
       versionDescription={versionDescription}
     />

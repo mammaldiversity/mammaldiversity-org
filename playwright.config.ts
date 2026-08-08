@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const isCI = !!process.env.CI;
+const testPort = process.env.PLAYWRIGHT_PORT ?? "4321";
 
 export default defineConfig({
   testDir: "./tests",
@@ -10,7 +11,7 @@ export default defineConfig({
   workers: isCI ? 1 : undefined,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:4321/",
+    baseURL: `http://localhost:${testPort}/`,
     trace: "on-first-retry",
     actionTimeout: 10000,
   },
@@ -29,8 +30,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "bun run dev",
-    url: "http://localhost:4321/",
+    command: `ASTRO_DEV_BACKGROUND=1 bun run dev -- --port ${testPort}`,
+    url: `http://localhost:${testPort}/`,
     reuseExistingServer: !isCI,
     timeout: 60000,
     stdout: isCI ? "ignore" : "pipe",
