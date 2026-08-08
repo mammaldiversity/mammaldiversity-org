@@ -31,19 +31,21 @@ const rows = getAllTaxonomyChanges().map((change) => ({
 <Page title="MDD Taxonomy Changes since v2" isIndexed={false}>
   <MainPage isIndexed={false}>
     <PageHeader>
-      <Title slot="title" bottomPadding={8}>MDD Taxonomy Changes since v2</Title>
-      <div slot="description">
-        <p>
-          All recorded taxonomy changes from releases after MDD v2, including the release and date in which each change was introduced.
-        </p>
-      </div>
+      <Title slot="title" bottomPadding={8}
+        >All MDD Taxonomy Changes since v2</Title
+      >
     </PageHeader>
     <PageDivider />
 
     <div class="mx-auto max-w-screen-2xl pb-12">
-      <div class="mb-4 flex flex-wrap items-center justify-between gap-3 text-sm text-spectra-700 dark:text-spectra-300">
+      <div
+        class="mb-4 flex flex-wrap items-center justify-between gap-3 text-sm text-spectra-700 dark:text-spectra-300"
+      >
         <p>{rows.length.toLocaleString()} taxonomy changes</p>
-        <a class="underline hover:text-spicy-mix-700 dark:hover:text-spicy-mix-300" href="/releases">
+        <a
+          class="underline hover:text-spicy-mix-700 dark:hover:text-spicy-mix-300"
+          href="/releases"
+        >
           Back to release notes
         </a>
       </div>
