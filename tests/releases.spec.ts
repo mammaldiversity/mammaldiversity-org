@@ -18,7 +18,11 @@ import {
   formatDate,
 } from "../src/libs/metadata";
 import { MDD_DOWNLOAD_LINK } from "../src/libs/permalink";
-import { formatDiffName, tokenizeDiffReference } from "../src/libs/diff-display";
+import {
+  formatDiffName,
+  tokenizeDiffReference,
+  tokenizeDiffText,
+} from "../src/libs/diff-display";
 
 const diffReleases = getDiffReleases();
 const allTaxonomyChanges = getAllTaxonomyChanges();
@@ -97,6 +101,31 @@ test("diff display formatting preserves citation text around links", () => {
     },
     { type: "text", text: "." },
   ]);
+
+  expect(tokenizeDiffText("See _Spalax_|_M. sp._, a#59343.")).toEqual([
+    { type: "text", text: "See " },
+    { type: "italic", text: "Spalax" },
+    { type: "text", text: " · " },
+    { type: "italic", text: "M. sp." },
+    { type: "text", text: ", " },
+    {
+      type: "link",
+      text: "a#59343",
+      href: "https://hesperomys.com/a/59343",
+    },
+    { type: "text", text: "." },
+  ]);
+
+  expect(tokenizeDiffReference(
+    "Ecology and Evolution, 16(7), e73991. 10.1002/ece3.73991",
+  )).toEqual([
+    { type: "text", text: "Ecology and Evolution, 16(7), e73991. " },
+    {
+      type: "link",
+      text: "10.1002/ece3.73991",
+      href: "https://doi.org/10.1002/ece3.73991",
+    },
+  ]);
 });
 
 test("release index summarizes changes by category", async ({ page }) => {
@@ -170,12 +199,30 @@ test("detail pages render JSON changes through tables", async ({ page }) => {
   );
   await expect(page.locator('a[href="https://bibdigital.rjb.csic.es/idurl/1/9635"]').first()).toBeVisible();
 
+  await page.goto("/releases/diff-changes/2.5");
+  await expect(
+    page.locator('a[href="https://doi.org/10.1002/ece3.73991"]'),
+  ).toHaveAttribute("target", "_blank");
+
   await page.goto("/releases/all-diffs/2.1");
   await expect(page.getByRole("heading", { name: "MDD v2.1 All Changes" })).toBeVisible();
   await expect(page.getByText("4,683 field changes")).toBeVisible();
   await expect(page.getByText("Field changes by type")).toBeVisible();
   await expect(page.locator("table").first().locator("tbody tr")).toHaveCount(3);
   await expect(page.locator("table").nth(1).locator("tbody tr")).toHaveCount(4683);
+  const allChangesTable = page.locator("table").nth(1);
+  const pipeSeparatedRow = allChangesTable.locator("tbody tr").filter({
+    hasText: "1003320",
+  });
+  await expect(pipeSeparatedRow.locator("td").nth(6)).toContainText(
+    "neobrittanicus Tate & Archbold, 1935 · neobritannicus",
+  );
+  await expect(pipeSeparatedRow.locator("td").nth(6)).not.toContainText("|");
+
+  const italicizedRow = allChangesTable.locator("tbody tr").filter({
+    hasText: "1006158",
+  });
+  await expect(italicizedRow.locator("td").nth(6).locator("i")).toHaveText("Madoqua");
   const fieldNameCells = await page
     .locator("table:nth-of-type(2) tbody tr td:nth-child(2), table:nth-of-type(2) tbody tr td:nth-child(3)")
     .allTextContents();
@@ -227,4 +274,23 @@ test("homepage links to releases and renders the change chart", async ({ page })
     "href",
     "/releases/taxonomy-changes",
   );
+});
+
+test("release chart preserves a readable width on narrow screens", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto("/");
+
+  const chart = page.getByLabel("Taxonomic change trend chart");
+  await chart.scrollIntoViewIfNeeded();
+  await expect(chart).toHaveCSS("overflow-x", "auto");
+  await expect(chart.locator("svg[viewBox]")).toBeVisible();
+
+  const dimensions = await chart.evaluate((element) => ({
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+    svgWidth: element.querySelector("svg[viewBox]")?.getBoundingClientRect().width ?? 0,
+  }));
+
+  expect(dimensions.svgWidth).toBeGreaterThanOrEqual(400);
+  expect(dimensions.scrollWidth).toBeGreaterThan(dimensions.clientWidth);
 });

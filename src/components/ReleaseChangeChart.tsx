@@ -166,28 +166,30 @@ export default function ReleaseChangeChart({ data }: ReleaseChangeChartProps) {
   }, [chartData, releaseDates, width]);
 
   return (
-    <div className="w-full" aria-label="Taxonomic change trend chart">
-      <div ref={containerRef} className="min-h-[380px] w-full" />
-      <div
-        className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-spectra-700 dark:text-spectra-200"
-        aria-label="Chart legend"
-      >
-        {LINE_STYLES.map(({ label, dasharray }) => (
-          <div className="flex items-center gap-2">
-            <svg width="32" height="8" aria-hidden="true">
-              <line
-                x1="1"
-                y1="4"
-                x2="31"
-                y2="4"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeDasharray={dasharray}
-              />
-            </svg>
-            <span>{label}</span>
-          </div>
-        ))}
+    <div className="w-full overflow-x-auto" aria-label="Taxonomic change trend chart">
+      <div className="min-w-[400px]">
+        <div ref={containerRef} className="min-h-[380px] w-full" />
+        <div
+          className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-spectra-700 dark:text-spectra-200"
+          aria-label="Chart legend"
+        >
+          {LINE_STYLES.map(({ label, dasharray }) => (
+            <div className="flex items-center gap-2">
+              <svg width="32" height="8" aria-hidden="true">
+                <line
+                  x1="1"
+                  y1="4"
+                  x2="31"
+                  y2="4"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeDasharray={dasharray}
+                />
+              </svg>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
