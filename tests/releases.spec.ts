@@ -10,6 +10,7 @@ import {
 import {
   getHistoricalReleaseNote,
   getHistoricalReleaseNotes,
+  getZenodoReleaseLink,
 } from "../db/release_notes";
 import type { DiffRelease } from "../db/diffs_model";
 import { getMetadata } from "../db/mdd";
@@ -98,6 +99,22 @@ test("release notes use embedded notes before historical fallback", () => {
   expect(getReleaseNotes(release)).toBe("Embedded release note");
 });
 
+test("release versions map to their Zenodo records", () => {
+  expect(getZenodoReleaseLink("v1.0")).toBe(
+    "https://doi.org/10.5281/zenodo.4139723",
+  );
+  expect(getZenodoReleaseLink("1.12.1")).toBe(
+    "https://doi.org/10.5281/zenodo.10595931",
+  );
+  expect(getZenodoReleaseLink("v2.4")).toBe(
+    "https://doi.org/10.5281/zenodo.18135819",
+  );
+  expect(getZenodoReleaseLink("2.5")).toBe(
+    "https://doi.org/10.5281/zenodo.21654811",
+  );
+  expect(getZenodoReleaseLink("3.0")).toBeUndefined();
+});
+
 test("diff display formatting preserves citation text around links", () => {
   expect(formatDiffName("Crocidura_darvishi")).toBe("Crocidura darvishi");
   expect(formatDiffName("Crocidura_zhadaensis")).toBe("Crocidura zhadaensis");
@@ -175,11 +192,44 @@ test("release index summarizes changes by category", async ({ page }) => {
       name: `Download MDD v${currentVersion}`,
     }),
   ).toHaveAttribute("href", MDD_DOWNLOAD_LINK);
+  const zenodoPrompt = currentReleaseSection
+    .locator("span")
+    .filter({ hasText: "View on" });
+  await expect(zenodoPrompt).toBeVisible();
+  await expect(zenodoPrompt).toHaveClass(/text-xs/);
+  const latestZenodoLink = currentReleaseSection.getByRole("link", {
+    name: "Zenodo",
+  });
+  await expect(latestZenodoLink).toHaveAttribute(
+    "href",
+    getZenodoReleaseLink(currentVersion)!,
+  );
+  await expect(latestZenodoLink).toHaveAttribute("target", "_blank");
+  await expect(latestZenodoLink).toHaveAttribute(
+    "rel",
+    "noopener noreferrer",
+  );
   await expect(
-    page.locator('section[id="release-v2.4"]').getByRole("link", {
-      name: /Download MDD/,
-    }),
+    currentReleaseSection.getByRole("link", { name: "View on Zenodo" }),
   ).toHaveCount(0);
+
+  const v24Download = page
+    .locator('section[id="release-v2.4"]')
+    .getByRole("link", { name: "Download MDD v2.4" });
+  await expect(v24Download).toHaveAttribute(
+    "href",
+    "https://doi.org/10.5281/zenodo.18135819",
+  );
+  await expect(v24Download).toHaveAttribute("target", "_blank");
+  await expect(v24Download).toHaveAttribute("rel", "noopener noreferrer");
+
+  const v10Download = page
+    .locator('section[id="release-v1.0"]')
+    .getByRole("link", { name: "Download MDD v1.0" });
+  await expect(
+    v10Download,
+  ).toHaveAttribute("href", "https://doi.org/10.5281/zenodo.4139723");
+  await expect(v10Download).toHaveAttribute("target", "_blank");
   const latestReleaseNotes = getReleaseNotes(latestRelease);
   expect(latestReleaseNotes).toBeDefined();
   await expect(
@@ -327,6 +377,16 @@ test("homepage links to releases and renders the change chart", async ({
   page,
 }) => {
   await page.goto("/");
+
+  await expect(page.getByText("Download previous versions.", { exact: true })).toBeVisible();
+  const previousVersionsLink = page.getByRole("link", {
+    name: "previous versions",
+  });
+  await expect(previousVersionsLink).toHaveAttribute("href", "/releases");
+  await expect(previousVersionsLink).toHaveAttribute("target", "_self");
+  await expect(
+    page.getByText("Previous versions are available on", { exact: false }),
+  ).toHaveCount(0);
 
   const learnMore = page.getByRole("link", { name: "Learn more" });
   await expect(learnMore).toHaveAttribute("href", "/releases");
