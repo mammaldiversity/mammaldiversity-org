@@ -18,6 +18,7 @@ import {
   getHistoricalReleaseDate,
   getHistoricalReleaseNote,
   getHistoricalReleaseNotes,
+  getZenodoReleaseLink,
 } from "../../../db/release_notes";
 import { getMetadata } from "../../../db/mdd";
 import {
@@ -53,6 +54,7 @@ const releaseSummaries = Array.from(releaseVersions)
       releaseNotes: release
         ? getReleaseNotes(release)
         : getHistoricalReleaseNote(version),
+      zenodoReleaseLink: getZenodoReleaseLink(version),
       taxonomyCounts: release
         ? Object.entries(
             getTaxonomyCategoryCounts(release.taxonomyChanges),
@@ -120,6 +122,7 @@ const zenodoReleaseLink = ZENODO_MDD_LINK;
               version,
               releaseDate,
               releaseNotes,
+              zenodoReleaseLink,
               taxonomyCounts,
             }) => (
               <section
@@ -140,27 +143,45 @@ const zenodoReleaseLink = ZENODO_MDD_LINK;
                   </h2>
                 </div>
 
-                {release && (
+                {(release || zenodoReleaseLink) && (
                   <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
                     {version === currentVersion ? (
+                      <div class="flex flex-col items-start gap-1">
+                        <ActionButton
+                          label={`Download MDD v${version}`}
+                          uri={MDD_DOWNLOAD_LINK}
+                          isPrimary
+                        />
+                        {zenodoReleaseLink && (
+                          <span class="text-xs text-spectra-600 dark:text-spectra-400">
+                            View on{" "}
+                            <Link
+                              url={zenodoReleaseLink}
+                              label="Zenodo"
+                              openInNewTab={true}
+                            />
+                          </span>
+                        )}
+                      </div>
+                    ) : zenodoReleaseLink ? (
                       <ActionButton
                         label={`Download MDD v${version}`}
-                        uri={MDD_DOWNLOAD_LINK}
-                        isPrimary
+                        uri={zenodoReleaseLink}
+                        openInNewTab
                       />
-                    ) : (
-                      <span aria-hidden="true" />
+                    ) : null}
+                    {release && (
+                      <div class="flex flex-wrap gap-3 text-sm">
+                        <Link
+                          url={`/releases/diff-changes/${version}`}
+                          label="Taxonomy changes"
+                        />
+                        <Link
+                          url={`/releases/all-diffs/${version}`}
+                          label="All changes"
+                        />
+                      </div>
                     )}
-                    <div class="flex flex-wrap gap-3 text-sm">
-                      <Link
-                        url={`/releases/diff-changes/${version}`}
-                        label="Taxonomy changes"
-                      />
-                      <Link
-                        url={`/releases/all-diffs/${version}`}
-                        label="All changes"
-                      />
-                    </div>
                   </div>
                 )}
 

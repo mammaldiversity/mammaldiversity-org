@@ -31,6 +31,32 @@ const HISTORICAL_RELEASE_DATES: Record<string, string> = {
   "1.0": "2018-02-01",
 };
 
+const ZENODO_RELEASE_LINKS: Record<string, string> = {
+  "2.5": "https://doi.org/10.5281/zenodo.21654811",
+  "2.4": "https://doi.org/10.5281/zenodo.18135819",
+  "2.3": "https://doi.org/10.5281/zenodo.17033774",
+  "2.2": "https://doi.org/10.5281/zenodo.15659662",
+  "2.1": "https://doi.org/10.5281/zenodo.15163494",
+  "2.0": "https://doi.org/10.5281/zenodo.15007505",
+  "1.13": "https://doi.org/10.5281/zenodo.12738010",
+  "1.12.1": "https://doi.org/10.5281/zenodo.10595931",
+  "1.12": "https://doi.org/10.5281/zenodo.10463715",
+  "1.11": "https://doi.org/10.5281/zenodo.7830771",
+  "1.10": "https://doi.org/10.5281/zenodo.7394529",
+  "1.9.1": "https://doi.org/10.5281/zenodo.7358650",
+  "1.9": "https://doi.org/10.5281/zenodo.6407053",
+  "1.8": "https://doi.org/10.5281/zenodo.5945626",
+  "1.7": "https://doi.org/10.5281/zenodo.5651212",
+  "1.6": "https://doi.org/10.5281/zenodo.5175993",
+  "1.5": "https://doi.org/10.5281/zenodo.4926590",
+  "1.4": "https://doi.org/10.5281/zenodo.4679816",
+  "1.3.1": "https://doi.org/10.5281/zenodo.4429371",
+  "1.3": "https://doi.org/10.5281/zenodo.4397179",
+  "1.2": "https://doi.org/10.5281/zenodo.4139818",
+  "1.1": "https://doi.org/10.5281/zenodo.4139788",
+  "1.0": "https://doi.org/10.5281/zenodo.4139723",
+};
+
 const notesPath = resolve(process.cwd(), "db/data/release_notes.json");
 const notes = JSON.parse(
   readFileSync(notesPath, "utf8"),
@@ -53,9 +79,14 @@ function getHistoricalReleaseDate(version: string): string | undefined {
   return HISTORICAL_RELEASE_DATES[cleanVersion(version)];
 }
 
+function getZenodoReleaseLink(version: string): string | undefined {
+  return ZENODO_RELEASE_LINKS[cleanVersion(version)];
+}
+
 export {
   getHistoricalReleaseDate,
   getHistoricalReleaseNote,
   getHistoricalReleaseNotes,
+  getZenodoReleaseLink,
 };
 export type { HistoricalReleaseNote };
