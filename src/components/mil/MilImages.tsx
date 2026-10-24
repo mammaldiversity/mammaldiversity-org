@@ -25,7 +25,7 @@ export default function MilImages({
   };
 
   return (
-    <div className="mil-images bg-gradient-to-br dark:from-spectra-900 dark:to-spectra-800/30 from-spectra-50 to-spectra-100/50 backdrop-blur-sm rounded-2xlg mt-2 mb-4 shadow-sm border border-spectra-200/60 dark:border-spectra-700/60 hover:shadow-md transition-all duration-300">
+    <div className="mil-images bg-gradient-to-br dark:from-spectra-900 dark:to-spectra-800/30 from-spectra-50 to-spectra-100/50 backdrop-blur-sm rounded-2xl overflow-hidden mt-2 mb-4 shadow-sm border border-spectra-200/60 dark:border-spectra-700/60 hover:shadow-md transition-all duration-300">
       {!image ? (
         <p className="text-gray-500 p-4">No images available</p>
       ) : (
@@ -33,11 +33,11 @@ export default function MilImages({
           {/* Image container */}
           <div className="relative w-full">
             {imgError ? (
-              <div className="w-full flex items-center justify-center rounded-lg bg-spectra-100 dark:bg-spectra-900 text-gray-400 dark:text-gray-500 text-sm py-10">
+              <div className="w-full flex items-center justify-center bg-spectra-100 dark:bg-spectra-900 text-gray-400 dark:text-gray-500 text-sm py-10">
                 No image available
               </div>
             ) : (
-              <div className="w-full max-h-[400px] md:max-h-[520px] bg-spectra-50 dark:bg-spectra-900 rounded-lg overflow-hidden">
+              <div className="w-full max-h-[400px] md:max-h-[520px] bg-spectra-50 dark:bg-spectra-900 overflow-hidden">
                 <img
                   src={image.filePath}
                   alt={image.description || `${species} image`}
@@ -102,7 +102,7 @@ export default function MilImages({
 
 function ImageCaption({ image }: { image: MilMetadata }) {
   return (
-    <div className="mt-2 ml-4 mr-2 text-spectra-800 dark:text-spectra-100 text-sm">
+    <div className="mt-2 mx-4 pb-3 text-spectra-800 dark:text-spectra-100 text-sm">
       <div className="grid grid-cols-[auto_auto_1fr] gap-x-1">
         <span>Location</span>
         <span>:</span>
@@ -111,10 +111,10 @@ function ImageCaption({ image }: { image: MilMetadata }) {
         <span>:</span>
         <span className="pl-1">
           {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime())
-            ? new Date(image.dateTaken).toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "short",
+            ? new Date(image.dateTaken).toLocaleDateString("en-GB", {
                 day: "numeric",
+                month: "long",
+                year: "numeric",
               })
             : "Unknown"}
         </span>

@@ -1,7 +1,7 @@
 ---
 import {
   formatDiffName,
-  tokenizeDiffReference,
+  tokenizeDiffText,
 } from "../libs/diff-display";
 
 export interface DiffTableColumn {
@@ -56,8 +56,8 @@ const cellClass =
                       ? "—"
                       : column.key === "oldName" || column.key === "newName"
                         ? formatDiffName(String(value))
-                        : column.key === "reference"
-                          ? tokenizeDiffReference(String(value)).map((token) =>
+                        : typeof value === "string"
+                          ? tokenizeDiffText(value).map((token) =>
                               token.type === "link" ? (
                                 <a
                                   class="underline hover:text-spectra-600 dark:hover:text-spectra-300"
@@ -67,6 +67,8 @@ const cellClass =
                                 >
                                   {token.text}
                                 </a>
+                              ) : token.type === "italic" ? (
+                                <i>{token.text}</i>
                               ) : (
                                 token.text
                               ),

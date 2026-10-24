@@ -12,7 +12,21 @@ const navItems = [
   { path: "/about", label: "About" },
 ];
 
-const currentPath = Astro.url.pathname;
+const normalizePath = (path: string) => {
+  if (path === "/") return path;
+  return path.replace(/\/+$/, "");
+};
+
+const currentPath = normalizePath(Astro.url.pathname);
+
+const isNavItemActive = (path: string) => {
+  const normalizedPath = normalizePath(path);
+
+  return (
+    currentPath === normalizedPath ||
+    (normalizedPath !== "/" && currentPath.startsWith(`${normalizedPath}/`))
+  );
+};
 
 const navClasses = cntl`
   flex
@@ -97,8 +111,13 @@ const indicatorClasses = cntl`
   w-1/6
   mx-auto
   rounded-full
-  bg-transparent
 `;
+
+const getIndicatorClasses = (path: string) =>
+  cntl`
+    ${indicatorClasses}
+    ${isNavItemActive(path) ? navIndicatorColorClasses : "bg-transparent"}
+  `;
 ---
 
 <nav class={navClasses} aria-label="Global">
@@ -118,9 +137,7 @@ const indicatorClasses = cntl`
           <a href={path} class={navItemClasses}>
             {label}
           </a>
-          <div
-            class={`${indicatorClasses} ${currentPath === path || currentPath === `${path}/` ? `${navIndicatorColorClasses}` : ""}`}
-          />
+          <div class={getIndicatorClasses(path)} />
         </div>
       ))
     }
@@ -149,7 +166,7 @@ const indicatorClasses = cntl`
                 navItems.map(({ path, label }) => (
                   <a href={path} class={mobileItemClasses}>
                     <div
-                      class={`w-2 h-2 rounded-full shrink-0 mr-4 ${currentPath === path || currentPath === `${path}/` ? `${navIndicatorColorClasses}` : "bg-transparent"}`}
+                      class={`w-2 h-2 rounded-full shrink-0 mr-4 ${isNavItemActive(path) ? navIndicatorColorClasses : "bg-transparent"}`}
                     />
                     {label}
                   </a>
