@@ -17,14 +17,11 @@ const textData: string[] = content.includes("|")
 
 {
   textData.length > 1 ? (
-    // create an unordered list
-    <ol class="text-md list-inside list-disc">
-      {textData.map((part: string) => (
-        <li>
-          <MixedLink text={part} isItalic={isItalic} />
-        </li>
-      ))}
-    </ol>
+    textData.map((part: string) => (
+      <div class="mt-2 bg-spectra-100 dark:bg-spectra-900 p-2 rounded-md">
+        <MixedLink text={part} isItalic={isItalic} />
+      </div>
+    ))
   ) : (
     <MixedLink text={textData[0]} isItalic={isItalic} />
   )

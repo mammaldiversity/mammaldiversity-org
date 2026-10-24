@@ -1,0 +1,210 @@
+// We change the "|" to " · " because it is more readable.
+// The middle dot is used extensively in many websites,
+// e.g., Youtube, Wikipedia, and Google.
+// Some text contains commas, "," without the trailing space
+// like a typical sentence. This cause issue with word breaks.
+// We will add space after the comma if it is not present.
+/**
+ * Cleans up taxon data strings by replacing special characters and ensuring proper spacing.
+ * @param {string} taxonData - The taxon data string to clean.
+ * @returns {string} The cleaned taxon data string.
+ */
+function cleanTaxonData(taxonData: string): string {
+  if (taxonData.includes("|")) {
+    return taxonData.split("|").join(" · ");
+  } else if (taxonData.includes(",")) {
+    return taxonData
+      .split(",")
+      .map((part) => part.trim())
+      .join(", ");
+  }
+  return taxonData;
+}
+
+// We will return true if text contains italic text.
+// Italic text is defined as text that starts and ends with an underscore "_"
+// and may contain a period and a space after the underscore.
+// Examples of italic text:
+// _G. Mus_, _Mus_, _M. Mus_, _G. word_,
+// _G. Word_, _Word_, _G. word_.
+/**
+ * Checks if a string contains italic text, which is denoted by underscores.
+ * @param {string} text - The text to check.
+ * @returns {boolean} True if the text contains italic formatting, false otherwise.
+ */
+function isItalicText(text: string): boolean {
+  return /_[^_]+_/.test(text);
+}
+
+interface LinkedTextPart {
+  text: string;
+  url?: string;
+}
+
+function trimLinkedTextPunctuation(text: string): {
+  linkText: string;
+  trailingText: string;
+} {
+  const trailingText = text.match(/[.,!?)]*$/)?.[0] ?? "";
+  return {
+    linkText: text.slice(0, text.length - trailingText.length),
+    trailingText,
+  };
+}
+
+function createAutoLinkedTextParts(text: string): LinkedTextPart[] {
+  const parts: LinkedTextPart[] = [];
+  const linkPattern = /(https?:\/\/\S+|doi:10\.\S+|a#\d+)/gi;
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(linkPattern)) {
+    const matchText = match[0];
+    const matchIndex = match.index ?? 0;
+
+    if (matchIndex > lastIndex) {
+      parts.push({ text: text.slice(lastIndex, matchIndex) });
+    }
+
+    const { linkText, trailingText } = trimLinkedTextPunctuation(matchText);
+    const lowerLinkText = linkText.toLowerCase();
+    let url = linkText;
+    if (lowerLinkText.startsWith("doi:")) {
+      url = `https://doi.org/${linkText.slice(4)}`;
+    } else if (lowerLinkText.startsWith("a#")) {
+      url = `https://hesperomys.com/a/${linkText.slice(2)}`;
+    }
+
+    parts.push({ text: linkText, url });
+    if (trailingText.length > 0) {
+      parts.push({ text: trailingText });
+    }
+
+    lastIndex = matchIndex + matchText.length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push({ text: text.slice(lastIndex) });
+  }
+
+  return parts.length > 0 ? parts : [{ text }];
+}
+
+/**
+ * Creates a synonym name for a species.
+ * @param {string} rootName - The root name of the species.
+ * @param {string} species - The species name.
+ * @param {string} [originalNameCombination] - An optional original name combination.
+ * @returns {string} The full synonym name.
+ */
+function createSynonymName(
+  rootName: string,
+  species: string,
+  originalNameCombination?: string,
+): string {
+  return originalNameCombination
+    ? originalNameCombination
+    : `${species} ${rootName}`;
+}
+
+/**
+ * Creates an authority citation string.
+ * @param {string} authority - The authority's name.
+ * @param {number} year - The year of the citation.
+ * @param {boolean} withParentheses - Whether to enclose the citation in parentheses.
+ * @returns {string} The formatted authority citation.
+ */
+function createAuthorityCitation(
+  authority: string,
+  year: number,
+  withParentheses: boolean,
+): string {
+  const citation = `${authority}, ${year}`;
+  return withParentheses ? `(${citation})` : citation;
+}
+
+function shouldSeparateSynonymAuthorityWithColon(
+  nomenclaturalStatus?: string,
+): boolean {
+  if (!nomenclaturalStatus) {
+    return false;
+  }
+
+  const colonSeparatedStatuses = new Set([
+    "incorrect_subsequent_spelling",
+    "justified_emendation",
+    "mandatory_change",
+    "misidentification",
+    "name_combination",
+    "unjustified_emendation",
+    "variant",
+  ]);
+
+  return nomenclaturalStatus
+    .split("|")
+    .map((status) => status.trim())
+    .some((status) => colonSeparatedStatuses.has(status));
+}
+
+function isPresent(value?: string | number): boolean {
+  const text = value === undefined ? "" : String(value).trim();
+  return text !== "" && text !== "NA";
+}
+
+function formatCoordinate(
+  coordinate: string | number | undefined,
+  positiveDirection: string,
+  negativeDirection: string,
+): string | undefined {
+  if (!isPresent(coordinate)) {
+    return undefined;
+  }
+  const numericCoordinate = Number(coordinate);
+  if (Number.isNaN(numericCoordinate)) {
+    return undefined;
+  }
+  const direction =
+    numericCoordinate >= 0 ? positiveDirection : negativeDirection;
+  const totalSeconds = Math.round(Math.abs(numericCoordinate) * 3600);
+  const degrees = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (seconds > 0) {
+    return `${degrees}°${minutes}′${seconds}″${direction}`;
+  }
+  if (minutes > 0) {
+    return `${degrees}°${minutes}′${direction}`;
+  }
+  return `${degrees}°${direction}`;
+}
+
+function createStructuredTypeLocality(
+  typeCountry?: string,
+  typeSubregion?: string,
+  typeSubregion2?: string,
+  typeLatitude?: string | number,
+  typeLongitude?: string | number,
+): string {
+  const localityParts = [typeCountry, typeSubregion, typeSubregion2].filter(
+    isPresent,
+  );
+  const coordinateParts = [
+    formatCoordinate(typeLatitude, "N", "S"),
+    formatCoordinate(typeLongitude, "E", "W"),
+  ].filter(isPresent);
+  const parts = [...localityParts, coordinateParts.join(", ")].filter(
+    isPresent,
+  );
+
+  return parts.length > 0 ? `${parts.join(": ")}.` : "";
+}
+
+export {
+  createAutoLinkedTextParts,
+  createSynonymName,
+  createStructuredTypeLocality,
+  cleanTaxonData,
+  createAuthorityCitation,
+  shouldSeparateSynonymAuthorityWithColon,
+  isItalicText,
+};

@@ -1,0 +1,120 @@
+---
+import cntl from "cntl";
+import { getUnitedStatesData } from "../../../db/united_states";
+import type { UnitedStatesData } from "../../../db/country_stats_model";
+import { getStateName } from "../../libs/state_map";
+
+const unitedStatesStats: Record<string, UnitedStatesData> =
+  getUnitedStatesData();
+
+const subTitleClass = cntl`
+    text-spectra-950 
+    dark:text-spectra-50 
+    text-3xl
+    font-semibold 
+    mb-4
+    mt-16
+    text-center
+`;
+
+const containerClasses = cntl`
+  overflow-x-auto
+  mx-auto
+  max-h-lvh
+`;
+
+const tableClasses = cntl`
+  table-auto
+  my-4
+  mx-auto
+  border-collapse
+  border-spacing-0
+  mb-16
+`;
+
+const thStateClass = cntl`
+  py-2
+  px-2
+  rounded-tl-xl
+  border-b
+  text-start
+`;
+
+const thLastColClass = cntl`
+  py-2
+  px-2
+  rounded-tr-xl
+  border-b
+  text-center
+`;
+
+const theadClasses = cntl`
+  bg-spectra-100 
+  dark:bg-spectra-900
+  sticky 
+  top-0 
+  z-10
+  text-center
+  border-b
+`;
+
+const stateClass = cntl`
+  py-2
+  px-2
+  border-b
+  text-start
+  underline
+  decoration-spectra-500
+  cursor-pointer
+  hover:text-spectra-800
+  dark:hover:text-spectra-200
+  transition-colors
+  duration-200
+  ease-in-out
+`;
+
+const tdClasses = cntl`
+  py-2
+  px-2
+  border-b
+  text-center
+`;
+---
+
+<div>
+  <h2 class={subTitleClass}>Mammal Diversity by State</h2>
+  <p class="text-center mb-8">
+    Click on a state to view its mammal diversity statistics.
+  </p>
+</div>
+
+<div class={containerClasses}>
+  <table class={tableClasses} id="state-table">
+    <thead class={theadClasses}>
+      <tr>
+        <th class={thStateClass}>State</th>
+        <th class={tdClasses}>Total Orders</th>
+        <th class={tdClasses}>Total Families</th>
+        <th class={tdClasses}>Total Genera</th>
+        <th class={tdClasses}>Total Living Species</th>
+        <th class={thLastColClass}>Total Extinct Species</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        Object.entries(unitedStatesStats).map(([code, state]) => (
+          <tr>
+            <td class={stateClass}>
+              <a href={`/country/US/${code}`}>{getStateName(code)}</a>
+            </td>
+            <td class={tdClasses}>{state.totalOrder}</td>
+            <td class={tdClasses}>{state.totalFamily}</td>
+            <td class={tdClasses}>{state.totalGenus}</td>
+            <td class={tdClasses}>{state.totalLivingSpecies}</td>
+            <td class={tdClasses}>{state.totalExtinctSpecies}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

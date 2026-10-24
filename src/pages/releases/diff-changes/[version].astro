@@ -1,0 +1,67 @@
+---
+import DiffTable, {
+  type DiffTableColumn,
+  type DiffTableRow,
+} from "../../../components/DiffTable.astro";
+import PageDivider from "../../../components/PageDivider.astro";
+import Title from "../../../components/Title.astro";
+import MainPage from "../../../layouts/MainPage.astro";
+import Page from "../../../layouts/Page.astro";
+import PageHeader from "../../../layouts/PageHeader.astro";
+import {
+  cleanVersion,
+  getDiffReleases,
+  getReleaseDate,
+} from "../../../../db/diffs";
+import type { DiffRelease } from "../../../../db/diffs_model";
+import { formatDate } from "../../../libs/metadata";
+
+export function getStaticPaths() {
+  return getDiffReleases().map((release) => ({
+    params: { version: cleanVersion(release.version) },
+    props: { release },
+  }));
+}
+
+interface Props {
+  release: DiffRelease;
+}
+
+const { release } = Astro.props as Props;
+const version = cleanVersion(release.version);
+const date = formatDate(getReleaseDate(release)) ?? "Date unavailable";
+
+const columns: DiffTableColumn[] = [
+  { key: "oldName", label: "Old name" },
+  { key: "newName", label: "New name" },
+  { key: "category", label: "Category" },
+  { key: "comments", label: "Comments" },
+  { key: "reference", label: "Reference" },
+];
+
+const rows = release.taxonomyChanges as unknown as DiffTableRow[];
+---
+
+<Page title={`MDD v${version} Taxonomy Changes`} isIndexed={false}>
+  <MainPage isIndexed={false}>
+    <PageHeader>
+      <Title slot="title" bottomPadding={8}>MDD v{version} Taxonomy Changes</Title>
+      <div slot="description">
+        <p>
+          Taxonomy changes from v{cleanVersion(release.prevVersion)} to v{version}, released {date}.
+        </p>
+      </div>
+    </PageHeader>
+    <PageDivider />
+
+    <div class="mx-auto max-w-screen-2xl pb-12">
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-3 text-sm text-spectra-700 dark:text-spectra-300">
+        <p>{release.taxonomyChanges.length.toLocaleString()} taxonomy changes</p>
+        <a class="underline hover:text-spicy-mix-700 dark:hover:text-spicy-mix-300" href="/releases">
+          Back to release notes
+        </a>
+      </div>
+      <DiffTable columns={columns} rows={rows} />
+    </div>
+  </MainPage>
+</Page>

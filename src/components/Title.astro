@@ -1,6 +1,11 @@
 ---
 import cntl from "cntl";
 
+interface Props {
+  bottomPadding?: number;
+}
+const { bottomPadding = 16 } = Astro.props;
+
 const pageTitleClasses = cntl`
     text-balance
     text-4xl
@@ -9,7 +14,7 @@ const pageTitleClasses = cntl`
     tracking-tight 
     text-spectra-950 
     dark:text-spectra-50
-    mb-16
+    ${bottomPadding ? `mb-${bottomPadding}` : ""}
 `;
 ---
 

@@ -1,0 +1,213 @@
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import * as Plot from "@observablehq/plot";
+import type { Feature, FeatureCollection } from "geojson";
+import { convertTopoToGeoJson } from "../../libs/country_utils";
+
+const COUNTRY_MAP_URL = "/map/countries-50m.json";
+type ProjectionOption = Plot.PlotOptions["projection"];
+
+interface CountryMapProps {
+  stats: Record<string, number>;
+  colors?: [string, string];
+  projection?: string | Plot.ProjectionOptions;
+}
+
+function useContainerWidth(
+  ref: preact.RefObject<HTMLElement>,
+  defaultWidth = 980,
+) {
+  const [width, setWidth] = useState<number | null>(null);
+  const frameRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    setWidth(ref.current.clientWidth || defaultWidth);
+
+    const observer = new ResizeObserver((entries) => {
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+      frameRef.current = requestAnimationFrame(() => {
+        frameRef.current = null;
+        const entry = entries[0];
+        if (entry?.contentRect.width > 0) setWidth(entry.contentRect.width);
+      });
+    });
+
+    observer.observe(ref.current);
+
+    return () => {
+      if (frameRef.current !== null) {
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
+      }
+      observer.disconnect();
+    };
+  }, [ref, defaultWidth]);
+
+  return width;
+}
+
+interface FeatureDatum {
+  count: number | undefined;
+  iso2: string | undefined;
+}
+
+const isPointFeature = (feature: Feature): boolean =>
+  feature.geometry?.type === "Point";
+
+let cachedWorld: FeatureCollection | null = null;
+
+export default function CountryMap({
+  stats,
+  colors = ["#FFEB00", "#117554"],
+  projection = "equal-earth",
+}: CountryMapProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const width = useContainerWidth(containerRef);
+  const [world, setWorld] = useState<FeatureCollection | null>(null);
+
+  useEffect(() => {
+    if (cachedWorld) {
+      setWorld(cachedWorld);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadWorld() {
+      try {
+        const response = await fetch(COUNTRY_MAP_URL);
+        if (!response.ok)
+          throw new Error(`Failed to fetch map: ${response.statusText}`);
+        const topoData = await response.json();
+        const geoData = convertTopoToGeoJson(topoData);
+        if (!cancelled) {
+          cachedWorld = geoData;
+          setWorld(geoData);
+        }
+      } catch (err) {
+        console.error("Failed to load country map:", err);
+      }
+    }
+
+    loadWorld();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const normalizedStats = useMemo(
+    () => new Map(Object.entries(stats).map(([k, v]) => [k.toUpperCase(), v])),
+    [stats],
+  );
+
+  const featureCache = useMemo<WeakMap<Feature, FeatureDatum>>(() => {
+    const cache = new WeakMap<Feature, FeatureDatum>();
+    if (!world?.features?.length) return cache;
+
+    for (const feature of world.features) {
+      const iso2 = feature.properties?.ISO_A2 as string | undefined;
+      const key = iso2?.toUpperCase();
+      const count = key
+        ? (normalizedStats.get(key) as number | undefined)
+        : undefined;
+      cache.set(feature, { count, iso2: key });
+    }
+
+    return cache;
+  }, [world, normalizedStats]);
+
+  const visibleFeatures = useMemo(() => {
+    if (!world?.features?.length) return [];
+
+    return world.features.filter((feature) => {
+      if (!isPointFeature(feature)) return true;
+      return featureCache.get(feature)?.count !== undefined;
+    });
+  }, [world, featureCache]);
+
+  useEffect(() => {
+    if (!width || visibleFeatures.length === 0 || !containerRef.current) return;
+
+    const isDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+
+    const plot = Plot.plot({
+      projection: projection as ProjectionOption,
+      width,
+      height: width * 0.52,
+      style: { background: "transparent" },
+      color: {
+        type: "linear",
+        range: colors,
+        legend: true,
+        label: "Species Diversity",
+        unknown: isDark ? "#374151" : "#d1d5db",
+      },
+      marks: [
+        Plot.sphere({ stroke: "currentColor", strokeOpacity: 0.1 }),
+        Plot.graticule({ stroke: "currentColor", strokeOpacity: 0.1 }),
+
+        Plot.geo(visibleFeatures, {
+          r: 4,
+          fill: (d: Feature) => featureCache.get(d)?.count,
+          stroke: "currentColor",
+          strokeWidth: (d: Feature) => (isPointFeature(d) ? 1.2 : 0.5),
+          strokeOpacity: (d: Feature) => (isPointFeature(d) ? 0.7 : 0.3),
+
+          tip: {
+            channels: {
+              Country: (d: Feature) =>
+                d.properties?.mdd_name ?? d.properties?.NAME ?? "Unknown",
+              "Species Count": (d: Feature) =>
+                featureCache.get(d)?.count ?? "No data",
+            },
+            format: {
+              fill: false,
+              r: false,
+              strokeOpacity: false,
+              strokeWidth: false,
+              x: false,
+              y: false,
+            },
+            pointer: "xy",
+            fill: isDark ? "#1f2937" : "#ffffff",
+            stroke: "currentColor",
+          },
+
+          href: (d: Feature) => {
+            const { iso2 } = featureCache.get(d) ?? {};
+            return iso2 ? `/country/${iso2}` : undefined;
+          },
+          ariaLabel: (d: Feature) => {
+            const countryName =
+              d.properties?.mdd_name ?? d.properties?.NAME ?? "Unknown";
+            return `View species for ${countryName}`;
+          },
+        }),
+      ],
+    });
+
+    const container = containerRef.current;
+    container.innerHTML = "";
+    container.append(plot);
+
+    // Clean up prohibited ARIA attributes on SVG groups (<g>)
+    const svgElement = container.querySelector("svg");
+    if (svgElement) {
+      const ariaGroups = svgElement.querySelectorAll("g[aria-label]");
+      ariaGroups.forEach((el) => {
+        const label = el.getAttribute("aria-label");
+        if (label === "geo" || label === "tip" || label === "graticule" || label === "sphere") {
+          el.removeAttribute("aria-label");
+        } else {
+          el.setAttribute("role", "group");
+        }
+      });
+    }
+
+    return () => plot.remove();
+  }, [width, visibleFeatures, colors, projection, featureCache]);
+
+  return <div ref={containerRef} className="w-full relative min-h-[300px]" />;
+}

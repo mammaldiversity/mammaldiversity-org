@@ -1,0 +1,69 @@
+---
+import PageDivider from "../../components/PageDivider.astro";
+import TreeTips from "../../components/phylo/TreeTips.astro";
+import Title from "../../components/Title.astro";
+import MainPage from "../../layouts/MainPage.astro";
+import Page from "../../layouts/Page.astro";
+import PageHeader from "../../layouts/PageHeader.astro";
+import PhyloContainer from "../../layouts/PhyloContainer.astro";
+import {
+  getHierarchicalTaxonData,
+  type OrderData,
+} from "../../libs/taxon_table";
+
+const taxonData: Record<string, OrderData> = getHierarchicalTaxonData();
+
+// We filter the taxon order that value contains subclass: Prototheria
+const prototheria = Object.values(taxonData).filter(
+  (item: OrderData) => item.subclass && item.subclass.includes("Prototheria"),
+);
+
+const theria = Object.values(taxonData).filter(
+  (item: OrderData) => item.subclass && item.subclass.includes("Theria"),
+);
+---
+
+<Page
+  title="Tree View"
+  description="A tree view of the mammalian taxonomic hierarchy"
+>
+  <MainPage>
+    <PageHeader>
+      <Title slot="title" bottomPadding={8}>Mammalian Orders</Title>
+      <div slot="description">
+        <p>List of orders in the Mammal Diversity Database (MDD)</p>
+      </div>
+    </PageHeader>
+    <PageDivider />
+    <PhyloContainer>
+      <h2 class="text-lg font-semibold">Subclass: Prototheria</h2>
+      {
+        prototheria.map((order, idx) => (
+          <TreeTips
+            label="Order"
+            taxonName={order.order}
+            idx={idx}
+            length={prototheria.length}
+            expanded={true}
+            url={"/order/" + order.order.toLowerCase()}
+          />
+        ))
+      }
+      <div class="mt-4">
+        <h2 class="text-lg font-semibold">Subclass: Theria</h2>
+        {
+          theria.map((order, idx) => (
+            <TreeTips
+              label="Order"
+              taxonName={order.order}
+              idx={idx}
+              length={theria.length}
+              expanded={true}
+              url={"/order/" + order.order.toLowerCase()}
+            />
+          ))
+        }
+      </div>
+    </PhyloContainer>
+  </MainPage>
+</Page>

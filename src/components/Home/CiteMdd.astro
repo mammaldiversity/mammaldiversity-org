@@ -1,0 +1,22 @@
+---
+import cntl from "cntl";
+import CiteMddList from "../pubs/CiteMddList.astro";
+
+const sectionTitleClass = cntl`
+  font-serif
+  text-3xl
+  lg:text-4xl
+  font-semibold
+  text-center
+  mb-8
+  text-spectra-900
+  dark:text-spectra-50
+`;
+---
+
+<div id="citation" class="py-8 mb-16 max-w-7xl mx-auto">
+  <h2 class={sectionTitleClass}>Cite MDD</h2>
+  <div class="mt-8">
+    <CiteMddList />
+  </div>
+</div>

@@ -7,32 +7,59 @@ import Section from "../components/Section.astro";
 import Title from "../components/Title.astro";
 import MainPage from "../layouts/MainPage.astro";
 import Page from "../layouts/Page.astro";
+import PageHeader from "../layouts/PageHeader.astro";
+import cntl from "cntl";
+
+const resourceCardClass = cntl`
+  p-5
+  my-4
+  bg-gradient-to-br
+  dark:from-spectra-900
+  dark:to-spectra-800/30
+  from-spectra-50
+  to-spectra-100/50
+  backdrop-blur-sm
+  rounded-2xl
+  shadow-sm
+  border
+  border-spectra-200/60
+  dark:border-spectra-700/60
+  hover:shadow-md
+  transition-all
+  duration-300
+`;
 ---
 
 <Page data-pagefind-ignore title="Resources">
-  <MainPage
-    ><div class="text-center item-center mt-8 md:mt-16">
-      <Title>Mammal Data Resources</Title>
-      <h2>
-        Below is a list of digital resources regarding the global taxonomy,
-        geography, and phylogeny of mammalian species.
-      </h2>
+  <MainPage>
+    <PageHeader>
+      <Title slot="title">Mammal Data Resources</Title>
+      <div slot="description">
+        <p class="text-xl mb-4">
+          Below is a list of digital resources regarding the global taxonomy,
+          geography, and phylogeny of mammalian species.
+        </p>
+      </div>
+    </PageHeader>
+    <div class="lg:max-w-7xl mx-auto mt-12">
       <Section title="Geographic Maps">
         <Paragraph>
           MDD v1.2 (version of Sept. 2020) geographic range maps:
         </Paragraph>
-        <ul class="ml-8 mb-4 list-disc">
-          <li>
-            "mdd" R package by Ángel Luis Robles Fernandez -- new tools for
-            downloading and parsing downscaled versions of these range maps per
-            species, by clade, or by geographic region (e.g., all Rodentia maps
-            for North America). <Link url="https://alrobles.github.io/mdd/" />
-          </li>
-          <li>
-            Zenodo page for downloading full-scale versions of the MDD v1.2
-            range maps: <Link url="https://zenodo.org/record/6644198" />
-          </li>
-        </ul>
+        <div class={resourceCardClass}>
+          <ul class="space-y-2 list-disc list-inside text-sm sm:text-base">
+            <li>
+              <strong>"mdd" R package by Ángel Luis Robles Fernandez</strong> -- new tools for
+              downloading and parsing downscaled versions of these range maps per
+              species, by clade, or by geographic region (e.g., all Rodentia maps
+              for North America). <Link url="https://alrobles.github.io/mdd/" />
+            </li>
+            <li>
+              <strong>Zenodo page</strong> for downloading full-scale versions of the MDD v1.2
+              range maps: <Link url="https://zenodo.org/record/6644198" />
+            </li>
+          </ul>
+        </div>
         <Paragraph>
           Source paper for range maps aligned to MDD v1.2, Handbook of the
           Mammals of the World vol. 1-9 (2009-2019), and Checklist of the
@@ -344,18 +371,20 @@ import Page from "../layouts/Page.astro";
             />
           </li>
         </ul>
-        <p>Machine-readable versions:</p>
-        <ul class="ml-8 list-disc">
-          <li>
-            HMW treatments on Plazi TreatmentBank: <Link
-              url="https://treatment.plazi.org/GgServer/search?fullText.ftQuery=handbook+mammals+world"
-            />
-          </li>
-          <li>
-            CSV of all HMW volume 1-9 treatments on Github:
-            <Link url="https://github.com/jhpoelen/hmw" />
-          </li>
-        </ul>
+        <p class="font-semibold text-lg mt-6 mb-2">Machine-readable versions:</p>
+        <div class={resourceCardClass}>
+          <ul class="space-y-2 list-disc list-inside text-sm sm:text-base">
+            <li>
+              HMW treatments on Plazi TreatmentBank: <Link
+                url="https://treatment.plazi.org/GgServer/search?fullText.ftQuery=handbook+mammals+world"
+              />
+            </li>
+            <li>
+              CSV of all HMW volume 1-9 treatments on Github:
+              <Link url="https://github.com/jhpoelen/hmw" />
+            </li>
+          </ul>
+        </div>
       </Section>
     </div>
   </MainPage>

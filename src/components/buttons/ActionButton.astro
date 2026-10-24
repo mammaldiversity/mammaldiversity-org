@@ -1,14 +1,16 @@
 ---
 import cntl from "cntl";
 
-interface ActionButton {
+interface Props {
   label: string;
   uri: string;
   extendClass?: string;
   isPrimary?: boolean;
+  openInNewTab?: boolean;
 }
 
-const { label, uri, extendClass, isPrimary } = Astro.props;
+const { label, uri, extendClass, isPrimary, openInNewTab = false } =
+  Astro.props;
 
 const buttonClasses = cntl`
   btn
@@ -18,7 +20,11 @@ const buttonClasses = cntl`
 `;
 ---
 
-<a href={uri}>
+<a
+  href={uri}
+  target={openInNewTab ? "_blank" : undefined}
+  rel={openInNewTab ? "noopener noreferrer" : undefined}
+>
   <button class={buttonClasses}>
     {
       isPrimary && (

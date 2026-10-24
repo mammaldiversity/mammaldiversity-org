@@ -1,0 +1,90 @@
+---
+import {
+  formatDiffName,
+  tokenizeDiffText,
+} from "../libs/diff-display";
+
+export interface DiffTableColumn {
+  key: string;
+  label: string;
+}
+
+type DiffTableValue = string | number | null | undefined;
+export type DiffTableRow = Record<string, DiffTableValue>;
+
+interface Props {
+  columns: DiffTableColumn[];
+  rows: DiffTableRow[];
+  emptyMessage?: string;
+}
+
+const {
+  columns,
+  rows,
+  emptyMessage = "No changes were found for this release.",
+} = Astro.props as Props;
+
+const cellClass =
+  "border-b border-spectra-100 px-4 py-3 align-top text-sm text-spectra-800 dark:border-spectra-800/60 dark:text-spectra-200";
+---
+
+<div
+  class="overflow-x-auto rounded-2xl border border-spectra-200/70 bg-white/80 shadow-sm dark:border-spectra-700/70 dark:bg-spectra-900/80"
+>
+  {
+    rows.length > 0 ? (
+      <table class="w-full min-w-full border-collapse text-left">
+        <thead class="bg-spectra-100/70 dark:bg-spectra-800/70">
+          <tr>
+            {columns.map((column) => (
+              <th class="whitespace-nowrap border-b border-spectra-200 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-spectra-700 dark:border-spectra-700 dark:text-spectra-300">
+                {column.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr class="transition-colors even:bg-spectra-50/40 hover:bg-spectra-100/60 dark:even:bg-spectra-800/20 dark:hover:bg-spectra-800/50">
+              {columns.map((column) => {
+                const value = row[column.key];
+                const isEmpty = value === null || value === undefined || value === "";
+
+                return (
+                  <td class={cellClass}>
+                    {isEmpty
+                      ? "—"
+                      : column.key === "oldName" || column.key === "newName"
+                        ? formatDiffName(String(value))
+                        : typeof value === "string"
+                          ? tokenizeDiffText(value).map((token) =>
+                              token.type === "link" ? (
+                                <a
+                                  class="underline hover:text-spectra-600 dark:hover:text-spectra-300"
+                                  href={token.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {token.text}
+                                </a>
+                              ) : token.type === "italic" ? (
+                                <i>{token.text}</i>
+                              ) : (
+                                token.text
+                              ),
+                            )
+                          : String(value)}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <p class="p-6 text-center text-sm text-spectra-700 dark:text-spectra-300">
+        {emptyMessage}
+      </p>
+    )
+  }
+</div>

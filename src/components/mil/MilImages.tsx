@@ -1,0 +1,143 @@
+import { useState } from "preact/hooks";
+import type { MilMetadata } from "../../../db/mil_model";
+import { MilAttributionByMddId } from "./Attribution";
+
+export default function MilImages({
+  metadata,
+  species,
+}: {
+  metadata: MilMetadata[];
+  species: string;
+}) {
+  const [current, setCurrent] = useState(0);
+  const [imgError, setImgError] = useState(false);
+  const image = metadata[current];
+  const isFirst = current === 0;
+  const isLast = current === metadata.length - 1;
+
+  const handlePrev = () => {
+    setCurrent((c) => c - 1);
+    setImgError(false);
+  };
+  const handleNext = () => {
+    setCurrent((c) => c + 1);
+    setImgError(false);
+  };
+
+  return (
+    <div className="mil-images bg-gradient-to-br dark:from-spectra-900 dark:to-spectra-800/30 from-spectra-50 to-spectra-100/50 backdrop-blur-sm rounded-2xl overflow-hidden mt-2 mb-4 shadow-sm border border-spectra-200/60 dark:border-spectra-700/60 hover:shadow-md transition-all duration-300">
+      {!image ? (
+        <p className="text-gray-500 p-4">No images available</p>
+      ) : (
+        <>
+          {/* Image container */}
+          <div className="relative w-full">
+            {imgError ? (
+              <div className="w-full flex items-center justify-center bg-spectra-100 dark:bg-spectra-900 text-gray-400 dark:text-gray-500 text-sm py-10">
+                No image available
+              </div>
+            ) : (
+              <div className="w-full max-h-[400px] md:max-h-[520px] bg-spectra-50 dark:bg-spectra-900 overflow-hidden">
+                <img
+                  src={image.filePath}
+                  alt={image.description || `${species} image`}
+                  title={image.description}
+                  className="w-full h-full max-h-[400px] md:max-h-[520px] object-contain"
+                  onError={() => setImgError(true)}
+                />
+              </div>
+            )}
+
+            {/* Prev button */}
+            <button
+              onClick={handlePrev}
+              disabled={isFirst}
+              aria-label="Previous image"
+              className={`
+                absolute left-2 top-1/2 -translate-y-1/2
+                bg-black/50 hover:bg-black/75 text-white
+                rounded-full w-10 h-10 flex items-center justify-center
+                transition-opacity
+                ${
+                  isFirst
+                    ? "opacity-30 cursor-not-allowed"
+                    : "opacity-100 cursor-pointer"
+                }
+              `}
+            >
+              ‹
+            </button>
+
+            {/* Next button */}
+            <button
+              onClick={handleNext}
+              disabled={isLast}
+              aria-label="Next image"
+              className={`
+                absolute right-2 top-1/2 -translate-y-1/2
+                bg-black/50 hover:bg-black/75 text-white
+                rounded-full w-10 h-10 flex items-center justify-center
+                transition-opacity
+                ${
+                  isLast
+                    ? "opacity-30 cursor-not-allowed"
+                    : "opacity-100 cursor-pointer"
+                }
+              `}
+            >
+              ›
+            </button>
+
+            {/* Counter badge */}
+            <span className="absolute bottom-2 right-3 bg-black/50 text-white text-sm px-2 py-0.5 rounded-full">
+              {current + 1} / {metadata.length}
+            </span>
+          </div>
+          <ImageCaption image={image} />
+        </>
+      )}
+    </div>
+  );
+}
+
+function ImageCaption({ image }: { image: MilMetadata }) {
+  return (
+    <div className="mt-2 mx-4 pb-3 text-spectra-800 dark:text-spectra-100 text-sm">
+      <div className="grid grid-cols-[auto_auto_1fr] gap-x-1">
+        <span>Location</span>
+        <span>:</span>
+        <span className="pl-1">{image.location ?? "Unknown"}</span>
+        <span>Date taken</span>
+        <span>:</span>
+        <span className="pl-1">
+          {image.dateTaken && !isNaN(new Date(image.dateTaken).getTime())
+            ? new Date(image.dateTaken).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })
+            : "Unknown"}
+        </span>
+        {image.description && (
+          <>
+            <span>Description</span>
+            <span>:</span>
+            <span className="pl-1">{image.description}</span>
+          </>
+        )}
+      </div>
+      <p className="mt-2">Distribution :</p>
+      <p>{image.distribution ?? "Unknown"}</p>
+      {image.isUncertainIdentification && (
+        <div className="mt-4 text-xs italic">
+          <p>Notes :</p>
+          <p>
+            The species identification is uncertain. This individual may
+            represent a different taxon.
+          </p>
+        </div>
+      )}
+      <MilAttributionByMddId milId={image.milId} />
+    </div>
+  );
+}

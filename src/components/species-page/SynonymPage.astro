@@ -1,8 +1,10 @@
 ---
 import {
   createAuthorityCitation,
+  createStructuredTypeLocality,
   createSynonymName,
-} from "../../scripts/taxon";
+  shouldSeparateSynonymAuthorityWithColon,
+} from "../../libs/taxon";
 import PageDivider from "../PageDivider.astro";
 import TaxonData from "./TaxonData.astro";
 import cntl from "cntl";
@@ -20,6 +22,12 @@ interface SynonymsProps {
   type?: string;
   typeKind?: string;
   typeSpecimenLink?: string;
+  originalTypeLocality?: string;
+  typeCountry?: string;
+  typeSubregion?: string;
+  typeSubregion2?: string;
+  typeLatitude?: string | number;
+  typeLongitude?: string | number;
   authorityPage?: string;
   authorityPageLink?: string;
   authorityPublication?: string;
@@ -32,13 +40,18 @@ const {
   rootName,
   authoritySpeciesAuthor,
   authoritySpeciesYear,
-  authorityParentheses,
   family,
   validityStatus,
   nomenclaturalStatus,
   type,
   typeKind,
   typeSpecimenLink,
+  originalTypeLocality,
+  typeCountry,
+  typeSubregion,
+  typeSubregion2,
+  typeLatitude,
+  typeLongitude,
   authorityPage,
   authorityPageLink,
   authorityPublication,
@@ -48,12 +61,25 @@ const {
 const synonymText = createSynonymName(
   rootName,
   species,
-  originalNameCombination
+  originalNameCombination,
 );
 const authorityCitation = createAuthorityCitation(
   authoritySpeciesAuthor,
   authoritySpeciesYear,
-  authorityParentheses === 1
+  false,
+);
+const authoritySeparator = shouldSeparateSynonymAuthorityWithColon(
+  nomenclaturalStatus,
+)
+  ? ": "
+  : "";
+const inlineAuthoritySeparator = authoritySeparator || " ";
+const structuredTypeLocality = createStructuredTypeLocality(
+  typeCountry,
+  typeSubregion,
+  typeSubregion2,
+  typeLatitude,
+  typeLongitude,
 );
 
 const dialogClasses = cntl`
@@ -94,19 +120,18 @@ const synonymTitleClasses = cntl`
 <button id="modal-btn">
   <div id="header" class={headerClasses}>
     <p class={buttonTextClasses}>
-      <span class="italic tracking-wide">{synonymText}</span>
-      {authorityCitation}
+      <span class="italic tracking-wide" data-pagefind-weight="5">{synonymText}</span>{inlineAuthoritySeparator}{authorityCitation}
     </p>
   </div>
 </button>
 
 <dialog id="my_modal_5" class={dialogClasses}>
   <div class="modal-box">
-    <div id="modal-header" class="text-center">
-      <h1 class={synonymTitleClasses}>
-        {synonymText}
+    <div id="modal-header" class="text-center mb-2">
+      <h1 class={synonymTitleClasses} data-pagefind-weight="9">
+        {synonymText}{authoritySeparator.trimEnd()}
       </h1>
-      <h2 class="text-lg">
+      <h2 class="text-md">
         {authorityCitation}
       </h2>
     </div>
@@ -122,6 +147,16 @@ const synonymTitleClasses = cntl`
       />
       <TaxonData label="Type" content={type} isSynonym />
       <TaxonData label="Type kind" content={typeKind} isSynonym />
+      <TaxonData
+        label="Original type locality"
+        content={originalTypeLocality}
+        isSynonym
+      />
+      <TaxonData
+        label="Type locality"
+        content={structuredTypeLocality}
+        isSynonym
+      />
       <TaxonData
         label="Type specimen URI"
         content={typeSpecimenLink}
@@ -153,7 +188,7 @@ const synonymTitleClasses = cntl`
 
 <script>
   const dialogs = Array.from(
-    document.querySelectorAll("#my_modal_5")
+    document.querySelectorAll("#my_modal_5"),
   ) as HTMLDialogElement[];
   const modalBtn = document.querySelectorAll("#modal-btn");
 

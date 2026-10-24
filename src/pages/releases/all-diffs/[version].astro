@@ -1,0 +1,94 @@
+---
+import DiffTable, {
+  type DiffTableColumn,
+  type DiffTableRow,
+} from "../../../components/DiffTable.astro";
+import PageDivider from "../../../components/PageDivider.astro";
+import Title from "../../../components/Title.astro";
+import MainPage from "../../../layouts/MainPage.astro";
+import Page from "../../../layouts/Page.astro";
+import PageHeader from "../../../layouts/PageHeader.astro";
+import {
+  cleanVersion,
+  getDiffReleases,
+  getFieldCategoryCounts,
+  getReleaseDate,
+} from "../../../../db/diffs";
+import type { DiffRelease } from "../../../../db/diffs_model";
+import { formatDate } from "../../../libs/metadata";
+
+export function getStaticPaths() {
+  return getDiffReleases().map((release) => ({
+    params: { version: cleanVersion(release.version) },
+    props: { release },
+  }));
+}
+
+interface Props {
+  release: DiffRelease;
+}
+
+const { release } = Astro.props as Props;
+const version = cleanVersion(release.version);
+const date = formatDate(getReleaseDate(release)) ?? "Date unavailable";
+
+const columns: DiffTableColumn[] = [
+  { key: "speciesId", label: "Species ID" },
+  { key: "oldName", label: "Old name" },
+  { key: "newName", label: "New name" },
+  { key: "category", label: "Category" },
+  { key: "column", label: "Column" },
+  { key: "oldValue", label: "Old value" },
+  { key: "newValue", label: "New value" },
+];
+
+const rows = release.allChanges as unknown as DiffTableRow[];
+const summaryColumns: DiffTableColumn[] = [
+  { key: "category", label: "Category" },
+  { key: "count", label: "Changes" },
+];
+const fieldCategoryCounts = Object.entries(
+  getFieldCategoryCounts(release.allChanges),
+).sort(([left], [right]) => left.localeCompare(right));
+---
+
+<Page title={`MDD v${version} All Changes`} isIndexed={false}>
+  <MainPage isIndexed={false}>
+    <PageHeader>
+      <Title slot="title" bottomPadding={8}>MDD v{version} All Changes</Title>
+      <div slot="description">
+        <p>
+          Field-level differences from v{cleanVersion(release.prevVersion)} to v{version}, released {date}.
+        </p>
+      </div>
+    </PageHeader>
+    <PageDivider />
+
+    <div class="mx-auto max-w-screen-2xl pb-12">
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-3 text-sm text-spectra-700 dark:text-spectra-300">
+        <p>{release.allChanges.length.toLocaleString()} field changes</p>
+        <a class="underline hover:text-spicy-mix-700 dark:hover:text-spicy-mix-300" href="/releases">
+          Back to release notes
+        </a>
+      </div>
+
+      <section class="mb-8 max-w-2xl">
+        <h2 class="mb-3 text-lg font-semibold text-spectra-900 dark:text-spectra-100">
+          Field changes by type
+        </h2>
+        <DiffTable
+          columns={summaryColumns}
+          rows={fieldCategoryCounts.map(([category, count]) => ({
+            category: category.replace(/\b\w/g, (letter) => letter.toUpperCase()),
+            count,
+          }))}
+        />
+      </section>
+
+      <h2 class="mb-3 text-lg font-semibold text-spectra-900 dark:text-spectra-100">
+        All changes
+      </h2>
+      <DiffTable columns={columns} rows={rows} />
+    </div>
+  </MainPage>
+</Page>

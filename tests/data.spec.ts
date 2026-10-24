@@ -1,32 +1,36 @@
 import type { MddData } from "../db/mdd_model";
-import { test, expect } from "@playwright/test";
-import fs from "fs";
 import type { CountryMDDStats } from "../db/country_stats_model";
+import type { CountryRegionCode } from "../db/country_stats_model";
+import { test, expect } from "@playwright/test";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
+import { fileURLToPath } from "url";
 
-const TEST_PATH = "./db/data/test.json";
-const MDD_PATH = "./db/data/mdd.json";
-const COUNTRY_STATS_PATH = "./db/data/test_country_stats.json";
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+const TEST_PATH = join(__dirname, "../db/data/test.json");
+const MDD_PATH = join(__dirname, "../db/data/mdd.json");
+const COUNTRY_STATS_PATH = join(__dirname, "../db/data/test_country_stats.json");
+const COUNTRY_REGION_CODE_PATH = join(__dirname, "../db/data/country_region_code.json");
+
+
+function getSpeciesDataPath(): string {
+  return existsSync(TEST_PATH) ? TEST_PATH : MDD_PATH;
+}
 
 function parseMDDJson(): MddData {
-  const test_path = getSpeciesDataPath();
-  const rawData = fs.readFileSync(test_path, "utf8");
-  const jsonData: MddData = JSON.parse(rawData);
-  return jsonData;
+  const rawData = readFileSync(getSpeciesDataPath(), "utf8");
+  return JSON.parse(rawData) as MddData;
 }
 
 function parseCountryStatsJson(): CountryMDDStats {
-  const rawData = fs.readFileSync(COUNTRY_STATS_PATH, "utf8");
-  const jsonData: CountryMDDStats = JSON.parse(rawData);
-  return jsonData;
+  const rawData = readFileSync(COUNTRY_STATS_PATH, "utf8");
+  return JSON.parse(rawData) as CountryMDDStats;
 }
 
-function getSpeciesDataPath(): string {
-  // check if the TEST_PATH exists and use it, otherwise use MDD_PATH
-  if (fs.existsSync(TEST_PATH)) {
-    return TEST_PATH;
-  } else {
-    return MDD_PATH;
-  }
+function parseCountryRegionCodeJson(): CountryRegionCode {
+  const rawData = readFileSync(COUNTRY_REGION_CODE_PATH, "utf8");
+  return JSON.parse(rawData) as CountryRegionCode;
 }
 
 test("MDD data is valid JSON", () => {
@@ -35,11 +39,17 @@ test("MDD data is valid JSON", () => {
   expect(jsonData.data.length).toBe(50);
 });
 
-// Test country stats data
 test("Country stats data is valid JSON", () => {
   const jsonData = parseCountryStatsJson();
   expect(jsonData).not.toBeNull();
   expect(jsonData.totalCountries).toBe(243);
   expect(jsonData.countryData).toBeDefined();
   expect(Object.keys(jsonData.countryData).length).toBe(243);
+});
+
+test("Country region code data is valid JSON", () => {
+  const jsonData = parseCountryRegionCodeJson();
+  expect(jsonData).not.toBeNull();
+  expect(jsonData.regionToCode).toBeDefined();
+  expect(jsonData.codeToRegion).toBeDefined();
 });

@@ -32,3 +32,14 @@ country_stats.json
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+mil.json
+mil-images/
+usa_states.json
+
+# macOS
+.DS_Store
+__MACOSX/
+MDD/
+diffs.json
+
+.antigravitycli
