@@ -69,7 +69,7 @@ const theria = Object.values(taxonData).filter(
               length={theria.length}
               childCount={order.family_list.length}
               expanded={true}
-              url={"/order" + order.order.toLowerCase()}
+              url={"/order/" + order.order.toLowerCase()}
             >
               {order.family_list.map((family, idx) => (
                 <TreeTips
@@ -78,7 +78,7 @@ const theria = Object.values(taxonData).filter(
                   idx={idx}
                   length={order.family_list.length}
                   expanded={false}
-                  url={"/family" + family.family.toLowerCase()}
+                  url={"/family/" + family.family.toLowerCase()}
                 />
               ))}
             </TreeTips>
