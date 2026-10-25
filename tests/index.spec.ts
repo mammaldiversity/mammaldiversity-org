@@ -63,3 +63,34 @@ test("navbar treats a trailing slash as the current page", async ({ page }) => {
   );
   await expect(searchIndicator).not.toHaveClass(/bg-transparent/);
 });
+
+for (const [label, path] of [
+  ["Orders", "/order"],
+  ["Families", "/family"],
+  ["Taxonomy tree", "/explore/tree"],
+] as const) {
+  test(`statistics links to ${label}`, async ({ page }) => {
+    await page.goto("/");
+    await page
+      .getByRole("navigation", { name: "Browse taxa" })
+      .getByRole("link", { name: label })
+      .click();
+    await expect(page).toHaveURL(new RegExp(`${path}/?$`));
+  });
+}
+
+test("banner cards link to orders and families", async ({ page }) => {
+  await page.goto("/");
+  const banner = page.locator("#species-count-summary");
+  await expect(banner.locator('a[href="/order"]')).toContainText("Orders");
+  await expect(banner.locator('a[href="/family"]')).toContainText("Families");
+});
+
+test("family tree links use valid order and family paths", async ({ page }) => {
+  await page.goto("/family");
+  const hrefs = await page
+    .locator('a[href^="/order"], a[href^="/family"]')
+    .evaluateAll((links) => links.map((a) => a.getAttribute("href")));
+  expect(hrefs.length).toBeGreaterThan(0);
+  for (const href of hrefs) expect(href).toMatch(/^\/(order|family)\/[a-z]+$/);
+});

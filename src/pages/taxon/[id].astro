@@ -16,6 +16,7 @@ import SynonymSection from "../../components/species-page/SynonymSection.astro";
 import { getSpeciesMilImages } from "../../libs/mil";
 import MilImages from "../../components/mil/MilImages";
 import SpeciesTaxonomy from "../../components/species-page/SpeciesTaxonomy.astro";
+import Publications from "../../components/species-page/Publications";
 // This page is statically generated at build time
 // We use getStaticPaths to tell Astro to generate this page for each taxon in the database
 // This approach allow us make sure the generated page is always up to date with the database
@@ -144,6 +145,7 @@ const common_name_class = cntl`
           <SynonymSection synonyms={synonyms} />
         </div>
       </div>
+      <Publications species={species} client:visible />
       <SupportNotice />
     </div>
   </MainPage>
