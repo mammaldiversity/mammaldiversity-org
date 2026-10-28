@@ -64,20 +64,10 @@ test("navbar treats a trailing slash as the current page", async ({ page }) => {
   await expect(searchIndicator).not.toHaveClass(/bg-transparent/);
 });
 
-for (const [label, path] of [
-  ["Orders", "/order"],
-  ["Families", "/family"],
-  ["Taxonomy tree", "/explore/tree"],
-] as const) {
-  test(`statistics links to ${label}`, async ({ page }) => {
-    await page.goto("/");
-    await page
-      .getByRole("navigation", { name: "Browse taxa" })
-      .getByRole("link", { name: label })
-      .click();
-    await expect(page).toHaveURL(new RegExp(`${path}/?$`));
-  });
-}
+test("statistics section has no browse buttons", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("navigation", { name: "Browse taxa" })).toHaveCount(0);
+});
 
 test("banner cards link to orders and families", async ({ page }) => {
   await page.goto("/");
