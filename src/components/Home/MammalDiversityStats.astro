@@ -7,12 +7,6 @@ import { getChangeTrendData } from "../../../db/diffs";
 
 const changeTrendData = getChangeTrendData();
 
-const browseLinks = [
-  { label: "Orders", href: "/order" },
-  { label: "Families", href: "/family" },
-  { label: "Taxonomy tree", href: "/explore/tree" },
-];
-
 const sectionTitleClass = cntl`
   font-serif
   text-3xl
@@ -30,18 +24,6 @@ const sectionTitleClass = cntl`
   <h2 class={sectionTitleClass}>Mammal Diversity Statistics</h2>
   <div class="mb-16">
     <DiversityStatTable />
-    <nav
-      aria-label="Browse taxa"
-      class="mx-auto mt-4 flex max-w-4xl flex-wrap justify-center gap-2"
-    >
-      {
-        browseLinks.map((link) => (
-          <a href={link.href} class="btn btn-ghost btn-sm text-spectra-800 dark:text-spectra-200">
-            {link.label} ›
-          </a>
-        ))
-      }
-    </nav>
     <div
       class="mx-auto mt-10 max-w-4xl rounded-2xl border border-spectra-200/60 bg-white/80 p-4 shadow-sm dark:border-spectra-700/60 dark:bg-spectra-900/80 sm:p-6"
     >
