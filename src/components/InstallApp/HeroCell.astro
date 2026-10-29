@@ -1,10 +1,35 @@
 ---
 import { Image } from "astro:assets";
 import iphoneHome from "../../assets/images/screenshots/iphoneHome.webp";
-import GooglePlayBadge from "../../assets/app-stores/GooglePlayBadge.svg";
-import AppStoreBadge from "../../assets/app-stores/AppStoreBadge.svg";
+import AppStoreBadge from "../../assets/app-stores/app-store.svg";
+import GooglePlayBadge from "../../assets/app-stores/google-play.svg";
+import MicrosoftStoreBadge from "../../assets/app-stores/microsoft-store.svg";
+import SnapStoreBadge from "../../assets/app-stores/snap-store.svg";
 import Link from "../Link.astro";
 import cntl from "cntl";
+
+const storeBadges = [
+  {
+    href: "https://apps.apple.com/us/app/mammal-diversity/id6504446627",
+    src: AppStoreBadge,
+    alt: "Download on the App Store",
+  },
+  {
+    href: "https://play.google.com/store/apps/details?id=com.hhandika.mdd",
+    src: GooglePlayBadge,
+    alt: "Get it on Google Play",
+  },
+  {
+    href: "https://apps.microsoft.com/detail/9p2nmslctglg",
+    src: MicrosoftStoreBadge,
+    alt: "Download from the Microsoft Store",
+  },
+  {
+    href: "https://snapcraft.io/mammal-diversity",
+    src: SnapStoreBadge,
+    alt: "Get it from the Snap Store",
+  },
+];
 
 const bentoCellClasses = cntl`
   bg-gradient-to-br
@@ -57,38 +82,33 @@ const bentoCellClasses = cntl`
       Access the entire Mammal Diversity Database on the go, anywhere.
     </p>
     <div class="flex flex-col gap-4">
-      <a
-        href="https://apps.apple.com/us/app/mammal-diversity/id6504446627?itscg=30200&itsct=apps_box_link&mttnsubad=6504446627"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-block transition-transform hover:scale-105 origin-left"
-      >
-        <Image
-          height="40"
-          width="120"
-          src={AppStoreBadge}
-          alt="Get it on Apple App Store"
-        />
-      </a>
-      <a
-        href="https://play.google.com/store/apps/details?id=com.hhandika.mdd"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-block transition-transform hover:scale-105 origin-left"
-      >
-        <Image
-          height="40"
-          width="135"
-          src={GooglePlayBadge}
-          alt="Get it on Google Play"
-        />
-      </a>
+      <div class="flex flex-wrap gap-3">
+        {
+          storeBadges.map((badge) => (
+            <a
+              href={badge.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block transition-transform hover:scale-105"
+            >
+              <Image src={badge.src} alt={badge.alt} class="h-12 w-auto" />
+            </a>
+          ))
+        }
+      </div>
       <p class="text-sm dark:text-spectra-300 text-spectra-700">
         Follow <Link
           url="https://github.com/mammaldiversity/mdd_app/releases/latest"
           label="installation guidelines"
           openInNewTab={true}
         /> to install on other platforms.
+      </p>
+      <p class="text-[10px] leading-snug text-spectra-500 dark:text-spectra-500">
+        Apple and the Apple logo are trademarks of Apple Inc., registered in the
+        U.S. and other countries. App Store is a service mark of Apple Inc.
+        Google Play and the Google Play logo are trademarks of Google LLC.
+        Microsoft Store is a trademark of the Microsoft group of companies. Snap
+        Store and the Snapcraft logo are trademarks of Canonical Ltd.
       </p>
     </div>
   </div>
