@@ -33,21 +33,32 @@ type Status =
   | { state: "error" }
   | { state: "done"; works: CrossrefWork[] };
 
-export default function Publications({ species }: { species: string }) {
+/**
+ * Crossref works naming a taxon. Only species names are italicized; names
+ * above genus are written in roman.
+ */
+export default function Publications({
+  name,
+  rank = "species",
+}: {
+  name: string;
+  rank?: "species" | "family" | "order";
+}) {
   const [status, setStatus] = useState<Status>({ state: "loading" });
   const [attempt, setAttempt] = useState(0);
+  const italic = rank === "species";
 
   useEffect(() => {
     const controller = new AbortController();
     setStatus({ state: "loading" });
-    fetchCrossrefWorks(species, controller.signal)
+    fetchCrossrefWorks(name, controller.signal)
       .then((works) => setStatus({ state: "done", works }))
       .catch((error) => {
         if (!controller.signal.aborted) setStatus({ state: "error" });
         if (error?.name !== "AbortError") console.error(error);
       });
     return () => controller.abort();
-  }, [species, attempt]);
+  }, [name, attempt]);
 
   return (
     <section
@@ -62,7 +73,7 @@ export default function Publications({ species }: { species: string }) {
           Publications
         </h2>
         <a
-          href={crossrefSearchUrl(species)}
+          href={crossrefSearchUrl(name)}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs underline text-spectra-700 dark:text-spectra-200"
@@ -72,7 +83,8 @@ export default function Publications({ species }: { species: string }) {
       </div>
       <p className="text-xs text-spectra-800 dark:text-spectra-100 mb-4">
         Fetched automatically from Crossref and not curated by the MDD team.
-        Only works with <i>{species}</i> in the title or abstract are shown.
+        Only works with {italic ? <i>{name}</i> : name} in the title or abstract
+        are shown.
       </p>
       {status.state === "loading" && (
         <p
@@ -100,10 +112,10 @@ export default function Publications({ species }: { species: string }) {
       {status.state === "done" &&
         (status.works.length === 0 ? (
           <p className="text-sm text-spectra-800 dark:text-spectra-200">
-            No publications with this species in the title or abstract found.
+            No publications with this {rank} in the title or abstract found.
           </p>
         ) : (
-          <WorkList works={status.works} species={species} />
+          <WorkList works={status.works} name={name} italic={italic} />
         ))}
     </section>
   );
@@ -111,10 +123,12 @@ export default function Publications({ species }: { species: string }) {
 
 function WorkList({
   works,
-  species,
+  name,
+  italic,
 }: {
   works: CrossrefWork[];
-  species: string;
+  name: string;
+  italic: boolean;
 }) {
   const [filter, setFilter] = useState<WorkKind | null>(null);
   const [showAll, setShowAll] = useState(false);
@@ -179,7 +193,7 @@ function WorkList({
             </div>
             <ul className="divide-y divide-spectra-200/60 dark:divide-spectra-800/60">
               {group.map((work) => (
-                <Work key={work.doi} work={work} species={species} />
+                <Work key={work.doi} work={work} name={name} italic={italic} />
               ))}
             </ul>
           </li>
@@ -209,7 +223,15 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Work({ work, species }: { work: CrossrefWork; species: string }) {
+function Work({
+  work,
+  name,
+  italic,
+}: {
+  work: CrossrefWork;
+  name: string;
+  italic: boolean;
+}) {
   const [copied, setCopied] = useState(false);
   const label = workTypeLabel(work.type);
   const meta = [work.authors, workSource(work)].filter(Boolean).join(" · ");
@@ -234,9 +256,11 @@ function Work({ work, species }: { work: CrossrefWork; species: string }) {
         </span>
       )}
       <p className="text-sm font-medium">
-        {splitOnName(work.title, species).map((part, i) =>
-          part.isName ? <i key={i}>{part.text}</i> : part.text,
-        )}
+        {italic
+          ? splitOnName(work.title, name).map((part, i) =>
+              part.isName ? <i key={i}>{part.text}</i> : part.text,
+            )
+          : work.title}
       </p>
       {meta && (
         <p className="text-xs text-spectra-700 dark:text-spectra-200">{meta}</p>

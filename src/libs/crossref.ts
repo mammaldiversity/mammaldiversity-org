@@ -1,6 +1,6 @@
-// Publications naming a species, fetched from Crossref in the browser.
-// Species pages are static, so the list is not part of the build: fetching
-// at build time would mean one Crossref request per species on every build.
+// Publications naming a taxon, fetched from Crossref in the browser.
+// Taxon pages are static, so the list is not part of the build: fetching
+// at build time would mean one Crossref request per taxon on every build.
 
 export interface CrossrefWork {
   title: string;
@@ -83,9 +83,9 @@ export function workKind(type: string): WorkKind {
   return KIND_BY_TYPE[type] ?? "other";
 }
 
-export function crossrefWorksUrl(species: string): string {
+export function crossrefWorksUrl(name: string): string {
   const params = new URLSearchParams({
-    "query.bibliographic": `"${species}"`,
+    "query.bibliographic": `"${name}"`,
     rows: "40",
     select:
       "DOI,title,author,issued,container-title,volume,issue,page,type,abstract",
@@ -93,20 +93,20 @@ export function crossrefWorksUrl(species: string): string {
   return `https://api.crossref.org/works?${params}`;
 }
 
-export function crossrefSearchUrl(species: string): string {
-  return `https://search.crossref.org/?${new URLSearchParams({ q: species })}`;
+export function crossrefSearchUrl(name: string): string {
+  return `https://search.crossref.org/?${new URLSearchParams({ q: name })}`;
 }
 
 /** Wait before the one retry; Crossref's public pool allows 1 request/s. */
 const RETRY_DELAY_MS = 1500;
 
 export async function fetchCrossrefWorks(
-  species: string,
+  name: string,
   signal?: AbortSignal,
 ): Promise<CrossrefWork[]> {
   let response: Response;
   try {
-    response = await fetch(crossrefWorksUrl(species), { signal });
+    response = await fetch(crossrefWorksUrl(name), { signal });
     if (!response.ok) throw new Error(`Crossref returned ${response.status}`);
   } catch (error) {
     // A rate-limited reply has no CORS header, so the browser reports it as
@@ -114,23 +114,23 @@ export async function fetchCrossrefWorks(
     if (signal?.aborted) throw error;
     await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
     signal?.throwIfAborted();
-    response = await fetch(crossrefWorksUrl(species), { signal });
+    response = await fetch(crossrefWorksUrl(name), { signal });
     if (!response.ok) throw new Error(`Crossref returned ${response.status}`);
   }
   const json = await response.json();
   const items: unknown[] = json?.message?.items ?? [];
-  return filterWorks(items.map(parseWork), species);
+  return filterWorks(items.map(parseWork), name);
 }
 
 /**
  * Crossref relevance matching is fuzzy; keep works whose title or abstract
- * mentions the species binomial.
+ * mentions the taxon name.
  */
 export function filterWorks(
   works: CrossrefWork[],
-  species: string,
+  name: string,
 ): CrossrefWork[] {
-  const needle = species.toLowerCase();
+  const needle = name.toLowerCase();
   return works
     .filter(
       (w) =>

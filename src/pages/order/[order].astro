@@ -12,6 +12,7 @@ import { getMilImagesByMddIds } from "../../libs/mil";
 import { MilAttribution } from "../../components/mil/Attribution";
 import MilMultiImages from "../../components/mil/MilMultiImages.astro";
 import HigherTaxaContent from "../../layouts/HigherTaxaContent.astro";
+import Publications from "../../components/species-page/Publications";
 
 const headerClasses = cntl`
   text-center
@@ -87,6 +88,7 @@ const root = tree.root;
           ))
         }
       </PhyloContainer>
+      <Publications name={taxonOrder} rank="order" client:visible />
     </HigherTaxaContent>
   </MainPage>
 </Page>

@@ -12,6 +12,7 @@ import { getMilImagesByMddIds } from "../../libs/mil";
 import { MilAttribution } from "../../components/mil/Attribution";
 import MilMultiImages from "../../components/mil/MilMultiImages.astro";
 import HigherTaxaContent from "../../layouts/HigherTaxaContent.astro";
+import Publications from "../../components/species-page/Publications";
 
 const headerClasses = cntl`
   text-center
@@ -84,6 +85,7 @@ const milPortraits = milImages.filter((img) => img.orientation === "portrait");
           ))
         }
       </PhyloContainer>
+      <Publications name={taxonFamily} rank="family" client:visible />
     </HigherTaxaContent>
   </MainPage>
 </Page>
